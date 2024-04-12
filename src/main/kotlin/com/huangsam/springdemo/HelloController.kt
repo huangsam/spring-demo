@@ -14,7 +14,7 @@ class HelloController {
 
     @GetMapping
     fun helloName(@RequestParam(value = "name", defaultValue = "Sam") name: String?): String {
-        logger.info("We entered the helloName endpoint")
+        logger.debug("We entered the helloName endpoint")
         return String.format("Hello world %s!", name)
     }
 }
