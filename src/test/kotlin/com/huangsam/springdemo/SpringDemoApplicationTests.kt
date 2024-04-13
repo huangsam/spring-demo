@@ -16,4 +16,10 @@ class SpringDemoApplicationTests {
 		assertNotNull(controller)
 	}
 
+    @Test
+    fun helloNameRenders() {
+        val result: String = controller.helloName("Bob")
+        assertEquals("Hello world Bob!", result)
+    }
+
 }
