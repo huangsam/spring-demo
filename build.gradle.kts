@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.9.23"
 	kotlin("plugin.spring") version "1.9.23"
 	kotlin("plugin.jpa") version "1.9.23"
+	id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
 
 group = "com.huangsam"
