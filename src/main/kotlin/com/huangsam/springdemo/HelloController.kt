@@ -17,7 +17,9 @@ class HelloController(private val helloService: HelloService) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @GetMapping
-    fun helloName(@RequestParam(value = "name", defaultValue = DEFAULT_SAM) name: String): String {
+    fun helloName(
+        @RequestParam(value = "name", defaultValue = DEFAULT_SAM) name: String
+    ): String {
         logger.debug("We entered the helloName endpoint")
         return helloService.greet(name)
     }
