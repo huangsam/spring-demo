@@ -9,7 +9,7 @@ import org.springframework.boot.test.web.client.getForObject
 import org.springframework.boot.test.web.server.LocalServerPort
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class HelloControllerLiveTests {
+class HelloControllerLiveTest {
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
 
