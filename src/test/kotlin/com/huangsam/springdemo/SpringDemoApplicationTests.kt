@@ -7,11 +7,11 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class SpringDemoApplicationTests {
-	@Autowired
+    @Autowired
     private lateinit var helloController: HelloController
 
-	@Test
-	fun contextLoads() {
-		assertNotNull(helloController)
-	}
+    @Test
+    fun contextLoads() {
+        assertNotNull(helloController)
+    }
 }

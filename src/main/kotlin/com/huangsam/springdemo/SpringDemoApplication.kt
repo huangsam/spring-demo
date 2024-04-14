@@ -8,5 +8,5 @@ class SpringDemoApplication
 
 @Suppress("SpreadOperator")
 fun main(args: Array<String>) {
-	runApplication<SpringDemoApplication>(*args)
+    runApplication<SpringDemoApplication>(*args)
 }
