@@ -1,4 +1,4 @@
-package com.huangsam.springdemo
+package com.huangsam.springdemo.hello
 
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
