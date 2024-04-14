@@ -25,7 +25,6 @@ class HelloControllerMockTest {
     private val mockMessage = "Hello. Are you $DEFAULT_SAM?"
 
     @Test
-    @Throws(Exception::class)
     fun shouldReturnDefaultMessage() {
         `when`(helloService.greet(DEFAULT_SAM)).thenReturn(mockMessage)
 
