@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.9.23"
 	kotlin("plugin.spring") version "1.9.23"
 	kotlin("plugin.jpa") version "1.9.23"
+    kotlin("plugin.allopen") version "1.9.23"
 	id("io.gitlab.arturbosch.detekt") version "1.23.6"
     jacoco
 }
@@ -46,6 +47,12 @@ tasks.withType<Test> {
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport)
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.Embeddable")
+    annotation("jakarta.persistence.MappedSuperclass")
 }
 
 tasks.register<Copy>("addHooks") {
