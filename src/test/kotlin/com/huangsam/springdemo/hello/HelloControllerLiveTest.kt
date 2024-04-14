@@ -11,7 +11,7 @@ import org.springframework.boot.test.web.server.LocalServerPort
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class HelloControllerLiveTest(
     @Autowired private val restTemplate: TestRestTemplate,
-    @LocalServerPort private val port: Int
+    @LocalServerPort private val port: Int,
 ) {
     private val baseUrl: String by lazy { "http://localhost:$port/$HELLO_URL" }
 

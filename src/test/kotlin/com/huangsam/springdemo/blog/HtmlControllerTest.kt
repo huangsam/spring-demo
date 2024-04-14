@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class HtmlControllerTest(
-    @Autowired private val restTemplate: TestRestTemplate
+    @Autowired private val restTemplate: TestRestTemplate,
 ) {
     @Test
     fun `Assert blog page title, content and status code`() {

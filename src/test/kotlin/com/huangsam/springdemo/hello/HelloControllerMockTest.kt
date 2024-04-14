@@ -18,7 +18,7 @@ private const val MOCK_MESSAGE = "Hello. Are you $DEFAULT_SAM?"
 @SpringBootTest
 @AutoConfigureMockMvc
 class HelloControllerMockTest(
-    @Autowired private val mockMvc: MockMvc
+    @Autowired private val mockMvc: MockMvc,
 ) {
     @MockBean
     private lateinit var helloService: HelloService

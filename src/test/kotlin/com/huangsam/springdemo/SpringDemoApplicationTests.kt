@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 @SpringBootTest
 class SpringDemoApplicationTests(
     @Autowired private val helloController: HelloController,
-    @Autowired private val htmlController: HtmlController
+    @Autowired private val htmlController: HtmlController,
 ) {
     @Test
     fun contextLoads() {
