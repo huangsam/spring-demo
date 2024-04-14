@@ -7,6 +7,7 @@ plugins {
 	kotlin("plugin.spring") version "1.9.23"
 	kotlin("plugin.jpa") version "1.9.23"
 	id("io.gitlab.arturbosch.detekt") version "1.23.6"
+    jacoco
 }
 
 group = "com.huangsam"
@@ -41,6 +42,10 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
 }
 
 tasks.register<Copy>("addHooks") {
