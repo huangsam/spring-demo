@@ -41,3 +41,10 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks.register<Copy>("addHooks") {
+    group = "Setup"
+    description = "Adds Git hooks from .hooks to .git/hooks"
+    from(".hooks")
+    into(".git/hooks")
+}
