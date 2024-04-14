@@ -16,10 +16,12 @@ class HelloControllerLiveTest {
     @LocalServerPort
     private var port: Int = 0
 
+    private val baseUrl: String by lazy { "http://localhost:$port/$HELLO_URL" }
+
     @Test
     fun helloNameRendersImplicit() {
         val result = restTemplate.getForObject<String>(getHelloNameUrl())
-        assertEquals("Hello world Sam!", result)
+        assertEquals("Hello world $DEFAULT_SAM!", result)
     }
 
     @Test
@@ -29,7 +31,6 @@ class HelloControllerLiveTest {
     }
 
     private fun getHelloNameUrl(name: String? = null): String {
-        return name?.let { "http://localhost:$port/hello?name=$name" }
-            ?: "http://localhost:$port/hello"
+        return name?.let { "$baseUrl?name=$name" } ?: baseUrl
     }
 }
