@@ -1,5 +1,6 @@
 package com.huangsam.springdemo.blog
 
+import com.huangsam.springdemo.Routes
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +27,7 @@ class HttpControllersTest(@Autowired private val mockMvc: MockMvc) {
         val lorem5Article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
         val ipsumArticle = Article("Ipsum", "Ipsum", "dolor sit amet", johnDoe)
         `when`(articleRepository.findAllByOrderByAddedAtDesc()).thenReturn(listOf(lorem5Article, ipsumArticle))
-        mockMvc.perform(get("/api/article/").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("${Routes.API_ARTICLE}/").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("\$.[0].author.login").value(johnDoe.login))
@@ -40,7 +41,7 @@ class HttpControllersTest(@Autowired private val mockMvc: MockMvc) {
         val johnDoe = User("johnDoe", "John", "Doe")
         val janeDoe = User("janeDoe", "Jane", "Doe")
         `when`(userRepository.findAll()).thenReturn(listOf(johnDoe, janeDoe))
-        mockMvc.perform(get("/api/user/").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("${Routes.API_USER}/").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("\$.[0].login").value(johnDoe.login))

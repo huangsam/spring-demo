@@ -1,5 +1,6 @@
 package com.huangsam.springdemo.hello
 
+import com.huangsam.springdemo.Routes
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +14,7 @@ class HelloControllerLiveTest(
     @Autowired private val restTemplate: TestRestTemplate,
     @LocalServerPort private val port: Int,
 ) {
-    private val baseUrl: String by lazy { "http://localhost:$port/$HELLO_URL" }
+    private val baseUrl: String by lazy { "http://localhost:$port${Routes.HELLO}" }
 
     @Test
     fun helloNameRendersImplicit() {

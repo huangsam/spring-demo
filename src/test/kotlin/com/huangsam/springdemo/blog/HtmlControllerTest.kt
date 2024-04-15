@@ -1,5 +1,6 @@
 package com.huangsam.springdemo.blog
 
+import com.huangsam.springdemo.Routes
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -32,7 +33,7 @@ class HtmlControllerTest(
     @Test
     fun `Assert blog page title, content and status code`() {
         logger.info("Assert blog page works")
-        val entity = restTemplate.getForEntity<String>("/")
+        val entity = restTemplate.getForEntity<String>(Routes.ROOT)
         assertEquals(HttpStatus.OK, entity.statusCode)
         entity.body!!.let {
             assertTrue(it.contains("<h1>Blog</h1>"))
@@ -44,7 +45,7 @@ class HtmlControllerTest(
     fun `Assert article page title, content and status code`() {
         logger.info("Assert article page works")
         val title = "Lorem"
-        val entity = restTemplate.getForEntity<String>("/article/${title.toSlug()}")
+        val entity = restTemplate.getForEntity<String>("${Routes.ARTICLE}/${title.toSlug()}")
         assertEquals(HttpStatus.OK, entity.statusCode)
         entity.body!!.let {
             assertTrue(it.contains(title))

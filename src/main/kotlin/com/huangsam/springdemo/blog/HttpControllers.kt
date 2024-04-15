@@ -1,5 +1,6 @@
 package com.huangsam.springdemo.blog
 
+import com.huangsam.springdemo.Routes
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -9,7 +10,7 @@ import org.springframework.web.server.ResponseStatusException
 import kotlin.jvm.Throws
 
 @RestController
-@RequestMapping("/api/article")
+@RequestMapping(Routes.API_ARTICLE)
 class ArticleController(private val repository: ArticleRepository) {
     @GetMapping("/")
     fun findAll(): Iterable<Article> = repository.findAllByOrderByAddedAtDesc()
@@ -22,7 +23,7 @@ class ArticleController(private val repository: ArticleRepository) {
 }
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping(Routes.API_USER)
 class UserController(private val repository: UserRepository) {
     @GetMapping("/")
     fun findAll(): Iterable<User> = repository.findAll()

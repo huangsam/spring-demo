@@ -1,5 +1,6 @@
 package com.huangsam.springdemo.hello
 
+import com.huangsam.springdemo.Routes
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -26,7 +27,7 @@ class HelloControllerMockTest(
     @Test
     fun shouldReturnDefaultMessage() {
         `when`(helloService.greet(DEFAULT_SAM)).thenReturn(MOCK_MESSAGE)
-        mockMvc.perform(get(HELLO_URL))
+        mockMvc.perform(get(Routes.HELLO))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(
