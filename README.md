@@ -1,5 +1,10 @@
 # Spring Demo
 
+After working on [huangsam/kotlin-trail](https://github.com/huangsam/kotlin-trial), it only
+made sense for me to try out Spring in Kotlin. This project returns valid HTML, JSON API and
+text output. It also comes complete with goodies like JPA persistence, endpoint testing and
+application-level logging.
+
 If you want to run the application: `./gradlew bootRun`
 
 If you want to test the application: `./gradlew test`
