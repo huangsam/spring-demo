@@ -16,10 +16,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @WebMvcTest(controllers = [ArticleController::class, UserController::class])
 class HttpControllersTest(@Autowired private val mockMvc: MockMvc) {
     @MockBean
-    private lateinit var userRepository: UserRepository
+    private lateinit var articleRepository: ArticleRepository
 
     @MockBean
-    private lateinit var articleRepository: ArticleRepository
+    private lateinit var userRepository: UserRepository
 
     @Test
     fun `List articles`() {
