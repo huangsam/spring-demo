@@ -18,6 +18,7 @@ Additional resources:
 - [Spring Boot Gradle Plugin](https://docs.spring.io/spring-boot/docs/3.2.4/gradle-plugin/reference/htmlsingle/)
 - [Spring Boot Docs](https://docs.spring.io/spring-boot/docs/3.2.4/reference/htmlsingle/index.html)
 - [SO: Spring Boot bootRun with continuous build](https://stackoverflow.com/a/52389314/2748860)
+- [SO: Spring Boot color logging](https://stackoverflow.com/a/28797729/2748860)
 - [BD: Spring Boot With H2 Database](https://www.baeldung.com/spring-boot-h2-database)
 - [BD: Testing the Web Layer](https://spring.io/guides/gs/testing-web)
 - [janl/mustache.js](https://github.com/janl/mustache.js)
