@@ -15,7 +15,9 @@ import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.http.HttpStatus
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class HtmlControllerTest(@Autowired private val restTemplate: TestRestTemplate) {
+class HtmlControllerTest @Autowired constructor(
+    private val restTemplate: TestRestTemplate
+) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @BeforeAll

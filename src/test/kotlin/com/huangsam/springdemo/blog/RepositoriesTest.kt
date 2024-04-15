@@ -11,7 +11,7 @@ import org.springframework.data.repository.findByIdOrNull
 class RepositoriesTest @Autowired constructor(
     private val entityManager: TestEntityManager,
     private val userRepository: UserRepository,
-    private val articleRepository: ArticleRepository,
+    private val articleRepository: ArticleRepository
 ) {
     @Test
     fun `When findByIdOrNull then return Article`() {

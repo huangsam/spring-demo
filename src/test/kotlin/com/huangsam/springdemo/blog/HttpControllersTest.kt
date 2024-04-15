@@ -14,7 +14,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(controllers = [ArticleController::class, UserController::class])
-class HttpControllersTest(@Autowired private val mockMvc: MockMvc) {
+class HttpControllersTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
     @MockBean
     private lateinit var articleRepository: ArticleRepository
 
