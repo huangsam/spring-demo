@@ -15,4 +15,5 @@ Additional resources:
 - [SO: Spring Boot bootRun with continuous build](https://stackoverflow.com/a/52389314/2748860)
 - [BD: Spring Boot With H2 Database](https://www.baeldung.com/spring-boot-h2-database)
 - [BD: Testing the Web Layer](https://spring.io/guides/gs/testing-web)
+- [janl/mustache.js](https://github.com/janl/mustache.js)
 - [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
