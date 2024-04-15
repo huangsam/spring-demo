@@ -1,12 +1,10 @@
 package com.huangsam.springdemo.blog
 
-import com.huangsam.springdemo.hello.HelloConfiguration
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -14,8 +12,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@WebMvcTest
-@Import(HelloConfiguration::class)
+@WebMvcTest(controllers = [ArticleController::class, UserController::class])
 class HttpControllersTest(@Autowired private val mockMvc: MockMvc) {
     @MockBean
     private lateinit var userRepository: UserRepository
