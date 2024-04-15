@@ -2,7 +2,7 @@
 
 If you want to run the application: `./gradlew bootRun`
 
-If you want to have live-reload, also run: `./gradlew build --continuous`
+If you want to test the application: `./gradlew test`
 
 Additional resources:
 
