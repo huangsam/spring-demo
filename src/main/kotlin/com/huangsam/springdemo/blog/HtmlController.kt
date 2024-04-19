@@ -9,13 +9,18 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.server.ResponseStatusException
 
+private object MustacheView {
+    const val BLOG = "blog"
+    const val ARTICLE = "article"
+}
+
 @Controller
 class HtmlController(private val repository: ArticleRepository) {
     @GetMapping(Routes.ROOT)
     fun blog(model: Model): String {
         model["title"] = "Blog"
         model["articles"] = repository.findAllByOrderByAddedAtDesc().map { it.render() }
-        return "blog"
+        return MustacheView.BLOG
     }
 
     @GetMapping("${Routes.ARTICLE}/{slug}")
@@ -26,7 +31,7 @@ class HtmlController(private val repository: ArticleRepository) {
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article does not exist")
         model["title"] = article.title
         model["article"] = article
-        return "article"
+        return MustacheView.ARTICLE
     }
 
     fun Article.render() = RenderedArticle(
