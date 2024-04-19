@@ -5,10 +5,23 @@ import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
 import java.util.*
 
+object Day {
+    const val MINIMUM = 1
+    const val MAXIMUM = 31
+}
+
+object Token {
+    const val ONE = 1
+    const val TWO = 2
+    const val THREE = 3
+    const val TEN = 10
+    const val ELEVEN = 11
+    const val THIRTEEN = 13
+}
+
 fun LocalDateTime.format(): String = this.format(englishDateFormatter)
 
-@Suppress("MagicNumber")
-private val daysLookup = (1..31).associate { it.toLong() to getOrdinal(it) }
+private val daysLookup = (Day.MINIMUM..Day.MAXIMUM).associate { it.toLong() to getOrdinal(it) }
 
 private val englishDateFormatter = DateTimeFormatterBuilder()
     .appendPattern("yyyy-MM-dd")
@@ -18,12 +31,11 @@ private val englishDateFormatter = DateTimeFormatterBuilder()
     .appendPattern("yyyy")
     .toFormatter(Locale.ENGLISH)
 
-@Suppress("MagicNumber")
 private fun getOrdinal(n: Int) = when {
-    n in 11..13 -> "${n}th"
-    n % 10 == 1 -> "${n}st"
-    n % 10 == 2 -> "${n}nd"
-    n % 10 == 3 -> "${n}rd"
+    n in Token.ELEVEN..Token.THIRTEEN -> "${n}th"
+    n % Token.TEN == Token.ONE -> "${n}st"
+    n % Token.TEN == Token.TWO -> "${n}nd"
+    n % Token.TEN == Token.THREE -> "${n}rd"
     else -> "${n}th"
 }
 
