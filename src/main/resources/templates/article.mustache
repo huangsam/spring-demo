@@ -4,13 +4,12 @@
   <section class="article">
     <div class="article-header">
       <h1 class="article-title">{{article.title}}</h1>
-      <p class="article-meta">By  <strong>{{article.author.firstname}}</strong>, on <strong>{{article.addedAt}}</strong></p>
+      <p class="article-meta">By <strong>{{article.author.firstname}}</strong>, on <strong>{{article.addedAt}}</strong></p>
     </div>
 
     <div class="article-description">
-      {{article.headline}}
-
-      {{article.content}}
+      <span class="headline">{{article.headline}}</span>
+      <span>{{article.content}}</span>
     </div>
   </section>
 </main>

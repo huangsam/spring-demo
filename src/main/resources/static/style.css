@@ -1,3 +1,8 @@
+:root {
+  --grey-90: #eee;
+  --grey-80: #ddd;
+}
+
 body {
   font-family: arial, verdana, sans-serif;
 }
@@ -8,9 +13,6 @@ body {
 }
 header, footer, main {
   padding: 1em;
-}
-section.article {
-  margin: 1rem 0;
 }
 
 body {
@@ -26,5 +28,14 @@ main {
 }
 
 header, footer {
-  background-color: #eee;
+  background-color: var(--grey-90);
+}
+
+section.article {
+  margin: 1rem 0;
+}
+
+.article-description .headline {
+  background-color: var(--grey-80);
+  padding: 0.25rem;
 }
