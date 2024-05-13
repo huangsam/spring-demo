@@ -1,0 +1,30 @@
+body {
+  font-family: arial, verdana, tahoma, sans-serif;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+}
+header, footer, main {
+  padding: 1.5em;
+}
+section.article {
+  margin: 1rem 0;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+header, footer {
+  flex-shrink: 0;
+}
+main {
+  flex-grow: 1;
+}
+
+header, footer {
+  background-color: #eee;
+}
