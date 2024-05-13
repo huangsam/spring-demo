@@ -7,35 +7,38 @@ body {
   font-family: arial, verdana, sans-serif;
 }
 
-body {
-  margin: 0px;
-  padding: 0px;
+html, body {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
-header, footer, main {
-  padding: 1em;
-}
-
-body {
-  display: flex;
+div.layout {
+  box-sizing: border-box;
   min-height: 100vh;
+  display: flex;
   flex-direction: column;
 }
 header, footer {
+  flex-grow: 0;
   flex-shrink: 0;
 }
 main {
   flex-grow: 1;
 }
 
+header, footer, main {
+  padding: 15px;
+}
 header, footer {
   background-color: var(--grey-90);
 }
 
 section.article {
-  margin: 1rem 0;
+  margin: 10px 0;
 }
 
 .article-description .headline {
   background-color: var(--grey-80);
-  padding: 0.25rem;
+  padding: 5px;
 }
