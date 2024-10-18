@@ -1,6 +1,7 @@
 package com.huangsam.springdemo.blog
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -46,5 +47,6 @@ class RepositoriesTest @Autowired constructor(
         assertEquals(2, found.count())
         assertEquals(user1, found.first())
         assertEquals(user2, found.last())
+        assertTrue(found.all { user -> user.firstname == user1.firstname })
     }
 }
