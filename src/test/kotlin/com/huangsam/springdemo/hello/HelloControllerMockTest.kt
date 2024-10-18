@@ -14,16 +14,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-private const val MOCK_MESSAGE = "Hello. Are you $DEFAULT_SAM?"
-
 @SpringBootTest
 @AutoConfigureMockMvc
 class HelloControllerMockTest @Autowired constructor(
-    private val mockMvc: MockMvc
+    private val mockMvc: MockMvc,
+    @MockBean private val helloService: HelloService
 ) {
-    @MockBean
-    private lateinit var helloService: HelloService
-
     @Test
     fun shouldReturnDefaultMessage() {
         `when`(helloService.greet(DEFAULT_SAM)).thenReturn(MOCK_MESSAGE)
@@ -33,5 +29,9 @@ class HelloControllerMockTest @Autowired constructor(
             .andExpect(
                 content().string(containsString(MOCK_MESSAGE))
             )
+    }
+
+    companion object {
+        private const val MOCK_MESSAGE = "Hello. Are you $DEFAULT_SAM?"
     }
 }

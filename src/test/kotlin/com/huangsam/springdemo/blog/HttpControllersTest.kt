@@ -15,14 +15,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(controllers = [ArticleController::class, UserController::class])
 class HttpControllersTest @Autowired constructor(
-    private val mockMvc: MockMvc
+    private val mockMvc: MockMvc,
+    @MockBean private val articleRepository: ArticleRepository,
+    @MockBean private val userRepository: UserRepository
 ) {
-    @MockBean
-    private lateinit var articleRepository: ArticleRepository
-
-    @MockBean
-    private lateinit var userRepository: UserRepository
-
     @Test
     fun `List articles`() {
         val johnDoe = User("johnDoe", "John", "Doe")
