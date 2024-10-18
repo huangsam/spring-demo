@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-const val DEFAULT_SAM = "Sam"
-
 @RestController
 @RequestMapping(Routes.HELLO)
 class HelloController(private val helloService: HelloService) {
@@ -19,5 +17,9 @@ class HelloController(private val helloService: HelloService) {
     fun helloName(@RequestParam(value = "name", defaultValue = DEFAULT_SAM) name: String): String {
         logger.debug("We entered ${Routes.HELLO}")
         return helloService.greet(name)
+    }
+
+    companion object {
+        const val DEFAULT_SAM = "Sam"
     }
 }

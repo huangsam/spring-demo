@@ -19,7 +19,7 @@ class HelloControllerLiveTest @Autowired constructor(
     @Test
     fun helloNameRendersImplicit() {
         val result = restTemplate.getForObject<String>(getHelloNameUrl())
-        assertEquals("Hello world $DEFAULT_SAM!", result)
+        assertEquals("Hello world ${HelloController.DEFAULT_SAM}!", result)
     }
 
     @Test
