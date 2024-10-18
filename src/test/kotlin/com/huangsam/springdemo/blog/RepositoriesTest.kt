@@ -13,11 +13,14 @@ class RepositoriesTest @Autowired constructor(
     private val userRepository: UserRepository,
     private val articleRepository: ArticleRepository
 ) {
+    private val johnDoe: User
+        get() = User("johnDoe", "John", "Doe")
+
     @Test
     fun `When findByIdOrNull then return Article`() {
-        val johnDoe = User("johnDoe", "John", "Doe")
-        entityManager.persist(johnDoe)
-        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
+        val user = johnDoe
+        entityManager.persist(user)
+        val article = Article("Lorem", "Lorem", "dolor sit amet", user)
         entityManager.persist(article)
         entityManager.flush()
         val found = articleRepository.findByIdOrNull(article.id!!)
@@ -26,10 +29,22 @@ class RepositoriesTest @Autowired constructor(
 
     @Test
     fun `When findByLogin then return User`() {
-        val johnDoe = User("johnDoe", "John", "Doe")
-        entityManager.persist(johnDoe)
+        val user = johnDoe
+        entityManager.persist(user)
         entityManager.flush()
-        val user = userRepository.findByLogin(johnDoe.login)
-        assertEquals(johnDoe, user)
+        val found = userRepository.findByLogin(user.login)
+        assertEquals(user, found)
+    }
+
+    @Test
+    fun `When findAllByFirstnameOrderByLastnameAsc then return Users`() {
+        val user1 = johnDoe
+        val user2 = User("johnPike", "John", "Pike")
+        entityManager.persist(user1)
+        entityManager.persist(user2)
+        val found = userRepository.findAllByFirstnameOrderByLastnameAsc(user1.firstname)
+        assertEquals(2, found.count())
+        assertEquals(user1, found.first())
+        assertEquals(user2, found.last())
     }
 }
