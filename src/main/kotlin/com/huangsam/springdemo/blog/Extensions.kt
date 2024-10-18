@@ -29,6 +29,7 @@ private object Day {
     const val TEN = 10
     const val ELEVEN = 11
     const val THIRTEEN = 13
+
     const val MIN = ONE
     const val MAX = 31
 }
