@@ -5,6 +5,15 @@ import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
 import java.util.*
 
+fun LocalDateTime.format(): String = this.format(englishDateFormatter)
+
+fun String.toSlug() = lowercase(Locale.getDefault())
+    .replace("\n", " ")
+    .replace("[^a-z\\d\\s]".toRegex(), " ")
+    .split(" ")
+    .joinToString("-")
+    .replace("-+".toRegex(), "-")
+
 private object Day {
     const val ONE = 1
     const val TWO = 2
@@ -15,8 +24,6 @@ private object Day {
     const val MIN = ONE
     const val MAX = 31
 }
-
-fun LocalDateTime.format(): String = this.format(englishDateFormatter)
 
 private val daysLookup = (Day.MIN..Day.MAX).associate { it.toLong() to getOrdinal(it) }
 
@@ -35,10 +42,3 @@ private fun getOrdinal(n: Int) = when {
     n % Day.TEN == Day.THREE -> "${n}rd"
     else -> "${n}th"
 }
-
-fun String.toSlug() = lowercase(Locale.getDefault())
-    .replace("\n", " ")
-    .replace("[^a-z\\d\\s]".toRegex(), " ")
-    .split(" ")
-    .joinToString("-")
-    .replace("-+".toRegex(), "-")
