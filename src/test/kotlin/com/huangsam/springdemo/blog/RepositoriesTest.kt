@@ -33,8 +33,10 @@ class RepositoriesTest @Autowired constructor(
         val user = johnDoe
         entityManager.persist(user)
         entityManager.flush()
-        val found = userRepository.findByLogin(user.login)
-        assertEquals(user, found)
+        val found = userRepository.findByLogin(user.login)!!
+        assertEquals(user.firstname, found.firstname)
+        assertEquals(user.lastname, found.lastname)
+        assertEquals(user.description, found.description)
     }
 
     @Test
