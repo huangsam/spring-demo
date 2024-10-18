@@ -14,6 +14,14 @@ fun String.toSlug() = lowercase(Locale.getDefault())
     .joinToString("-")
     .replace("-+".toRegex(), "-")
 
+private val englishDateFormatter = DateTimeFormatterBuilder()
+    .appendPattern("yyyy-MM-dd")
+    .appendLiteral(" ")
+    .appendText(ChronoField.DAY_OF_MONTH, (Day.MIN..Day.MAX).associate { it.toLong() to getOrdinal(it) })
+    .appendLiteral(" ")
+    .appendPattern("yyyy")
+    .toFormatter(Locale.ENGLISH)
+
 private object Day {
     const val ONE = 1
     const val TWO = 2
@@ -24,16 +32,6 @@ private object Day {
     const val MIN = ONE
     const val MAX = 31
 }
-
-private val daysLookup = (Day.MIN..Day.MAX).associate { it.toLong() to getOrdinal(it) }
-
-private val englishDateFormatter = DateTimeFormatterBuilder()
-    .appendPattern("yyyy-MM-dd")
-    .appendLiteral(" ")
-    .appendText(ChronoField.DAY_OF_MONTH, daysLookup)
-    .appendLiteral(" ")
-    .appendPattern("yyyy")
-    .toFormatter(Locale.ENGLISH)
 
 private fun getOrdinal(n: Int) = when {
     n in Day.ELEVEN..Day.THIRTEEN -> "${n}th"
