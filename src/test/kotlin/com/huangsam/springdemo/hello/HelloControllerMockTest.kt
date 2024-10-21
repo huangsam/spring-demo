@@ -22,7 +22,7 @@ class HelloControllerMockTest @Autowired constructor(
 ) {
     @Test
     fun shouldReturnDefaultMessage() {
-        `when`(helloService.greet(DEFAULT_SAM)).thenReturn(MOCK_MESSAGE)
+        `when`(helloService.greet(HelloController.DEFAULT_SAM)).thenReturn(MOCK_MESSAGE)
         mockMvc.perform(get(Routes.HELLO))
             .andDo(print())
             .andExpect(status().isOk())
@@ -32,6 +32,6 @@ class HelloControllerMockTest @Autowired constructor(
     }
 
     companion object {
-        private const val MOCK_MESSAGE = "Hello. Are you $DEFAULT_SAM?"
+        private const val MOCK_MESSAGE = "Hello. Are you ${HelloController.DEFAULT_SAM}?"
     }
 }
