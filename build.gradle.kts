@@ -4,13 +4,11 @@ plugins {
     id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.6"
 
-    val kotlinVersion = "2.0.10"
+    val kotlinVersion = "2.0.21"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
     kotlin("plugin.allopen") version kotlinVersion
-
-    id("io.gitlab.arturbosch.detekt") version "1.23.7"
 
     jacoco
 }
@@ -31,7 +29,6 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
 }
 
 tasks.withType<KotlinCompile> {
@@ -52,11 +49,4 @@ allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.Embeddable")
     annotation("jakarta.persistence.MappedSuperclass")
-}
-
-tasks.register<Copy>("addHooks") {
-    group = "Setup"
-    description = "Adds Git hooks from .hooks to .git/hooks"
-    from(".hooks")
-    into(".git/hooks")
 }
