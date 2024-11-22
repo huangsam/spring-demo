@@ -39,9 +39,6 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-tasks.test {
     finalizedBy(tasks.jacocoTestReport)
 }
 
