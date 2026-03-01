@@ -15,7 +15,10 @@ private object MustacheView {
 }
 
 @Controller
-class HtmlController(private val repository: ArticleRepository) {
+class HtmlController(
+    private val repository: ArticleRepository,
+    private val markdownConverter: MarkdownConverter
+) {
     @GetMapping(Routes.ROOT)
     fun blog(model: Model): String {
         model["title"] = "Blog"
@@ -38,7 +41,7 @@ class HtmlController(private val repository: ArticleRepository) {
         slug,
         title,
         headline,
-        content,
+        markdownConverter.convertToHtml(content),
         author,
         addedAt.format()
     )

@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.io.ClassPathResource
+import java.nio.charset.StandardCharsets
 
 @Configuration
 class BlogConfiguration {
@@ -21,19 +23,25 @@ class BlogConfiguration {
         logger.info("Create articles that John Doe is an author of")
         articleRepository.save(
             Article(
+                title = "Markdown Test",
+                headline = "Testing Markdown Rendering",
+                content = readResource("markdown/markdown-test.md"),
+                author = johnDoe
+            )
+        )
+        articleRepository.save(
+            Article(
                 title = "Lorem",
                 headline = "Lorem",
                 content = "dolor sit amet",
                 author = johnDoe
             )
         )
-        articleRepository.save(
-            Article(
-                title = "Ipsum",
-                headline = "Ipsum",
-                content = "dolor sit amet",
-                author = johnDoe
-            )
-        )
+    }
+
+    private fun readResource(path: String): String {
+        return ClassPathResource(path).inputStream.use {
+            String(it.readAllBytes(), StandardCharsets.UTF_8)
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.huangsam.springdemo.blog
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
@@ -11,7 +12,7 @@ import java.time.LocalDateTime
 class Article(
     var title: String,
     var headline: String,
-    var content: String,
+    @Column(length = 10000) var content: String,
     @ManyToOne var author: User,
     var slug: String = title.toSlug(),
     var addedAt: LocalDateTime = LocalDateTime.now(),

@@ -53,4 +53,17 @@ class HtmlControllerTest @Autowired constructor(
             assertTrue(it.contains("dolor sit amet"))
         }
     }
+
+    @Test
+    fun `Assert markdown rendering works`() {
+        val title = "Markdown Test"
+        val entity = restTemplate.getForEntity<String>("${Routes.ARTICLE}/${title.toSlug()}")
+        assertEquals(HttpStatus.OK, entity.statusCode)
+        entity.body!!.let {
+            assertTrue(it.contains("<strong>bold</strong>"))
+            assertTrue(it.contains("<ul>"))
+            assertTrue(it.contains("<li>Item 1</li>"))
+            assertTrue(it.contains("<a href=\"https://www.google.com\">Link to Google</a>"))
+        }
+    }
 }
