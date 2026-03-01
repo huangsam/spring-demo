@@ -10,17 +10,16 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient
 import org.springframework.http.HttpStatus
-import org.springframework.web.client.RestClient
+import org.springframework.test.web.servlet.client.RestTestClient
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureRestTestClient
 class HtmlControllerTest @Autowired constructor(
-    @param:LocalServerPort port: Int
+    private val restClient: RestTestClient
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-
-    private val restClient: RestClient = RestClient.builder().baseUrl("http://localhost:${port}").build()
 
     @BeforeAll
     fun setUp() {
@@ -35,9 +34,11 @@ class HtmlControllerTest @Autowired constructor(
     @Test
     fun `Assert blog page title, content and status code`() {
         logger.info("Assert blog page works")
-        val response = restClient.get().uri(Routes.ROOT).retrieve().toEntity(String::class.java)
-        assertEquals(HttpStatus.OK, response.statusCode)
-        response.body!!.let {
+        val responseBody = restClient.get().uri(Routes.ROOT)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(String::class.java).returnResult().responseBody
+        responseBody!!.let {
             assertTrue(it.contains("<h1>Blog</h1>"))
             assertTrue(it.contains("Lorem"))
         }
@@ -47,9 +48,11 @@ class HtmlControllerTest @Autowired constructor(
     fun `Assert article page title, content and status code`() {
         logger.info("Assert article page works")
         val title = "Lorem"
-        val response = restClient.get().uri("${Routes.ARTICLE}/${title.toSlug()}").retrieve().toEntity(String::class.java)
-        assertEquals(HttpStatus.OK, response.statusCode)
-        response.body!!.let {
+        val responseBody = restClient.get().uri("${Routes.ARTICLE}/${title.toSlug()}")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(String::class.java).returnResult().responseBody
+        responseBody!!.let {
             assertTrue(it.contains(title))
             assertTrue(it.contains("Lorem"))
             assertTrue(it.contains("dolor sit amet"))
@@ -59,9 +62,11 @@ class HtmlControllerTest @Autowired constructor(
     @Test
     fun `Assert markdown rendering works`() {
         val title = "Markdown Test"
-        val response = restClient.get().uri("${Routes.ARTICLE}/${title.toSlug()}").retrieve().toEntity(String::class.java)
-        assertEquals(HttpStatus.OK, response.statusCode)
-        response.body!!.let {
+        val responseBody = restClient.get().uri("${Routes.ARTICLE}/${title.toSlug()}")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(String::class.java).returnResult().responseBody
+        responseBody!!.let {
             assertTrue(it.contains("<strong>bold</strong>"))
             assertTrue(it.contains("<ul>"))
             assertTrue(it.contains("<li>Item 1</li>"))
