@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.5.11"
+    id("org.springframework.boot") version "4.0.3"
     id("io.spring.dependency-management") version "1.1.7"
 
     val kotlinVersion = "2.3.10"
@@ -33,7 +33,7 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 tasks.withType<KotlinCompile> {
