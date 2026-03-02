@@ -19,19 +19,24 @@ class SecurityConfiguration {
         http
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/", "/article/**", "/api/article/**", "/api/user/**", "/hello", "/style.css", "/register", "/api/user/register").permitAll()
-                    .requestMatchers("/new-article").authenticated()
-                    .anyRequest().authenticated()
-            }
-            .formLogin { form ->
-                form
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/", true)
+                    .requestMatchers(
+                        "/",
+                        "/article/**",
+                        "/api/article/**",
+                        "/api/user/**",
+                        "/hello",
+                        "/style.css",
+                        "/register",
+                        "/api/user/register",
+                    )
                     .permitAll()
+                    .requestMatchers("/new-article")
+                    .authenticated()
+                    .anyRequest()
+                    .authenticated()
             }
-            .logout { logout ->
-                logout.permitAll()
-            }
+            .formLogin { form -> form.loginPage("/login").defaultSuccessUrl("/", true).permitAll() }
+            .logout { logout -> logout.permitAll() }
             .csrf { csrf ->
                 // CSRF support is important for form submissions, but for a
                 // simple demo app with only REST endpoints and no real session
@@ -46,11 +51,11 @@ class SecurityConfiguration {
     @Bean
     fun userDetailsService(userRepository: UserRepository): UserDetailsService {
         return UserDetailsService { login ->
-            val user = userRepository.findByLogin(login)
-                ?: throw UsernameNotFoundException("User not found: $login")
+            val user =
+                userRepository.findByLogin(login)
+                    ?: throw UsernameNotFoundException("User not found: $login")
 
-            org.springframework.security.core.userdetails.User
-                .withUsername(user.login)
+            org.springframework.security.core.userdetails.User.withUsername(user.login)
                 .password(user.password)
                 .roles(user.role)
                 .build()

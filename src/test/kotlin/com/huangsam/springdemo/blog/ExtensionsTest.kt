@@ -1,8 +1,8 @@
 package com.huangsam.springdemo.blog
 
+import java.time.LocalDateTime
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 class ExtensionsTest {
     @Test

@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class MarkdownConverterTest @Autowired constructor(
-    private val markdownConverter: MarkdownConverter
-) {
+class MarkdownConverterTest
+@Autowired
+constructor(private val markdownConverter: MarkdownConverter) {
     @Test
     fun `convertToHtml renders bold text`() {
         val html = markdownConverter.convertToHtml("**bold**")

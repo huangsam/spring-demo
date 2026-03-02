@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "4.0.3"
     id("io.spring.dependency-management") version "1.1.7"
+    id("com.ncorti.ktfmt.gradle") version "0.25.0"
 
     val kotlinVersion = "2.3.10"
     kotlin("jvm") version kotlinVersion
@@ -14,11 +15,10 @@ plugins {
 }
 
 group = "com.huangsam"
+
 version = "0.0.1-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-}
+repositories { mavenCentral() }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -36,15 +36,11 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-kotlin {
-    jvmToolchain(25)
-}
+kotlin { jvmToolchain(25) }
 
-tasks.withType<KotlinCompile> {
-    compilerOptions {
-        freeCompilerArgs.add("-Xjsr305=strict")
-    }
-}
+ktfmt { kotlinLangStyle() }
+
+tasks.withType<KotlinCompile> { compilerOptions { freeCompilerArgs.add("-Xjsr305=strict") } }
 
 tasks.withType<Test> {
     useJUnitPlatform()

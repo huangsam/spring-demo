@@ -2,7 +2,6 @@ package com.huangsam.springdemo.blog
 
 import com.huangsam.springdemo.Routes
 import kotlin.jvm.Throws
-
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -17,9 +16,11 @@ import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping(Routes.API_ARTICLE)
-class ArticleController(private val repository: ArticleRepository, private val userRepository: UserRepository) {
-    @GetMapping("/")
-    fun findAll(): Iterable<Article> = repository.findAllByOrderByAddedAtDesc()
+class ArticleController(
+    private val repository: ArticleRepository,
+    private val userRepository: UserRepository,
+) {
+    @GetMapping("/") fun findAll(): Iterable<Article> = repository.findAllByOrderByAddedAtDesc()
 
     @Throws(ResponseStatusException::class)
     @GetMapping("/{slug}")
@@ -35,24 +36,31 @@ class ArticleController(private val repository: ArticleRepository, private val u
         // there is no authentication or the login cannot be resolved we send a
         // 403. (This mirrors what the HTML controller does with `getAuthenticatedUser`.)
         val auth = SecurityContextHolder.getContext().authentication
-        val author = auth?.let { userRepository.findByLogin(it.name) }
-            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "You must be logged in to create an article")
+        val author =
+            auth?.let { userRepository.findByLogin(it.name) }
+                ?: throw ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You must be logged in to create an article",
+                )
 
-        val article = Article(
-            title = articleRequest.title,
-            headline = articleRequest.headline,
-            content = articleRequest.content,
-            author = author
-        )
+        val article =
+            Article(
+                title = articleRequest.title,
+                headline = articleRequest.headline,
+                content = articleRequest.content,
+                author = author,
+            )
         return repository.save(article)
     }
 }
 
 @RestController
 @RequestMapping(Routes.API_USER)
-class UserController(private val repository: UserRepository, private val passwordEncoder: PasswordEncoder) {
-    @GetMapping("/")
-    fun findAll(): Iterable<User> = repository.findAll()
+class UserController(
+    private val repository: UserRepository,
+    private val passwordEncoder: PasswordEncoder,
+) {
+    @GetMapping("/") fun findAll(): Iterable<User> = repository.findAll()
 
     @Throws(ResponseStatusException::class)
     @GetMapping("/{login}")
@@ -61,61 +69,72 @@ class UserController(private val repository: UserRepository, private val passwor
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist")
 
     @PostMapping("/register")
-    fun register(@RequestBody registrationRequest: RegistrationRequest): org.springframework.http.ResponseEntity<User> {
+    fun register(
+        @RequestBody registrationRequest: RegistrationRequest
+    ): org.springframework.http.ResponseEntity<User> {
         if (repository.findByLogin(registrationRequest.login) != null) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Login already exists")
         }
-        val user = User(
-            login = registrationRequest.login,
-            firstname = registrationRequest.firstname,
-            lastname = registrationRequest.lastname,
-            password = passwordEncoder.encode(registrationRequest.password) ?: throw IllegalArgumentException("Password cannot be null")
-        )
+        val user =
+            User(
+                login = registrationRequest.login,
+                firstname = registrationRequest.firstname,
+                lastname = registrationRequest.lastname,
+                password =
+                    passwordEncoder.encode(registrationRequest.password)
+                        ?: throw IllegalArgumentException("Password cannot be null"),
+            )
         val saved = repository.save(user)
         return org.springframework.http.ResponseEntity.status(HttpStatus.CREATED).body(saved)
     }
 }
+
 @RestController
 @RequestMapping(Routes.API_COMMENT)
 class CommentController(
     private val repository: CommentRepository,
     private val articleRepository: ArticleRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) {
     @GetMapping("/{slug}")
     fun findByArticle(@PathVariable slug: String): Iterable<Comment> {
-        val article = articleRepository.findBySlug(slug)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article does not exist")
+        val article =
+            articleRepository.findBySlug(slug)
+                ?: throw ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "This article does not exist",
+                )
         return repository.findAllByArticleOrderByAddedAtDesc(article)
     }
 
     @PostMapping("/")
     fun addComment(@RequestBody commentRequest: CommentRequest): Comment {
-        val article = articleRepository.findBySlug(commentRequest.articleSlug)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article does not exist")
+        val article =
+            articleRepository.findBySlug(commentRequest.articleSlug)
+                ?: throw ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "This article does not exist",
+                )
 
         val auth = SecurityContextHolder.getContext().authentication
-        val author = auth?.let { userRepository.findByLogin(it.name) }
-            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "You must be logged in to comment")
+        val author =
+            auth?.let { userRepository.findByLogin(it.name) }
+                ?: throw ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You must be logged in to comment",
+                )
 
         return repository.save(Comment(article, author, commentRequest.content))
     }
 }
 
-data class CommentRequest(
-    val articleSlug: String,
-    val content: String
-)
+data class CommentRequest(val articleSlug: String, val content: String)
 
 data class RegistrationRequest(
     val login: String,
     val firstname: String,
     val lastname: String,
-    val password: String
+    val password: String,
 )
 
-data class ArticleRequest(
-    val title: String,
-    val headline: String,
-    val content: String
-)
+data class ArticleRequest(val title: String, val headline: String, val content: String)

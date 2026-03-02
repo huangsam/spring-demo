@@ -7,20 +7,25 @@ import java.util.Locale
 
 fun LocalDateTime.format(): String = this.format(englishDateFormatter)
 
-fun String.toSlug() = lowercase(Locale.getDefault())
-    .replace("\n", " ")
-    .replace("[^a-z\\d\\s]".toRegex(), " ")
-    .split(" ")
-    .joinToString("-")
-    .replace("-+".toRegex(), "-")
+fun String.toSlug() =
+    lowercase(Locale.getDefault())
+        .replace("\n", " ")
+        .replace("[^a-z\\d\\s]".toRegex(), " ")
+        .split(" ")
+        .joinToString("-")
+        .replace("-+".toRegex(), "-")
 
-private val englishDateFormatter = DateTimeFormatterBuilder()
-    .appendPattern("yyyy-MM-dd")
-    .appendLiteral(" ")
-    .appendText(ChronoField.DAY_OF_MONTH, (Day.MIN..Day.MAX).associate { it.toLong() to getOrdinal(it) })
-    .appendLiteral(" ")
-    .appendPattern("yyyy")
-    .toFormatter(Locale.ENGLISH)
+private val englishDateFormatter =
+    DateTimeFormatterBuilder()
+        .appendPattern("yyyy-MM-dd")
+        .appendLiteral(" ")
+        .appendText(
+            ChronoField.DAY_OF_MONTH,
+            (Day.MIN..Day.MAX).associate { it.toLong() to getOrdinal(it) },
+        )
+        .appendLiteral(" ")
+        .appendPattern("yyyy")
+        .toFormatter(Locale.ENGLISH)
 
 private object Day {
     const val ONE = 1
@@ -34,10 +39,11 @@ private object Day {
     const val MAX = 31
 }
 
-private fun getOrdinal(n: Int) = when {
-    n in Day.ELEVEN..Day.THIRTEEN -> "${n}th"
-    n % Day.TEN == Day.ONE -> "${n}st"
-    n % Day.TEN == Day.TWO -> "${n}nd"
-    n % Day.TEN == Day.THREE -> "${n}rd"
-    else -> "${n}th"
-}
+private fun getOrdinal(n: Int) =
+    when {
+        n in Day.ELEVEN..Day.THIRTEEN -> "${n}th"
+        n % Day.TEN == Day.ONE -> "${n}st"
+        n % Day.TEN == Day.TWO -> "${n}nd"
+        n % Day.TEN == Day.THREE -> "${n}rd"
+        else -> "${n}th"
+    }

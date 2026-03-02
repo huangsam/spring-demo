@@ -19,7 +19,7 @@ class Article(
     // Slug is derived from title by default; callers can override
     var slug: String = title.toSlug(),
     var addedAt: LocalDateTime = LocalDateTime.now(),
-    @Id @GeneratedValue var id: Long? = null
+    @Id @GeneratedValue var id: Long? = null,
 )
 
 @Entity
@@ -32,7 +32,7 @@ class User(
     var description: String? = null,
     var password: String,
     var role: String = "USER",
-    @Id @GeneratedValue var id: Long? = null
+    @Id @GeneratedValue var id: Long? = null,
 )
 
 @Entity
@@ -44,5 +44,5 @@ class Comment(
     @ManyToOne var author: User,
     @Column(length = 2000) var content: String,
     var addedAt: LocalDateTime = LocalDateTime.now(),
-    @Id @GeneratedValue var id: Long? = null
+    @Id @GeneratedValue var id: Long? = null,
 )

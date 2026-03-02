@@ -1,5 +1,6 @@
 package com.huangsam.springdemo.blog
 
+import java.time.LocalDateTime
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -7,14 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager
 import org.springframework.data.repository.findByIdOrNull
-import java.time.LocalDateTime
 
 @DataJpaTest
-class RepositoriesTest @Autowired constructor(
+class RepositoriesTest
+@Autowired
+constructor(
     private val entityManager: TestEntityManager,
     private val userRepository: UserRepository,
     private val articleRepository: ArticleRepository,
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepository,
 ) {
     private val johnDoe: User
         get() = User("johnDoe", "John", "Doe", password = "password")
@@ -95,7 +97,7 @@ class RepositoriesTest @Autowired constructor(
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
         entityManager.persist(article)
         entityManager.flush()
-        entityManager.clear()   // detach so we can tell if author came back
+        entityManager.clear() // detach so we can tell if author came back
 
         val found = articleRepository.findAllByOrderByAddedAtDesc().toList()
         assertEquals(1, found.size)

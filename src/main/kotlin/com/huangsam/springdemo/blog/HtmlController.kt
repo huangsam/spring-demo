@@ -2,14 +2,14 @@ package com.huangsam.springdemo.blog
 
 import com.huangsam.springdemo.Routes
 import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.AnonymousAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.server.ResponseStatusException
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.authentication.AnonymousAuthenticationToken
 
 private object MustacheView {
     const val BLOG = "blog"
@@ -21,7 +21,7 @@ class HtmlController(
     private val repository: ArticleRepository,
     private val userRepository: UserRepository,
     private val commentRepository: CommentRepository,
-    private val markdownConverter: MarkdownConverter
+    private val markdownConverter: MarkdownConverter,
 ) {
     @GetMapping(Routes.ROOT)
     fun blog(model: Model): String {
@@ -62,37 +62,36 @@ class HtmlController(
             return null
         }
         return (repository as? UserRepository)?.findByLogin(auth.name)
-               ?: userRepository.findByLogin(auth.name)
+            ?: userRepository.findByLogin(auth.name)
     }
 
     @GetMapping("${Routes.ARTICLE}/{slug}")
     fun article(@PathVariable slug: String, model: Model): String {
-        val article = repository
-            .findBySlug(slug)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article does not exist")
+        val article =
+            repository.findBySlug(slug)
+                ?: throw ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "This article does not exist",
+                )
         model["title"] = article.title
         model["article"] = article.render()
-        model["comments"] = commentRepository
-            .findAllByArticleOrderByAddedAtDesc(article)
-            .map { it.render() }
+        model["comments"] =
+            commentRepository.findAllByArticleOrderByAddedAtDesc(article).map { it.render() }
         model["user"] = getAuthenticatedUser()
         return MustacheView.ARTICLE
     }
 
-    fun Article.render() = RenderedArticle(
-        slug,
-        title,
-        headline,
-        markdownConverter.convertToHtml(content),
-        author,
-        addedAt.format()
-    )
+    fun Article.render() =
+        RenderedArticle(
+            slug,
+            title,
+            headline,
+            markdownConverter.convertToHtml(content),
+            author,
+            addedAt.format(),
+        )
 
-    fun Comment.render() = RenderedComment(
-        author,
-        content,
-        addedAt.format()
-    )
+    fun Comment.render() = RenderedComment(author, content, addedAt.format())
 
     data class RenderedArticle(
         val slug: String,
@@ -100,12 +99,8 @@ class HtmlController(
         val headline: String,
         val content: String,
         val author: User,
-        val addedAt: String
+        val addedAt: String,
     )
 
-    data class RenderedComment(
-        val author: User,
-        val content: String,
-        val addedAt: String
-    )
+    data class RenderedComment(val author: User, val content: String, val addedAt: String)
 }

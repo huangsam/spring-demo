@@ -1,5 +1,6 @@
 package com.huangsam.springdemo.blog
 
+import java.nio.charset.StandardCharsets
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationRunner
@@ -7,7 +8,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.nio.charset.StandardCharsets
 
 @Configuration
 // This configuration class illustrates a few wiring patterns used in typical
@@ -32,17 +32,20 @@ class BlogConfiguration {
     fun databaseInitializer(
         userRepository: UserRepository,
         articleRepository: ArticleRepository,
-        passwordEncoder: PasswordEncoder
+        passwordEncoder: PasswordEncoder,
     ) = ApplicationRunner {
         logger.info("Create user John Doe")
-        val johnDoe = userRepository.save(User(
-            login = "johnDoe",
-            firstname = "John",
-            lastname = "Doe",
-            description = null,
-            password = passwordEncoder.encode("johnDoe")!!,
-            role = "USER"
-        ))
+        val johnDoe =
+            userRepository.save(
+                User(
+                    login = "johnDoe",
+                    firstname = "John",
+                    lastname = "Doe",
+                    description = null,
+                    password = passwordEncoder.encode("johnDoe")!!,
+                    role = "USER",
+                )
+            )
 
         logger.info("Create articles that John Doe is an author of")
         articleRepository.save(
@@ -50,7 +53,7 @@ class BlogConfiguration {
                 title = "Markdown Test",
                 headline = "Testing Markdown Rendering",
                 content = readResource("markdown/markdown-test.md"),
-                author = johnDoe
+                author = johnDoe,
             )
         )
         articleRepository.save(
@@ -58,7 +61,7 @@ class BlogConfiguration {
                 title = "Lorem",
                 headline = "Lorem",
                 content = "dolor sit amet",
-                author = johnDoe
+                author = johnDoe,
             )
         )
         articleRepository.save(
@@ -66,7 +69,7 @@ class BlogConfiguration {
                 title = "Spring Security",
                 headline = "Securing your Spring Boot Apps",
                 content = readResource("markdown/spring-security.md"),
-                author = johnDoe
+                author = johnDoe,
             )
         )
         articleRepository.save(
@@ -74,7 +77,7 @@ class BlogConfiguration {
                 title = "Kotlin Features",
                 headline = "Modern Java Alternative",
                 content = readResource("markdown/kotlin-features.md"),
-                author = johnDoe
+                author = johnDoe,
             )
         )
         articleRepository.save(
@@ -82,7 +85,7 @@ class BlogConfiguration {
                 title = "JPA and Hibernate",
                 headline = "Persistence Made Easy",
                 content = readResource("markdown/jpa-hibernate.md"),
-                author = johnDoe
+                author = johnDoe,
             )
         )
     }

@@ -5,8 +5,8 @@ import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -16,19 +16,17 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class HelloControllerMockTest @Autowired constructor(
-    private val mockMvc: MockMvc,
-    @MockitoBean private val helloService: HelloService
-) {
+class HelloControllerMockTest
+@Autowired
+constructor(private val mockMvc: MockMvc, @MockitoBean private val helloService: HelloService) {
     @Test
     fun shouldReturnDefaultMessage() {
         `when`(helloService.greet(HelloController.DEFAULT_SAM)).thenReturn(MOCK_MESSAGE)
-        mockMvc.perform(get(Routes.HELLO))
+        mockMvc
+            .perform(get(Routes.HELLO))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(
-                content().string(containsString(MOCK_MESSAGE))
-            )
+            .andExpect(content().string(containsString(MOCK_MESSAGE)))
     }
 
     companion object {
