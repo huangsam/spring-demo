@@ -17,6 +17,7 @@ private object MustacheView {
 @Controller
 class HtmlController(
     private val repository: ArticleRepository,
+    private val commentRepository: CommentRepository,
     private val markdownConverter: MarkdownConverter
 ) {
     @GetMapping(Routes.ROOT)
@@ -30,10 +31,10 @@ class HtmlController(
     fun article(@PathVariable slug: String, model: Model): String {
         val article = repository
             .findBySlug(slug)
-            ?.render()
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article does not exist")
         model["title"] = article.title
-        model["article"] = article
+        model["article"] = article.render()
+        model["comments"] = commentRepository.findAllByArticleOrderByAddedAtDesc(article).map { it.render() }
         return MustacheView.ARTICLE
     }
 
@@ -46,12 +47,24 @@ class HtmlController(
         addedAt.format()
     )
 
+    fun Comment.render() = RenderedComment(
+        author,
+        content,
+        addedAt.format()
+    )
+
     data class RenderedArticle(
         val slug: String,
         val title: String,
         val headline: String,
         val content: String,
         val author: User,
+        val addedAt: String
+    )
+
+    data class RenderedComment(
+        val author: User,
+        val content: String,
         val addedAt: String
     )
 }

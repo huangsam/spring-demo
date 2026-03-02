@@ -27,3 +27,12 @@ class User(
     var description: String? = null,
     @Id @GeneratedValue var id: Long? = null
 )
+
+@Entity
+class Comment(
+    @ManyToOne var article: Article,
+    @ManyToOne var author: User,
+    @Column(length = 2000) var content: String,
+    var addedAt: LocalDateTime = LocalDateTime.now(),
+    @Id @GeneratedValue var id: Long? = null
+)

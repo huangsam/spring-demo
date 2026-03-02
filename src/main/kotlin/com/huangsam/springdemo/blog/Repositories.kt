@@ -11,3 +11,7 @@ interface UserRepository : CrudRepository<User, Long> {
     fun findByLogin(login: String): User?
     fun findAllByFirstnameOrderByLastnameAsc(firstname: String): Iterable<User>
 }
+
+interface CommentRepository : CrudRepository<Comment, Long> {
+    fun findAllByArticleOrderByAddedAtDesc(article: Article): Iterable<Comment>
+}
