@@ -190,8 +190,6 @@ section.article {
 /* Registration & New Article Forms */
 .registration,
 .new-article {
-  max-width: 600px;
-  margin: 0 auto;
   padding: var(--space-6);
   background-color: var(--bg-surface);
   border-radius: var(--radius-lg);
