@@ -7,7 +7,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import java.time.LocalDateTime
 
-@Suppress("LongParameterList")
 @Entity
 class Article(
     var title: String,
