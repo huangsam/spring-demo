@@ -1,23 +1,19 @@
 package com.huangsam.springdemo.blog
 
-import org.springframework.data.jpa.repository.Query
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.repository.CrudRepository
 
 interface ArticleRepository : CrudRepository<Article, Long> {
     // Single-entity fetch join so the author is available without a second query
-    @Query("select a from Article a join fetch a.author where a.slug = :slug")
-    fun findBySlugWithAuthor(slug: String): Article?
-
+    // applying an EntityGraph on the base method keeps things simple; callers
+    // can just use `findBySlug` and still get the author eagerly fetched.
+    @EntityGraph(attributePaths = ["author"])
     fun findBySlug(slug: String): Article?
-    fun findAllByOrderByAddedAtDesc(): Iterable<Article>
 
-    // Explicit fetch join avoids N+1 when iterating and touching the author
-    @Query("""
-        select a from Article a
-        join fetch a.author
-        order by a.addedAt desc
-    """)
-    fun findAllWithAuthorOrderByAddedAtDesc(): List<Article>
+    // When listing articles we always render the author name in the UI/JSON,
+    // so fetch it in the same select to avoid N+1.
+    @EntityGraph(attributePaths = ["author"])
+    fun findAllByOrderByAddedAtDesc(): Iterable<Article>
 }
 
 interface UserRepository : CrudRepository<User, Long> {
@@ -26,14 +22,8 @@ interface UserRepository : CrudRepository<User, Long> {
 }
 
 interface CommentRepository : CrudRepository<Comment, Long> {
+    // Callers always show comment author, so load it eagerly to avoid a
+    // separate query per comment.
+    @EntityGraph(attributePaths = ["author"])
     fun findAllByArticleOrderByAddedAtDesc(article: Article): Iterable<Comment>
-
-    // Explicit fetch join avoids N+1 when iterating and touching the author
-    @Query("""
-        select c from Comment c
-        join fetch c.author
-        where c.article = :article
-        order by c.addedAt desc
-    """)
-    fun findAllByArticleWithAuthorOrderByAddedAtDesc(article: Article): List<Comment>
 }

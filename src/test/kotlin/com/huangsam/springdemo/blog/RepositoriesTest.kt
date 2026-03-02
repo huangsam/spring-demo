@@ -41,7 +41,7 @@ class RepositoriesTest @Autowired constructor(
     }
 
     @Test
-    fun `When findBySlugWithAuthor then fetches Article and author`() {
+    fun `When findBySlug then fetches Article and author`() {
         val user = johnDoe
         entityManager.persist(user)
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
@@ -49,7 +49,7 @@ class RepositoriesTest @Autowired constructor(
         entityManager.flush()
         entityManager.clear()
 
-        val found = articleRepository.findBySlugWithAuthor(article.slug)!!
+        val found = articleRepository.findBySlug(article.slug)!!
         assertEquals(article.slug, found.slug)
         assertEquals(user.login, found.author.login)
     }
@@ -84,7 +84,7 @@ class RepositoriesTest @Autowired constructor(
     }
 
     @Test
-    fun `When findAllWithAuthorOrderByAddedAtDesc then return Articles`() {
+    fun `When findAllByOrderByAddedAtDesc then return Articles with authors`() {
         val user = johnDoe
         entityManager.persist(user)
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
@@ -92,15 +92,14 @@ class RepositoriesTest @Autowired constructor(
         entityManager.flush()
         entityManager.clear()   // detach so we can tell if author came back
 
-        val found = articleRepository.findAllWithAuthorOrderByAddedAtDesc()
+        val found = articleRepository.findAllByOrderByAddedAtDesc().toList()
         assertEquals(1, found.size)
         assertEquals(article.title, found.first().title)
-        // accessing author should not trigger another select; at least it should be non-null
         assertEquals(user.login, found.first().author.login)
     }
 
     @Test
-    fun `When findAllByArticleWithAuthorOrderByAddedAtDesc then return Comments`() {
+    fun `When findAllByArticleOrderByAddedAtDesc then return Comments with authors`() {
         val user = johnDoe
         entityManager.persist(user)
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
@@ -112,7 +111,7 @@ class RepositoriesTest @Autowired constructor(
         entityManager.flush()
         entityManager.clear()
 
-        val found = commentRepository.findAllByArticleWithAuthorOrderByAddedAtDesc(article)
+        val found = commentRepository.findAllByArticleOrderByAddedAtDesc(article).toList()
         assertEquals(2, found.size)
         assertTrue(found.all { it.article.id == article.id })
         assertTrue(found.all { it.author.login == user.login })

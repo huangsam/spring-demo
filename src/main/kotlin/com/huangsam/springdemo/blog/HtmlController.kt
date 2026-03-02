@@ -26,8 +26,8 @@ class HtmlController(
     @GetMapping(Routes.ROOT)
     fun blog(model: Model): String {
         model["title"] = "Blog"
-        // use the explicit fetch-join variant to avoid N+1 when rendering
-        model["articles"] = repository.findAllWithAuthorOrderByAddedAtDesc().map { it.render() }
+        // author is fetched via EntityGraph in repository, preventing N+1
+        model["articles"] = repository.findAllByOrderByAddedAtDesc().map { it.render() }
         model["user"] = getAuthenticatedUser()
         return MustacheView.BLOG
     }
@@ -63,12 +63,12 @@ class HtmlController(
     @GetMapping("${Routes.ARTICLE}/{slug}")
     fun article(@PathVariable slug: String, model: Model): String {
         val article = repository
-            .findBySlugWithAuthor(slug)
+            .findBySlug(slug)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article does not exist")
         model["title"] = article.title
         model["article"] = article.render()
         model["comments"] = commentRepository
-            .findAllByArticleWithAuthorOrderByAddedAtDesc(article)
+            .findAllByArticleOrderByAddedAtDesc(article)
             .map { it.render() }
         model["user"] = getAuthenticatedUser()
         return MustacheView.ARTICLE

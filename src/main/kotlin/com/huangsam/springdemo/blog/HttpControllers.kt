@@ -17,12 +17,12 @@ import kotlin.jvm.Throws
 @RequestMapping(Routes.API_ARTICLE)
 class ArticleController(private val repository: ArticleRepository, private val userRepository: UserRepository) {
     @GetMapping("/")
-    fun findAll(): Iterable<Article> = repository.findAllWithAuthorOrderByAddedAtDesc()
+    fun findAll(): Iterable<Article> = repository.findAllByOrderByAddedAtDesc()
 
     @Throws(ResponseStatusException::class)
     @GetMapping("/{slug}")
     fun findOne(@PathVariable slug: String): Article =
-        repository.findBySlugWithAuthor(slug)
+        repository.findBySlug(slug)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article does not exist")
 
     @PostMapping("/")
@@ -78,7 +78,7 @@ class CommentController(
     fun findByArticle(@PathVariable slug: String): Iterable<Comment> {
         val article = articleRepository.findBySlug(slug)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article does not exist")
-        return repository.findAllByArticleWithAuthorOrderByAddedAtDesc(article)
+        return repository.findAllByArticleOrderByAddedAtDesc(article)
     }
 
     @PostMapping("/")
