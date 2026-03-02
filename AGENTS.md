@@ -1,12 +1,11 @@
 # Agent Behavior Tips
 
-When doing refactoring or additive changes:
-- Propose minimal edits
-- Run `gradle ktFmtFormat` to ensure consistent formatting
-- Update tests and verify that `gradle build` passes
+When adding new features or refactoring code:
+- Complete tasks one by one, ensuring that `gradle build` passes
+- Resolve large formatting issues with `gradle ktFmtFormat`
 
-When giving performance or design advice:
-- Warn about common pitfalls (e.g. N+1)
+When making performance enhancements:
+- Look out for common pitfalls (N+1 queries, poor use of DSA, etc.)
 - Add comments explaining tradeoffs and reasoning behind choices
 
 When writing new tests:
