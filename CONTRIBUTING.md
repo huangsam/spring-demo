@@ -1,0 +1,60 @@
+# Contributing & Project Ideas
+
+This repository is primarily a learning/demo project, but you're welcome to
+experiment, add features or use it as a starting point for something larger.
+The following ideas are loosely grouped into areas you might explore; pick
+whatever interests you or invent your own.
+
+## Content & Navigation
+
+1. Pagination/infinite scroll for articles and comments.
+2. Search or full-text indexing of titles, body, tags.
+3. Add categories and/or tags, with listing pages and tag clouds.
+4. "Related articles" query based on shared tags or keywords.
+
+## Author & User Features
+
+1. User profile pages showing author information and their posts.
+2. Drafts, scheduled publishing, or article status (DRAFT, PUBLISHED).
+3. Rich-text/markdown editor with client-side preview.
+4. Support image/media uploads (file storage, links).
+5. "Like"/upvote system for posts or comments.
+
+## Comments & Interaction
+
+1. Moderation workflow (flag, approve, hide comments; admin UI).
+2. Nested/threaded replies instead of a flat list.
+3. Spam protection (CAPTCHA, external service like Akismet).
+4. Email notifications for new comments, replies, or subscriptions.
+
+## Security & Administration
+
+1. Admin dashboard for CRUD of posts/users/comments.
+2. Roles/permissions beyond simple `USER`/`ADMIN`.
+3. OAuth/social login (Google, GitHub, etc.).
+4. Rate limiting or throttling middleware for API endpoints.
+
+## User Experience & Reach
+
+1. Internationalization (i18n) for UI and possibly content.
+2. Responsive design and accessibility improvements.
+3. RSS/Atom feed generation.
+4. SEO enhancements: metadata, sitemap, clean URLs.
+
+## API & Integrations
+
+1. Public REST/GraphQL API for headless use or third-party apps.
+2. Webhooks to notify external systems on new posts or comments.
+3. Analytics or page-view tracking integration.
+4. Import/export tools to migrate content from/to other systems.
+
+## Quality & Operations
+
+1. Cache pages or fragments with Spring Cache and HTTP caching headers.
+2. Monitoring/metrics (Micrometer, Actuator, health checks).
+3. CI/CD pipeline or Docker/container packaging.
+4. Plugin/extension architecture or modular classloading.
+
+If you implement any of these (or something else!), please consider
+contributing back via a pull request or just documenting your work here.
+Happy hacking!
