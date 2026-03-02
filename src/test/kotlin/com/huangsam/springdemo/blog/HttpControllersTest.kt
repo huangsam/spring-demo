@@ -21,7 +21,7 @@ class HttpControllersTest @Autowired constructor(
 ) {
     @Test
     fun `List articles`() {
-        val johnDoe = User("johnDoe", "John", "Doe")
+        val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val lorem5Article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
         val ipsumArticle = Article("Ipsum", "Ipsum", "dolor sit amet", johnDoe)
         `when`(articleRepository.findAllByOrderByAddedAtDesc()).thenReturn(listOf(lorem5Article, ipsumArticle))
@@ -36,8 +36,8 @@ class HttpControllersTest @Autowired constructor(
 
     @Test
     fun `List users`() {
-        val johnDoe = User("johnDoe", "John", "Doe")
-        val janeDoe = User("janeDoe", "Jane", "Doe")
+        val johnDoe = User("johnDoe", "John", "Doe", password = "password")
+        val janeDoe = User("janeDoe", "Jane", "Doe", password = "password")
         `when`(userRepository.findAll()).thenReturn(listOf(johnDoe, janeDoe))
         mockMvc.perform(get("${Routes.API_USER}/").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)

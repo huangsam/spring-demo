@@ -15,7 +15,7 @@ class RepositoriesTest @Autowired constructor(
     private val articleRepository: ArticleRepository
 ) {
     private val johnDoe: User
-        get() = User("johnDoe", "John", "Doe")
+        get() = User("johnDoe", "John", "Doe", password = "password")
 
     @Test
     fun `When findByIdOrNull then return Article`() {
@@ -42,7 +42,7 @@ class RepositoriesTest @Autowired constructor(
     @Test
     fun `When findAllByFirstnameOrderByLastnameAsc then return Users`() {
         val user1 = johnDoe
-        val user2 = User("johnPike", "John", "Pike")
+        val user2 = User("johnPike", "John", "Pike", password = "password")
         entityManager.persist(user1)
         entityManager.persist(user2)
         val found = userRepository.findAllByFirstnameOrderByLastnameAsc(user1.firstname)

@@ -19,7 +19,7 @@ class SecurityConfiguration {
         http
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/", "/article/**", "/api/article/**", "/api/user/**", "/style.css").permitAll()
+                    .requestMatchers("/", "/article/**", "/api/article/**", "/api/user/**", "/hello", "/style.css").permitAll()
                     .anyRequest().authenticated()
             }
             .formLogin { form ->
