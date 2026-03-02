@@ -41,6 +41,20 @@ class RepositoriesTest @Autowired constructor(
     }
 
     @Test
+    fun `When findBySlugWithAuthor then fetches Article and author`() {
+        val user = johnDoe
+        entityManager.persist(user)
+        val article = Article("Lorem", "Lorem", "dolor sit amet", user)
+        entityManager.persist(article)
+        entityManager.flush()
+        entityManager.clear()
+
+        val found = articleRepository.findBySlugWithAuthor(article.slug)!!
+        assertEquals(article.slug, found.slug)
+        assertEquals(user.login, found.author.login)
+    }
+
+    @Test
     fun `When findAllByFirstnameOrderByLastnameAsc then return Users`() {
         val user1 = johnDoe
         val user2 = User("johnPike", "John", "Pike", password = "password")
@@ -67,5 +81,40 @@ class RepositoriesTest @Autowired constructor(
         val found = commentRepository.findAllByArticleOrderByAddedAtDesc(article).toList()
         assertEquals(2, found.size)
         assertTrue(found.all { it.article == article })
+    }
+
+    @Test
+    fun `When findAllWithAuthorOrderByAddedAtDesc then return Articles`() {
+        val user = johnDoe
+        entityManager.persist(user)
+        val article = Article("Lorem", "Lorem", "dolor sit amet", user)
+        entityManager.persist(article)
+        entityManager.flush()
+        entityManager.clear()   // detach so we can tell if author came back
+
+        val found = articleRepository.findAllWithAuthorOrderByAddedAtDesc()
+        assertEquals(1, found.size)
+        assertEquals(article.title, found.first().title)
+        // accessing author should not trigger another select; at least it should be non-null
+        assertEquals(user.login, found.first().author.login)
+    }
+
+    @Test
+    fun `When findAllByArticleWithAuthorOrderByAddedAtDesc then return Comments`() {
+        val user = johnDoe
+        entityManager.persist(user)
+        val article = Article("Lorem", "Lorem", "dolor sit amet", user)
+        entityManager.persist(article)
+        val comment1 = Comment(article, user, "First comment")
+        val comment2 = Comment(article, user, "Second comment")
+        entityManager.persist(comment1)
+        entityManager.persist(comment2)
+        entityManager.flush()
+        entityManager.clear()
+
+        val found = commentRepository.findAllByArticleWithAuthorOrderByAddedAtDesc(article)
+        assertEquals(2, found.size)
+        assertTrue(found.all { it.article.id == article.id })
+        assertTrue(found.all { it.author.login == user.login })
     }
 }

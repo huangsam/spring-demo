@@ -30,7 +30,7 @@ class HttpControllersTest @Autowired constructor(
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val lorem5Article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
         val ipsumArticle = Article("Ipsum", "Ipsum", "dolor sit amet", johnDoe)
-        `when`(articleRepository.findAllByOrderByAddedAtDesc()).thenReturn(listOf(lorem5Article, ipsumArticle))
+        `when`(articleRepository.findAllWithAuthorOrderByAddedAtDesc()).thenReturn(listOf(lorem5Article, ipsumArticle))
         mockMvc.perform(get("${Routes.API_ARTICLE}/").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -44,7 +44,7 @@ class HttpControllersTest @Autowired constructor(
     fun `Get article by slug`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
-        `when`(articleRepository.findBySlug(article.slug)).thenReturn(article)
+        `when`(articleRepository.findBySlugWithAuthor(article.slug)).thenReturn(article)
         mockMvc.perform(get("${Routes.API_ARTICLE}/${article.slug}").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -54,7 +54,7 @@ class HttpControllersTest @Autowired constructor(
 
     @Test
     fun `Get article by slug returns 404 when not found`() {
-        `when`(articleRepository.findBySlug("nonexistent")).thenReturn(null)
+        `when`(articleRepository.findBySlugWithAuthor("nonexistent")).thenReturn(null)
         mockMvc.perform(get("${Routes.API_ARTICLE}/nonexistent").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound)
     }
@@ -123,7 +123,7 @@ class HttpControllersTest @Autowired constructor(
         val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
         val comment = Comment(article, johnDoe, "Nice post!")
         `when`(articleRepository.findBySlug(article.slug)).thenReturn(article)
-        `when`(commentRepository.findAllByArticleOrderByAddedAtDesc(article)).thenReturn(listOf(comment))
+        `when`(commentRepository.findAllByArticleWithAuthorOrderByAddedAtDesc(article)).thenReturn(listOf(comment))
         mockMvc.perform(get("${Routes.API_COMMENT}/${article.slug}").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
