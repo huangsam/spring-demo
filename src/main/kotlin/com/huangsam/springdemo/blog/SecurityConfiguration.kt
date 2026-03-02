@@ -19,7 +19,8 @@ class SecurityConfiguration {
         http
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/", "/article/**", "/api/article/**", "/api/user/**", "/hello", "/style.css").permitAll()
+                    .requestMatchers("/", "/article/**", "/api/article/**", "/api/user/**", "/hello", "/style.css", "/register", "/api/user/register").permitAll()
+                    .requestMatchers("/new-article").authenticated()
                     .anyRequest().authenticated()
             }
             .formLogin { form ->

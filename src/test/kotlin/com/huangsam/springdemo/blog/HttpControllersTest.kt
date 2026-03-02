@@ -17,7 +17,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class HttpControllersTest @Autowired constructor(
     private val mockMvc: MockMvc,
     @MockitoBean private val articleRepository: ArticleRepository,
-    @MockitoBean private val userRepository: UserRepository
+    @MockitoBean private val userRepository: UserRepository,
+    @MockitoBean private val passwordEncoder: org.springframework.security.crypto.password.PasswordEncoder
 ) {
     @Test
     fun `List articles`() {

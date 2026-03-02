@@ -37,6 +37,19 @@ class HtmlController(
         return "login"
     }
 
+    @GetMapping("/register")
+    fun register(model: Model): String {
+        model["title"] = "Register"
+        return "register"
+    }
+
+    @GetMapping("/new-article")
+    fun newArticle(model: Model): String {
+        model["title"] = "New Article"
+        model["user"] = getAuthenticatedUser()
+        return "new-article"
+    }
+
     private fun getAuthenticatedUser(): User? {
         val auth = SecurityContextHolder.getContext().authentication
         if (auth == null || !auth.isAuthenticated || auth is AnonymousAuthenticationToken) {

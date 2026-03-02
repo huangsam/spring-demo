@@ -1,0 +1,62 @@
+{{> header}}
+
+<section class="registration">
+  <h1>Register</h1>
+  <div class="registration-form">
+    <form id="registerForm">
+      <p>
+        <label for="login">Username</label>
+        <input type="text" id="login" name="login" required placeholder="Choose a username">
+      </p>
+      <p>
+        <label for="firstname">First Name</label>
+        <input type="text" id="firstname" name="firstname" required placeholder="Enter your first name">
+      </p>
+      <p>
+        <label for="lastname">Last Name</label>
+        <input type="text" id="lastname" name="lastname" required placeholder="Enter your last name">
+      </p>
+      <p>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required placeholder="Choose a password">
+      </p>
+      <button type="submit" class="btn-primary">Create Account</button>
+    </form>
+  </div>
+  <div id="registrationMessage" class="message"></div>
+</section>
+
+<script>
+  document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const data = {
+      login: document.getElementById('login').value,
+      firstname: document.getElementById('firstname').value,
+      lastname: document.getElementById('lastname').value,
+      password: document.getElementById('password').value
+    };
+
+    fetch('/api/user/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (response.ok) {
+        document.getElementById('registrationMessage').innerHTML = '<p class="success">Registration successful! You can now <a href="/login">login</a>.</p>';
+        document.getElementById('registerForm').reset();
+      } else {
+        return response.json().then(error => {
+          document.getElementById('registrationMessage').innerHTML = '<p class="error">Error: ' + (error.message || 'Registration failed') + '</p>';
+        });
+      }
+    })
+    .catch(error => {
+      document.getElementById('registrationMessage').innerHTML = '<p class="error">An unexpected error occurred.</p>';
+    });
+  });
+</script>
+
+{{> footer}}

@@ -11,10 +11,12 @@
     <div class="nav-links">
       {{#user}}
         <span>Welcome, <strong>{{firstname}}</strong>!</span>
+        <a href="/new-article" style="margin-left: var(--space-4);">New Article</a>
         <a href="/logout" style="margin-left: var(--space-4);">Logout</a>
       {{/user}}
       {{^user}}
-        <a href="/login">Login</a>
+        <a href="/login" style="margin-right: var(--space-4);">Login</a>
+        <a href="/register">Register</a>
       {{/user}}
     </div>
   </nav>
