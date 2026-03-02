@@ -12,7 +12,8 @@ import org.springframework.data.repository.findByIdOrNull
 class RepositoriesTest @Autowired constructor(
     private val entityManager: TestEntityManager,
     private val userRepository: UserRepository,
-    private val articleRepository: ArticleRepository
+    private val articleRepository: ArticleRepository,
+    private val commentRepository: CommentRepository
 ) {
     private val johnDoe: User
         get() = User("johnDoe", "John", "Doe", password = "password")
@@ -50,5 +51,21 @@ class RepositoriesTest @Autowired constructor(
         assertEquals(user1, found.first())
         assertEquals(user2, found.last())
         assertTrue(found.all { user -> user.firstname == user1.firstname })
+    }
+
+    @Test
+    fun `When findAllByArticleOrderByAddedAtDesc then return Comments`() {
+        val user = johnDoe
+        entityManager.persist(user)
+        val article = Article("Lorem", "Lorem", "dolor sit amet", user)
+        entityManager.persist(article)
+        val comment1 = Comment(article, user, "First comment")
+        val comment2 = Comment(article, user, "Second comment")
+        entityManager.persist(comment1)
+        entityManager.persist(comment2)
+        entityManager.flush()
+        val found = commentRepository.findAllByArticleOrderByAddedAtDesc(article).toList()
+        assertEquals(2, found.size)
+        assertTrue(found.all { it.article == article })
     }
 }
