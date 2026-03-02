@@ -51,6 +51,11 @@ class HtmlController(
         return "new-article"
     }
 
+    // Helper used by both blog and article views to render the
+    // currently logged-in user (if any). We look at the Spring Security
+    // context, guard against anonymous authentication, and then resolve the
+    // user from whichever repository instance is available (some tests wire a
+    // mock ArticleRepository that also implements UserRepository).
     private fun getAuthenticatedUser(): User? {
         val auth = SecurityContextHolder.getContext().authentication
         if (auth == null || !auth.isAuthenticated || auth is AnonymousAuthenticationToken) {

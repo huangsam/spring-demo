@@ -33,7 +33,11 @@ class SecurityConfiguration {
                 logout.permitAll()
             }
             .csrf { csrf ->
-                csrf.disable() // Disabling CSRF for simplicity in this demo, though not recommended for production
+                // CSRF support is important for form submissions, but for a
+                // simple demo app with only REST endpoints and no real session
+                // state it's easier to disable it; keep in mind this is not a
+                // best practice in real applications.
+                csrf.disable()
             }
 
         return http.build()

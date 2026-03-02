@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.repository.CrudRepository
 
 interface ArticleRepository : CrudRepository<Article, Long> {
-    // Single-entity fetch join so the author is available without a second query
-    // applying an EntityGraph on the base method keeps things simple; callers
+    // Single-entity fetch join so the author is available without a second query.
+    // Applying an EntityGraph on the base method keeps things simple; callers
     // can just use `findBySlug` and still get the author eagerly fetched.
     @EntityGraph(attributePaths = ["author"])
     fun findBySlug(slug: String): Article?
