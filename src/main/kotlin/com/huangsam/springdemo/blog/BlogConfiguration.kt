@@ -46,6 +46,30 @@ class BlogConfiguration {
                 author = johnDoe
             )
         )
+        articleRepository.save(
+            Article(
+                title = "Spring Security",
+                headline = "Securing your Spring Boot Apps",
+                content = readResource("markdown/spring-security.md"),
+                author = johnDoe
+            )
+        )
+        articleRepository.save(
+            Article(
+                title = "Kotlin Features",
+                headline = "Modern Java Alternative",
+                content = readResource("markdown/kotlin-features.md"),
+                author = johnDoe
+            )
+        )
+        articleRepository.save(
+            Article(
+                title = "JPA and Hibernate",
+                headline = "Persistence Made Easy",
+                content = readResource("markdown/jpa-hibernate.md"),
+                author = johnDoe
+            )
+        )
     }
 
     private fun readResource(path: String): String {
