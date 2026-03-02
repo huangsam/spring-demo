@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager
 import org.springframework.data.repository.findByIdOrNull
+import java.time.LocalDateTime
 
 @DataJpaTest
 class RepositoriesTest @Autowired constructor(
@@ -73,13 +74,17 @@ class RepositoriesTest @Autowired constructor(
         entityManager.persist(user)
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
         entityManager.persist(article)
-        val comment1 = Comment(article, user, "First comment")
-        val comment2 = Comment(article, user, "Second comment")
+        val now = LocalDateTime.now()
+        val comment1 = Comment(article, user, "First comment", addedAt = now.minusSeconds(1))
+        val comment2 = Comment(article, user, "Second comment", addedAt = now)
         entityManager.persist(comment1)
         entityManager.persist(comment2)
         entityManager.flush()
         val found = commentRepository.findAllByArticleOrderByAddedAtDesc(article).toList()
         assertEquals(2, found.size)
+        // verify ordering desc: most recent first
+        assertEquals(comment2, found[0])
+        assertEquals(comment1, found[1])
         assertTrue(found.all { it.article == article })
     }
 
@@ -104,8 +109,9 @@ class RepositoriesTest @Autowired constructor(
         entityManager.persist(user)
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
         entityManager.persist(article)
-        val comment1 = Comment(article, user, "First comment")
-        val comment2 = Comment(article, user, "Second comment")
+        val now = LocalDateTime.now()
+        val comment1 = Comment(article, user, "First comment", addedAt = now.minusSeconds(1))
+        val comment2 = Comment(article, user, "Second comment", addedAt = now)
         entityManager.persist(comment1)
         entityManager.persist(comment2)
         entityManager.flush()
@@ -113,6 +119,9 @@ class RepositoriesTest @Autowired constructor(
 
         val found = commentRepository.findAllByArticleOrderByAddedAtDesc(article).toList()
         assertEquals(2, found.size)
+        // verify ordering desc and that associated entities are fetched
+        assertEquals(comment2.content, found[0].content)
+        assertEquals(comment1.content, found[1].content)
         assertTrue(found.all { it.article.id == article.id })
         assertTrue(found.all { it.author.login == user.login })
     }

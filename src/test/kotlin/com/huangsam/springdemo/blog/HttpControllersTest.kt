@@ -100,7 +100,7 @@ class HttpControllersTest @Autowired constructor(
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isCreated)
             .andExpect(jsonPath("\$.login").value(request.login))
     }
 

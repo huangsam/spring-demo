@@ -2,6 +2,7 @@ package com.huangsam.springdemo.blog
 
 import com.huangsam.springdemo.Routes
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -59,7 +60,7 @@ class UserController(private val repository: UserRepository, private val passwor
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist")
 
     @PostMapping("/register")
-    fun register(@RequestBody registrationRequest: RegistrationRequest): User {
+    fun register(@RequestBody registrationRequest: RegistrationRequest): org.springframework.http.ResponseEntity<User> {
         if (repository.findByLogin(registrationRequest.login) != null) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Login already exists")
         }
@@ -69,7 +70,8 @@ class UserController(private val repository: UserRepository, private val passwor
             lastname = registrationRequest.lastname,
             password = passwordEncoder.encode(registrationRequest.password) ?: throw IllegalArgumentException("Password cannot be null")
         )
-        return repository.save(user)
+        val saved = repository.save(user)
+        return org.springframework.http.ResponseEntity.status(HttpStatus.CREATED).body(saved)
     }
 }
 @RestController
