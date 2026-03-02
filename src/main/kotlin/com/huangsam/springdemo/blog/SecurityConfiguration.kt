@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.password.NoOpPasswordEncoder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 
@@ -53,8 +53,6 @@ class SecurityConfiguration {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
-        // As requested, passwords are stored as-is for now.
-        // NoOpPasswordEncoder is deprecated but suitable for this "as-is" requirement.
-        return NoOpPasswordEncoder.getInstance()
+        return BCryptPasswordEncoder()
     }
 }

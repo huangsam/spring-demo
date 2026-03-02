@@ -6,6 +6,7 @@ import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.nio.charset.StandardCharsets
 
 @Configuration
@@ -16,9 +17,17 @@ class BlogConfiguration {
     fun databaseInitializer(
         userRepository: UserRepository,
         articleRepository: ArticleRepository,
+        passwordEncoder: PasswordEncoder
     ) = ApplicationRunner {
         logger.info("Create user John Doe")
-        val johnDoe = userRepository.save(User("johnDoe", "John", "Doe"))
+        val johnDoe = userRepository.save(User(
+            login = "johnDoe",
+            firstname = "John",
+            lastname = "Doe",
+            description = null,
+            password = passwordEncoder.encode("johnDoe")!!,
+            role = "USER"
+        ))
 
         logger.info("Create articles that John Doe is an author of")
         articleRepository.save(
