@@ -2,6 +2,7 @@
 
 When doing refactoring or additive changes:
 - Propose minimal edits
+- Run `gradle ktFmtFormat` to ensure consistent formatting
 - Update tests and verify that `gradle build` passes
 
 When giving performance or design advice:
