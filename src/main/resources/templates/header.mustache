@@ -6,7 +6,16 @@
 <body>
 <div class="layout">
 <header>
-  <nav>
+  <nav style="display: flex; justify-content: space-between; align-items: center;">
     <a href="/">Spring Demo</a>
+    <div class="nav-links">
+      {{#user}}
+        <span>Welcome, <strong>{{firstname}}</strong>!</span>
+        <a href="/logout" style="margin-left: var(--space-4);">Logout</a>
+      {{/user}}
+      {{^user}}
+        <a href="/login">Login</a>
+      {{/user}}
+    </div>
   </nav>
 </header>

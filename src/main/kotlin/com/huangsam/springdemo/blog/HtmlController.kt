@@ -8,6 +8,8 @@ import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.server.ResponseStatusException
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.authentication.AnonymousAuthenticationToken
 
 private object MustacheView {
     const val BLOG = "blog"
@@ -17,6 +19,7 @@ private object MustacheView {
 @Controller
 class HtmlController(
     private val repository: ArticleRepository,
+    private val userRepository: UserRepository,
     private val commentRepository: CommentRepository,
     private val markdownConverter: MarkdownConverter
 ) {
@@ -24,7 +27,23 @@ class HtmlController(
     fun blog(model: Model): String {
         model["title"] = "Blog"
         model["articles"] = repository.findAllByOrderByAddedAtDesc().map { it.render() }
+        model["user"] = getAuthenticatedUser()
         return MustacheView.BLOG
+    }
+
+    @GetMapping("/login")
+    fun login(model: Model): String {
+        model["title"] = "Login"
+        return "login"
+    }
+
+    private fun getAuthenticatedUser(): User? {
+        val auth = SecurityContextHolder.getContext().authentication
+        if (auth == null || !auth.isAuthenticated || auth is AnonymousAuthenticationToken) {
+            return null
+        }
+        return (repository as? UserRepository)?.findByLogin(auth.name)
+               ?: userRepository.findByLogin(auth.name)
     }
 
     @GetMapping("${Routes.ARTICLE}/{slug}")
@@ -35,6 +54,7 @@ class HtmlController(
         model["title"] = article.title
         model["article"] = article.render()
         model["comments"] = commentRepository.findAllByArticleOrderByAddedAtDesc(article).map { it.render() }
+        model["user"] = getAuthenticatedUser()
         return MustacheView.ARTICLE
     }
 

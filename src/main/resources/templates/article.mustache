@@ -26,48 +26,52 @@
         <p>No comments yet. Be the first to comment!</p>
       {{/comments}}
 
+      {{#user}}
       <div class="comment-form">
         <h3>Add a Comment</h3>
-        <!-- For simplicity, we assume author is 'jdoe' for now -->
         <form id="addCommentForm">
           <div class="form-group">
             <label for="commentContent">Comment</label>
             <textarea id="commentContent" name="content" rows="4" required placeholder="Write your comment here..."></textarea>
           </div>
           <input type="hidden" id="articleSlug" name="articleSlug" value="{{article.slug}}">
-          <input type="hidden" id="authorLogin" name="authorLogin" value="johnDoe">
           <button type="submit">Submit Comment</button>
         </form>
       </div>
-    </section>
 
-    <script>
-      document.getElementById('addCommentForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const content = document.getElementById('commentContent').value;
-        const articleSlug = document.getElementById('articleSlug').value;
-        const authorLogin = document.getElementById('authorLogin').value;
+      <script>
+        document.getElementById('addCommentForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const content = document.getElementById('commentContent').value;
+          const articleSlug = document.getElementById('articleSlug').value;
 
-        try {
-          const response = await fetch('/api/comment/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ articleSlug, authorLogin, content })
-          });
+          try {
+            const response = await fetch('/api/comment/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ articleSlug, content })
+            });
 
-          if (response.ok) {
-            location.reload();
-          } else {
-            alert('Failed to submit comment');
+            if (response.ok) {
+              location.reload();
+            } else {
+              alert('Failed to submit comment. Are you still logged in?');
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred');
           }
-        } catch (error) {
-          console.error('Error:', error);
-          alert('An error occurred');
-        }
-      });
-    </script>
+        });
+      </script>
+      {{/user}}
+      {{^user}}
+      <p style="margin-top: var(--space-6); text-align: center;">
+        Please <a href="/login">login</a> to add a comment.
+      </p>
+      {{/user}}
+    </section>
   </section>
 </main>
 

@@ -1,0 +1,28 @@
+{{> header}}
+
+<main>
+  <section class="comment-form">
+    <h2>Login</h2>
+    {{#error}}
+      <p style="color: red;">Invalid username or password.</p>
+    {{/error}}
+    {{#logout}}
+      <p style="color: green;">You have been logged out.</p>
+    {{/logout}}
+
+    <form action="/login" method="post">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autofocus>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit">Log In</button>
+    </form>
+    <p>Try logging in with <code>johnDoe</code> and <code>password</code>.</p>
+  </section>
+</main>
+
+{{> footer}}

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.server.ResponseStatusException
+import org.springframework.security.core.context.SecurityContextHolder
 import kotlin.jvm.Throws
 
 @RestController
@@ -54,14 +55,16 @@ class CommentController(
     fun addComment(@RequestBody commentRequest: CommentRequest): Comment {
         val article = articleRepository.findBySlug(commentRequest.articleSlug)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article does not exist")
-        val author = userRepository.findByLogin(commentRequest.authorLogin)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist")
+
+        val auth = SecurityContextHolder.getContext().authentication
+        val author = auth?.let { userRepository.findByLogin(it.name) }
+            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "You must be logged in to comment")
+
         return repository.save(Comment(article, author, commentRequest.content))
     }
 }
 
 data class CommentRequest(
     val articleSlug: String,
-    val authorLogin: String,
     val content: String
 )

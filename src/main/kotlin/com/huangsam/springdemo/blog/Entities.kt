@@ -24,6 +24,9 @@ class User(
     var firstname: String,
     var lastname: String,
     var description: String? = null,
+    // Password stored as-is for now, can explore robust mechanisms later
+    var password: String = "password",
+    var role: String = "USER",
     @Id @GeneratedValue var id: Long? = null
 )
 
