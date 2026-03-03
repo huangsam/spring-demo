@@ -17,14 +17,12 @@ fun String.toSlug() =
 
 private val englishDateFormatter =
     DateTimeFormatterBuilder()
-        .appendPattern("yyyy-MM-dd")
-        .appendLiteral(" ")
+        .appendPattern("MMMM ")
         .appendText(
             ChronoField.DAY_OF_MONTH,
             (Day.MIN..Day.MAX).associate { it.toLong() to getOrdinal(it) },
         )
-        .appendLiteral(" ")
-        .appendPattern("yyyy")
+        .appendPattern(" yyyy, EEEE")
         .toFormatter(Locale.ENGLISH)
 
 private object Day {
