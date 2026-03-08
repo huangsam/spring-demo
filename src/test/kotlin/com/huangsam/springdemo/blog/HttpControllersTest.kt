@@ -17,7 +17,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(
-    controllers = [ArticleController::class, UserController::class, CommentController::class]
+    controllers =
+        [
+            ArticleController::class,
+            UserController::class,
+            CommentController::class,
+            CategoryController::class,
+            TagController::class,
+        ]
 )
 class HttpControllersTest
 @Autowired
@@ -48,8 +55,11 @@ constructor(
                 tags = mutableSetOf(tag),
             )
         val ipsumArticle = Article("Ipsum", "Ipsum", "dolor sit amet", johnDoe)
-        `when`(articleRepository.findAllByOrderByAddedAtDesc())
-            .thenReturn(listOf(lorem5Article, ipsumArticle))
+        val pageable = org.springframework.data.domain.PageRequest.of(0, 20)
+        `when`(articleRepository.findAllByOrderByAddedAtDesc(pageable))
+            .thenReturn(
+                org.springframework.data.domain.PageImpl(listOf(lorem5Article, ipsumArticle))
+            )
         mockMvc
             .perform(get("${Routes.API_ARTICLE}/").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
@@ -218,5 +228,106 @@ constructor(
         mockMvc
             .perform(get("${Routes.API_COMMENT}/nonexistent").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `Like article increments likes`() {
+        val johnDoe = User("johnDoe", "John", "Doe", password = "password")
+        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
+        article.likes = 5
+        `when`(articleRepository.findBySlug(article.slug)).thenReturn(article)
+        `when`(articleRepository.save(org.mockito.ArgumentMatchers.any(Article::class.java)))
+            .thenReturn(article)
+
+        mockMvc
+            .perform(
+                post("${Routes.API_ARTICLE}/${article.slug}/like")
+                    .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.likes").value(6))
+    }
+
+    @Test
+    fun `List categories`() {
+        val category1 = Category("Frameworks")
+        val category2 = Category("Languages")
+        `when`(categoryRepository.findAllByOrderByNameAsc())
+            .thenReturn(listOf(category1, category2))
+        mockMvc
+            .perform(get("${Routes.API_CATEGORY}/").accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.[0].name").value(category1.name))
+            .andExpect(jsonPath("\$.[1].name").value(category2.name))
+    }
+
+    @Test
+    fun `List tags`() {
+        val tag1 = Tag("Kotlin")
+        val tag2 = Tag("Spring")
+        `when`(tagRepository.findAllByOrderByNameAsc()).thenReturn(listOf(tag1, tag2))
+        mockMvc
+            .perform(get("${Routes.API_TAG}/").accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.[0].name").value(tag1.name))
+            .andExpect(jsonPath("\$.[1].name").value(tag2.name))
+    }
+
+    @Test
+    fun `List articles with category filter`() {
+        val johnDoe = User("johnDoe", "John", "Doe", password = "password")
+        val category = Category("Frameworks")
+        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe, category = category)
+
+        `when`(categoryRepository.findBySlug(category.slug)).thenReturn(category)
+        `when`(articleRepository.findAllByCategoryOrderByAddedAtDesc(category))
+            .thenReturn(listOf(article))
+
+        mockMvc
+            .perform(
+                get("${Routes.API_ARTICLE}/?category=${category.slug}")
+                    .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("\$.[0].slug").value(article.slug))
+    }
+
+    @Test
+    fun `List articles with tag filter`() {
+        val johnDoe = User("johnDoe", "John", "Doe", password = "password")
+        val tag = Tag("Spring")
+        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe, tags = mutableSetOf(tag))
+
+        `when`(tagRepository.findBySlug(tag.slug)).thenReturn(tag)
+        `when`(articleRepository.findAllByTagsContainingOrderByAddedAtDesc(tag))
+            .thenReturn(listOf(article))
+
+        mockMvc
+            .perform(
+                get("${Routes.API_ARTICLE}/?tag=${tag.slug}").accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("\$.[0].slug").value(article.slug))
+    }
+
+    @Test
+    fun `List articles with author filter`() {
+        val johnDoe = User("johnDoe", "John", "Doe", password = "password")
+        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
+
+        `when`(userRepository.findByLogin(johnDoe.login)).thenReturn(johnDoe)
+        `when`(articleRepository.findTop5ByAuthorOrderByAddedAtDesc(johnDoe))
+            .thenReturn(listOf(article))
+
+        mockMvc
+            .perform(
+                get("${Routes.API_ARTICLE}/?author=${johnDoe.login}")
+                    .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("\$.[0].slug").value(article.slug))
     }
 }

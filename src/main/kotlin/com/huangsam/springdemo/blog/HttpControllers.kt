@@ -22,7 +22,44 @@ class ArticleController(
     private val categoryRepository: CategoryRepository,
     private val tagRepository: TagRepository,
 ) {
-    @GetMapping("/") fun findAll(): Iterable<Article> = repository.findAllByOrderByAddedAtDesc()
+    @GetMapping("/")
+    fun findAll(
+        @org.springframework.web.bind.annotation.RequestParam(defaultValue = "0") page: Int,
+        @org.springframework.web.bind.annotation.RequestParam(required = false) category: String?,
+        @org.springframework.web.bind.annotation.RequestParam(required = false) tag: String?,
+        @org.springframework.web.bind.annotation.RequestParam(required = false) author: String?,
+    ): Iterable<Article> {
+        if (category != null) {
+            val categoryEntity =
+                categoryRepository.findBySlug(category)
+                    ?: throw ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "This category does not exist",
+                    )
+            return repository.findAllByCategoryOrderByAddedAtDesc(categoryEntity)
+        }
+        if (tag != null) {
+            val tagEntity =
+                tagRepository.findBySlug(tag)
+                    ?: throw ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "This tag does not exist",
+                    )
+            return repository.findAllByTagsContainingOrderByAddedAtDesc(tagEntity)
+        }
+        if (author != null) {
+            val authorEntity =
+                userRepository.findByLogin(author)
+                    ?: throw ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "This user does not exist",
+                    )
+            return repository.findTop5ByAuthorOrderByAddedAtDesc(authorEntity)
+        }
+
+        val pageable = org.springframework.data.domain.PageRequest.of(page, 20)
+        return repository.findAllByOrderByAddedAtDesc(pageable).content
+    }
 
     @Throws(ResponseStatusException::class)
     @GetMapping("/{slug}")
@@ -70,6 +107,23 @@ class ArticleController(
                 tags = tags,
             )
         return repository.save(article)
+    }
+
+    @PostMapping("/{slug}/like")
+    fun likeArticle(
+        @PathVariable slug: String
+    ): org.springframework.http.ResponseEntity<Map<String, Int>> {
+        val article =
+            repository.findBySlug(slug)
+                ?: throw ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "This article does not exist",
+                )
+
+        article.likes++
+        repository.save(article)
+
+        return org.springframework.http.ResponseEntity.ok(mapOf("likes" to article.likes))
     }
 }
 
@@ -163,3 +217,15 @@ data class ArticleRequest(
     val category: String? = null,
     val tags: List<String> = emptyList(),
 )
+
+@RestController
+@RequestMapping(Routes.API_CATEGORY)
+class CategoryController(private val repository: CategoryRepository) {
+    @GetMapping("/") fun findAll(): Iterable<Category> = repository.findAllByOrderByNameAsc()
+}
+
+@RestController
+@RequestMapping(Routes.API_TAG)
+class TagController(private val repository: TagRepository) {
+    @GetMapping("/") fun findAll(): Iterable<Tag> = repository.findAllByOrderByNameAsc()
+}

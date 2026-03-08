@@ -43,6 +43,26 @@ class HtmlControllerTest @Autowired constructor(private val restClient: RestTest
         responseBody!!.let {
             assertTrue(it.contains("<h1>Blog</h1>"))
             assertTrue(it.contains("Lorem"))
+            assertTrue(it.contains("views"))
+            assertTrue(it.contains("likes"))
+        }
+    }
+
+    @Test
+    fun `Assert blog pagination navigation works`() {
+        val responseBody =
+            restClient
+                .get()
+                .uri("${Routes.ROOT}?page=0")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody(String::class.java)
+                .returnResult()
+                .responseBody
+        responseBody!!.let {
+            assertTrue(it.contains("<h1>Blog</h1>"))
+            assertTrue(it.contains("Page 1 of 1"))
         }
     }
 
@@ -64,6 +84,9 @@ class HtmlControllerTest @Autowired constructor(private val restClient: RestTest
             assertTrue(it.contains(title))
             assertTrue(it.contains("Lorem"))
             assertTrue(it.contains("dolor sit amet"))
+            assertTrue(it.contains("views"))
+            assertTrue(it.contains("likes"))
+            assertTrue(it.contains("Like"))
         }
     }
 
@@ -103,7 +126,7 @@ class HtmlControllerTest @Autowired constructor(private val restClient: RestTest
         responseBody!!.let {
             assertTrue(it.contains("John"))
             assertTrue(it.contains("Doe"))
-            assertTrue(it.contains("Articles by John"))
+            assertTrue(it.contains("Recent Articles by John"))
             assertTrue(it.contains("Lorem"))
         }
     }

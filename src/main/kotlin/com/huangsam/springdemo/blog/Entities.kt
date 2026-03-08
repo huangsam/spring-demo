@@ -22,6 +22,8 @@ class Article(
     // Slug is derived from title by default; callers can override
     var slug: String = title.toSlug(),
     var addedAt: LocalDateTime = LocalDateTime.now(),
+    var views: Int = 0,
+    var likes: Int = 0,
     @Id @GeneratedValue var id: Long? = null,
 )
 

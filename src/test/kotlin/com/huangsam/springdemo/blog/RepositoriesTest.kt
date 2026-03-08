@@ -101,7 +101,8 @@ constructor(
         entityManager.flush()
         entityManager.clear() // detach so we can tell if author came back
 
-        val found = articleRepository.findAllByOrderByAddedAtDesc().toList()
+        val pageable = org.springframework.data.domain.PageRequest.of(0, 20)
+        val found = articleRepository.findAllByOrderByAddedAtDesc(pageable).content
         assertEquals(1, found.size)
         assertEquals(article.title, found.first().title)
         assertEquals(user.login, found.first().author.login)

@@ -1,6 +1,7 @@
 package com.huangsam.springdemo.blog
 
 import com.huangsam.springdemo.Routes
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -9,6 +10,7 @@ import org.springframework.ui.Model
 import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.server.ResponseStatusException
 
 private object MustacheView {
@@ -29,10 +31,27 @@ class HtmlController(
     private val markdownConverter: MarkdownConverter,
 ) {
     @GetMapping(Routes.ROOT)
-    fun blog(model: Model): String {
+    fun blog(@RequestParam(defaultValue = "0") page: Int, model: Model): String {
         model["title"] = "Blog"
+
+        val pageSize = 5
+        val pageable = PageRequest.of(page, pageSize)
+        val articlePage = repository.findAllByOrderByAddedAtDesc(pageable)
+
         // author is fetched via EntityGraph in repository, preventing N+1
-        model["articles"] = repository.findAllByOrderByAddedAtDesc().map { it.render() }
+        model["articles"] = articlePage.content.map { it.render() }
+
+        model["currentPage"] = page
+        model["currentPageDisplay"] = page + 1
+        model["totalPages"] = articlePage.totalPages
+        model["isFirst"] = articlePage.isFirst()
+        model["isLast"] = articlePage.isLast()
+        model["hasNext"] = articlePage.hasNext()
+        model["hasPrevious"] = articlePage.hasPrevious()
+        model["nextPage"] = page + 1
+        model["previousPage"] = page - 1
+        model["lastPage"] = if (articlePage.totalPages > 0) articlePage.totalPages - 1 else 0
+
         val categories = categoryRepository.findAllByOrderByNameAsc().toList()
         model["categories"] = categories
         model["hasCategories"] = categories.isNotEmpty()
@@ -85,6 +104,11 @@ class HtmlController(
                     HttpStatus.NOT_FOUND,
                     "This article does not exist",
                 )
+
+        // Increment views and save
+        article.views++
+        repository.save(article)
+
         model["title"] = article.title
         model["article"] = article.render()
         model["comments"] =
@@ -130,7 +154,7 @@ class HtmlController(
         model["title"] = "${profileUser.firstname} ${profileUser.lastname}"
         model["profileUser"] = profileUser
         model["articles"] =
-            repository.findAllByAuthorOrderByAddedAtDesc(profileUser).map { it.render() }
+            repository.findTop5ByAuthorOrderByAddedAtDesc(profileUser).map { it.render() }
         model["user"] = getAuthenticatedUser()
         return MustacheView.PROFILE
     }
@@ -145,6 +169,8 @@ class HtmlController(
             addedAt.format(),
             category,
             tags,
+            views,
+            likes,
         )
 
     fun Comment.render() = RenderedComment(author, content, addedAt.format())
@@ -158,6 +184,8 @@ class HtmlController(
         val addedAt: String,
         val category: Category?,
         val tags: Set<Tag>,
+        val views: Int,
+        val likes: Int,
     )
 
     data class RenderedComment(val author: User, val content: String, val addedAt: String)

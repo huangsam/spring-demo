@@ -4,7 +4,10 @@
   <section class="article">
     <div class="article-header">
       <h1 class="article-title">{{article.title}}</h1>
-      <p class="article-meta">By <strong><a href="/user/{{article.author.login}}">{{article.author.firstname}}</a></strong>, on <strong>{{article.addedAt}}</strong></p>
+      <p class="article-meta">
+        By <strong><a href="/user/{{article.author.login}}">{{article.author.firstname}}</a></strong>, on <strong>{{article.addedAt}}</strong> &middot; {{article.views}} views &middot; <span id="likeCount">{{article.likes}}</span> likes
+        <button id="likeButton" style="margin-left: 0.5rem; cursor: pointer; padding: 0.2rem 0.5rem; background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius-sm);">👍 Like</button>
+      </p>
       <div class="article-taxonomies">
         {{#article.category}}
           <a href="/category/{{slug}}" class="badge badge-category">{{name}}</a>
@@ -33,6 +36,22 @@
       {{^comments}}
         <p>No comments yet. Be the first to comment!</p>
       {{/comments}}
+
+      <script>
+        document.getElementById('likeButton')?.addEventListener('click', async () => {
+          try {
+            const response = await fetch('/api/article/{{article.slug}}/like', {
+              method: 'POST'
+            });
+            if (response.ok) {
+              const data = await response.json();
+              document.getElementById('likeCount').innerText = data.likes;
+            }
+          } catch (error) {
+            console.error('Error liking article:', error);
+          }
+        });
+      </script>
 
       {{#user}}
       <div class="comment-form">
