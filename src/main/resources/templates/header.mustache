@@ -1,23 +1,29 @@
 <html lang="en">
 <head>
   <title>{{title}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css"/>
 </head>
 <body>
 <div class="layout">
-<header>
-  <nav style="display: flex; justify-content: space-between; align-items: center;">
-    <a href="/">Spring Demo</a>
-    <div class="nav-links">
+<header class="global-header">
+  <div class="header-container">
+    <a href="/" class="brand-logo">
+      <span class="brand-icon">🌱</span>
+      <span class="brand-text">Spring Demo</span>
+    </a>
+    <nav class="nav-links">
       {{#user}}
-        <span>Welcome, <strong>{{firstname}}</strong>!</span>
-        <a href="/new-article" style="margin-left: var(--space-4);">New Article</a>
-        <a href="/logout" style="margin-left: var(--space-4);">Logout</a>
+        <span class="welcome-msg">Welcome, <strong>{{firstname}}</strong>!</span>
+        <a href="/new-article" class="nav-link btn-nav">New Article</a>
+        <a href="/logout" class="nav-link">Logout</a>
       {{/user}}
       {{^user}}
-        <a href="/login" style="margin-right: var(--space-4);">Login</a>
-        <a href="/register">Register</a>
+        <a href="/login" class="nav-link">Login</a>
+        <a href="/register" class="nav-link btn-nav-primary">Register</a>
       {{/user}}
-    </div>
-  </nav>
+    </nav>
+  </div>
 </header>

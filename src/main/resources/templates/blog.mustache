@@ -1,67 +1,79 @@
 {{> header}}
 
-<main>
-  <h1>{{title}}</h1>
+<main class="home-container">
+  <div class="home-header">
+    <h1>{{title}}</h1>
+  </div>
+  
+  <div class="home-layout">
+    <div class="home-main">
+      {{#articles}}
+        <section class="article">
+          <div class="article-header">
+            <h2 class="article-title"><a href="/article/{{slug}}">{{title}}</a></h2>
+            <div class="article-meta">By <strong><a href="/user/{{author.login}}">{{author.firstname}}</a></strong>, on <strong>{{addedAt}}</strong> &middot; {{views}} views &middot; {{likes}} likes</div>
+            <div class="article-taxonomies">
+              {{#category}}
+                <a href="/category/{{slug}}" class="badge badge-category">{{name}}</a>
+              {{/category}}
+              {{#tags}}
+                <a href="/tag/{{slug}}" class="badge badge-tag">{{name}}</a>
+              {{/tags}}
+            </div>
+          </div>
+          <div class="article-description">
+            {{{content}}}
+          </div>
+        </section>
+      {{/articles}}
 
-  {{#hasCategories}}
-    <nav class="taxonomy-nav">
-      <span class="taxonomy-label">Categories:</span>
-      {{#categories}}
-        <a href="/category/{{slug}}" class="badge badge-category">{{name}}</a>
-      {{/categories}}
-    </nav>
-  {{/hasCategories}}
+      <nav class="pagination">
+        {{#isFirst}}
+          <button class="btn btn-outline disabled" disabled>&laquo; First</button>
+          <button class="btn btn-outline disabled" disabled>&lsaquo; Prev</button>
+        {{/isFirst}}
+        {{^isFirst}}
+          <a href="/?page=0" class="btn btn-outline">&laquo; First</a>
+          <a href="/?page={{previousPage}}" class="btn btn-outline">&lsaquo; Prev</a>
+        {{/isFirst}}
 
-  {{#hasTags}}
-    <nav class="taxonomy-nav">
-      <span class="taxonomy-label">Tags:</span>
-      {{#allTags}}
-        <a href="/tag/{{slug}}" class="badge badge-tag">{{name}}</a>
-      {{/allTags}}
-    </nav>
-  {{/hasTags}}
+        <span class="page-info">Page {{currentPageDisplay}} of {{totalPages}}</span>
 
-  {{#articles}}
-    <section class="article">
-      <div class="article-header">
-        <h2 class="article-title"><a href="/article/{{slug}}">{{title}}</a></h2>
-        <div class="article-meta">By <strong><a href="/user/{{author.login}}">{{author.firstname}}</a></strong>, on <strong>{{addedAt}}</strong> &middot; {{views}} views &middot; {{likes}} likes</div>
-        <div class="article-taxonomies">
-          {{#category}}
-            <a href="/category/{{slug}}" class="badge badge-category">{{name}}</a>
-          {{/category}}
-          {{#tags}}
-            <a href="/tag/{{slug}}" class="badge badge-tag">{{name}}</a>
-          {{/tags}}
+        {{#isLast}}
+          <button class="btn btn-outline disabled" disabled>Next &rsaquo;</button>
+          <button class="btn btn-outline disabled" disabled>Last &raquo;</button>
+        {{/isLast}}
+        {{^isLast}}
+          <a href="/?page={{nextPage}}" class="btn btn-outline">Next &rsaquo;</a>
+          <a href="/?page={{lastPage}}" class="btn btn-outline">Last &raquo;</a>
+        {{/isLast}}
+      </nav>
+    </div>
+
+    <aside class="home-sidebar">
+      {{#hasCategories}}
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Categories</h3>
+          <div class="taxonomy-list">
+            {{#categories}}
+              <a href="/category/{{slug}}" class="badge badge-category">{{name}}</a>
+            {{/categories}}
+          </div>
         </div>
-      </div>
-      <div class="article-description">
-        {{{content}}}
-      </div>
-    </section>
-  {{/articles}}
+      {{/hasCategories}}
 
-  <nav class="pagination">
-    {{#isFirst}}
-      <button class="btn btn-outline disabled" disabled>&laquo; First</button>
-      <button class="btn btn-outline disabled" disabled>&lsaquo; Prev</button>
-    {{/isFirst}}
-    {{^isFirst}}
-      <a href="/?page=0" class="btn btn-outline">&laquo; First</a>
-      <a href="/?page={{previousPage}}" class="btn btn-outline">&lsaquo; Prev</a>
-    {{/isFirst}}
-
-    <span class="page-info">Page {{currentPageDisplay}} of {{totalPages}}</span>
-
-    {{#isLast}}
-      <button class="btn btn-outline disabled" disabled>Next &rsaquo;</button>
-      <button class="btn btn-outline disabled" disabled>Last &raquo;</button>
-    {{/isLast}}
-    {{^isLast}}
-      <a href="/?page={{nextPage}}" class="btn btn-outline">Next &rsaquo;</a>
-      <a href="/?page={{lastPage}}" class="btn btn-outline">Last &raquo;</a>
-    {{/isLast}}
-  </nav>
+      {{#hasTags}}
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Tags</h3>
+          <div class="taxonomy-list">
+            {{#allTags}}
+              <a href="/tag/{{slug}}" class="badge badge-tag">{{name}}</a>
+            {{/allTags}}
+          </div>
+        </div>
+      {{/hasTags}}
+    </aside>
+  </div>
 </main>
 
 {{> footer}}

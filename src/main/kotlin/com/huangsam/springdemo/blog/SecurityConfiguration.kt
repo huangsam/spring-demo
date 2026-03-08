@@ -31,6 +31,10 @@ class SecurityConfiguration {
                         "/style.css",
                         "/register",
                         "/api/user/register",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
                     )
                     .permitAll()
                     .requestMatchers("/new-article")
