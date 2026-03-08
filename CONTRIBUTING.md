@@ -7,15 +7,13 @@ whatever interests you or invent your own.
 
 ## Content & Navigation
 
-1. Search or full-text indexing of titles, body, tags.
-2. "Related articles" query based on shared tags or keywords.
+1. "Related articles" query based on shared tags or keywords.
 
 ## Author & User Features
 
 1. Drafts, scheduled publishing, or article status (DRAFT, PUBLISHED).
 2. Rich-text/markdown editor with client-side preview.
 3. Support image/media uploads (file storage, links).
-4. "Like"/upvote system for posts or comments.
 
 ## Comments & Interaction
 
@@ -34,8 +32,7 @@ whatever interests you or invent your own.
 
 1. Internationalization (i18n) for UI and possibly content.
 2. Responsive design and accessibility improvements.
-3. RSS/Atom feed generation.
-4. SEO enhancements: metadata, sitemap, clean URLs.
+3. SEO enhancements: metadata, sitemap, clean URLs.
 
 ## API & Integrations
 
@@ -45,9 +42,8 @@ whatever interests you or invent your own.
 
 ## Quality & Operations
 
-1. Monitoring/metrics (Micrometer, Actuator, health checks).
-2. CI/CD pipeline or Docker/container packaging.
-3. Plugin/extension architecture or modular classloading.
+1. CI/CD pipeline or Docker/container packaging.
+2. Plugin/extension architecture or modular classloading.
 
 If you implement any of these (or something else!), please consider
 contributing back via a pull request or just documenting your work here.
