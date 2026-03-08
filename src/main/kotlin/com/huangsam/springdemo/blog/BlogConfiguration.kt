@@ -134,6 +134,7 @@ class BlogConfiguration {
                         addedAt = seedArticle.addedAt,
                         views = seedArticle.views,
                         likes = seedArticle.likes,
+                        status = ArticleStatus.PUBLISHED,
                     )
                 )
 

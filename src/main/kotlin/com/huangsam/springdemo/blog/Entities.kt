@@ -8,6 +8,11 @@ import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import java.time.LocalDateTime
 
+enum class ArticleStatus {
+    DRAFT,
+    PUBLISHED,
+}
+
 @Entity
 // Simple blog article. Most associations use the default
 // FetchType.LAZY, which is why we later needed to fetch the
@@ -24,6 +29,8 @@ class Article(
     var addedAt: LocalDateTime = LocalDateTime.now(),
     var views: Int = 0,
     var likes: Int = 0,
+    var status: ArticleStatus = ArticleStatus.DRAFT,
+    var scheduledAt: LocalDateTime? = null,
     @Id @GeneratedValue var id: Long? = null,
 )
 

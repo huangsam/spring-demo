@@ -15,7 +15,7 @@ class SearchService {
         index.clear()
         docLengths.clear()
         idf.clear()
-        val docs = articles.toList()
+        val docs = articles.filter { it.status == ArticleStatus.PUBLISHED }
         totalDocs = docs.size
 
         if (totalDocs == 0) return

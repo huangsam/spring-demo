@@ -646,3 +646,59 @@ section.article {
   color: var(--text-main);
   font-size: 0.875rem;
 }
+
+/* EasyMDE Theme Overrides */
+.editor-toolbar {
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+  border: 1px solid var(--grey-70);
+  background-color: var(--grey-90);
+  opacity: 1;
+}
+
+.editor-toolbar i.separator {
+  border-left: 1px solid var(--grey-70);
+  border-right: 0;
+}
+
+.CodeMirror {
+  min-height: 400px;
+  max-height: 60vh;
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+  border: 1px solid var(--grey-70);
+  font-family: var(--font-base);
+  font-size: 1rem;
+  overflow: hidden;
+}
+
+.CodeMirror-scroll {
+  min-height: 380px;
+  max-height: 58vh;
+}
+
+.CodeMirror-focused {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.editor-preview {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  padding: var(--space-6);
+}
+
+.editor-preview h1,
+.editor-preview h2,
+.editor-preview h3 {
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-2);
+}
+
+.editor-preview pre {
+  background: var(--grey-90);
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}

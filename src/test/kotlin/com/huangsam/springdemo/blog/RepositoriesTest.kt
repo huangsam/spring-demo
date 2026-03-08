@@ -212,6 +212,7 @@ constructor(
                 user,
                 category = category,
                 addedAt = now.minusSeconds(1),
+                status = ArticleStatus.PUBLISHED,
             )
         val a2 =
             Article(
@@ -221,13 +222,17 @@ constructor(
                 user,
                 category = category,
                 addedAt = now,
+                status = ArticleStatus.PUBLISHED,
             )
         entityManager.persist(a1)
         entityManager.persist(a2)
         entityManager.flush()
         entityManager.clear()
 
-        val found = articleRepository.findAllByCategoryOrderByAddedAtDesc(category).toList()
+        val found =
+            articleRepository
+                .findAllByCategoryAndStatusOrderByAddedAtDesc(category, ArticleStatus.PUBLISHED)
+                .toList()
         assertEquals(2, found.size)
         // Verify desc ordering: most recent first
         assertEquals("Article B", found[0].title)
@@ -249,6 +254,7 @@ constructor(
                 user,
                 tags = mutableSetOf(tag),
                 addedAt = now.minusSeconds(1),
+                status = ArticleStatus.PUBLISHED,
             )
         val a2 =
             Article(
@@ -258,13 +264,17 @@ constructor(
                 user,
                 tags = mutableSetOf(tag),
                 addedAt = now,
+                status = ArticleStatus.PUBLISHED,
             )
         entityManager.persist(a1)
         entityManager.persist(a2)
         entityManager.flush()
         entityManager.clear()
 
-        val found = articleRepository.findAllByTagsContainingOrderByAddedAtDesc(tag).toList()
+        val found =
+            articleRepository
+                .findAllByTagsContainingAndStatusOrderByAddedAtDesc(tag, ArticleStatus.PUBLISHED)
+                .toList()
         assertEquals(2, found.size)
         // Verify desc ordering: most recent first
         assertEquals("Article B", found[0].title)

@@ -7,9 +7,7 @@ whatever interests you or invent your own.
 
 ## Author & User Features
 
-1. Drafts, scheduled publishing, or article status (DRAFT, PUBLISHED).
-2. Rich-text/markdown editor with client-side preview.
-3. Support image/media uploads (file storage, links).
+1. Support image/media uploads (file storage, links).
 
 ## Comments & Interaction
 

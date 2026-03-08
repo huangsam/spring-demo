@@ -1,5 +1,6 @@
 package com.huangsam.springdemo.blog
 
+import java.time.LocalDateTime
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.repository.CrudRepository
@@ -8,10 +9,19 @@ interface ArticleRepository : CrudRepository<Article, Long> {
     // Single-entity fetch join so the author, category, and tags are available
     // without additional queries.
     @EntityGraph(attributePaths = ["author", "category", "tags"])
+    fun findBySlugAndStatus(slug: String, status: ArticleStatus): Article?
+
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
     fun findBySlug(slug: String): Article?
 
     // When listing articles we always render the author name, category, and tags
     // in the UI/JSON, so fetch them in the same select to avoid N+1.
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
+    fun findAllByStatusOrderByAddedAtDesc(
+        status: ArticleStatus,
+        pageable: org.springframework.data.domain.Pageable,
+    ): org.springframework.data.domain.Page<Article>
+
     @EntityGraph(attributePaths = ["author", "category", "tags"])
     fun findAllByOrderByAddedAtDesc(
         pageable: org.springframework.data.domain.Pageable
@@ -19,15 +29,33 @@ interface ArticleRepository : CrudRepository<Article, Long> {
 
     // Filter articles by category, eagerly fetching related entities.
     @EntityGraph(attributePaths = ["author", "category", "tags"])
-    fun findAllByCategoryOrderByAddedAtDesc(category: Category): Iterable<Article>
+    fun findAllByCategoryAndStatusOrderByAddedAtDesc(
+        category: Category,
+        status: ArticleStatus,
+    ): Iterable<Article>
 
     // Filter articles that contain a specific tag.
     @EntityGraph(attributePaths = ["author", "category", "tags"])
-    fun findAllByTagsContainingOrderByAddedAtDesc(tag: Tag): Iterable<Article>
+    fun findAllByTagsContainingAndStatusOrderByAddedAtDesc(
+        tag: Tag,
+        status: ArticleStatus,
+    ): Iterable<Article>
 
     // Profile page: fetch recent articles written by a specific user.
     @EntityGraph(attributePaths = ["author", "category", "tags"])
+    fun findTop5ByAuthorAndStatusOrderByAddedAtDesc(
+        author: User,
+        status: ArticleStatus,
+    ): Iterable<Article>
+
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
     fun findTop5ByAuthorOrderByAddedAtDesc(author: User): Iterable<Article>
+
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
+    fun findAllByStatusAndScheduledAtBefore(
+        status: ArticleStatus,
+        now: LocalDateTime,
+    ): List<Article>
 
     @EntityGraph(attributePaths = ["author", "category", "tags"])
     override fun findAll(): List<Article>

@@ -54,9 +54,15 @@ constructor(
                 category = category,
                 tags = mutableSetOf(tag),
             )
-        val ipsumArticle = Article("Ipsum", "Ipsum", "dolor sit amet", johnDoe)
+        val ipsumArticle =
+            Article("Ipsum", "Ipsum", "dolor sit amet", johnDoe, status = ArticleStatus.PUBLISHED)
         val pageable = org.springframework.data.domain.PageRequest.of(0, 20)
-        `when`(articleRepository.findAllByOrderByAddedAtDesc(pageable))
+        `when`(
+                articleRepository.findAllByStatusOrderByAddedAtDesc(
+                    ArticleStatus.PUBLISHED,
+                    pageable,
+                )
+            )
             .thenReturn(
                 org.springframework.data.domain.PageImpl(listOf(lorem5Article, ipsumArticle))
             )
@@ -75,7 +81,8 @@ constructor(
     @Test
     fun `Get article by slug`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
-        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
+        val article =
+            Article("Lorem", "Lorem", "dolor sit amet", johnDoe, status = ArticleStatus.PUBLISHED)
         `when`(articleRepository.findBySlug(article.slug)).thenReturn(article)
         mockMvc
             .perform(
@@ -118,6 +125,7 @@ constructor(
                 author,
                 category = category,
                 tags = mutableSetOf(tag1, tag2),
+                status = ArticleStatus.PUBLISHED,
             )
 
         `when`(userRepository.findByLogin("johnDoe")).thenReturn(author)
@@ -233,7 +241,8 @@ constructor(
     @Test
     fun `Like article increments likes`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
-        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
+        val article =
+            Article("Lorem", "Lorem", "dolor sit amet", johnDoe, status = ArticleStatus.PUBLISHED)
         article.likes = 5
         `when`(articleRepository.findBySlug(article.slug)).thenReturn(article)
         `when`(articleRepository.save(org.mockito.ArgumentMatchers.any(Article::class.java)))
@@ -280,10 +289,23 @@ constructor(
     fun `List articles with category filter`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val category = Category("Frameworks")
-        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe, category = category)
+        val article =
+            Article(
+                "Lorem",
+                "Lorem",
+                "dolor sit amet",
+                johnDoe,
+                category = category,
+                status = ArticleStatus.PUBLISHED,
+            )
 
         `when`(categoryRepository.findBySlug(category.slug)).thenReturn(category)
-        `when`(articleRepository.findAllByCategoryOrderByAddedAtDesc(category))
+        `when`(
+                articleRepository.findAllByCategoryAndStatusOrderByAddedAtDesc(
+                    category,
+                    ArticleStatus.PUBLISHED,
+                )
+            )
             .thenReturn(listOf(article))
 
         mockMvc
@@ -299,10 +321,23 @@ constructor(
     fun `List articles with tag filter`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val tag = Tag("Spring")
-        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe, tags = mutableSetOf(tag))
+        val article =
+            Article(
+                "Lorem",
+                "Lorem",
+                "dolor sit amet",
+                johnDoe,
+                tags = mutableSetOf(tag),
+                status = ArticleStatus.PUBLISHED,
+            )
 
         `when`(tagRepository.findBySlug(tag.slug)).thenReturn(tag)
-        `when`(articleRepository.findAllByTagsContainingOrderByAddedAtDesc(tag))
+        `when`(
+                articleRepository.findAllByTagsContainingAndStatusOrderByAddedAtDesc(
+                    tag,
+                    ArticleStatus.PUBLISHED,
+                )
+            )
             .thenReturn(listOf(article))
 
         mockMvc
@@ -316,10 +351,16 @@ constructor(
     @Test
     fun `List articles with author filter`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
-        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
+        val article =
+            Article("Lorem", "Lorem", "dolor sit amet", johnDoe, status = ArticleStatus.PUBLISHED)
 
         `when`(userRepository.findByLogin(johnDoe.login)).thenReturn(johnDoe)
-        `when`(articleRepository.findTop5ByAuthorOrderByAddedAtDesc(johnDoe))
+        `when`(
+                articleRepository.findTop5ByAuthorAndStatusOrderByAddedAtDesc(
+                    johnDoe,
+                    ArticleStatus.PUBLISHED,
+                )
+            )
             .thenReturn(listOf(article))
 
         mockMvc

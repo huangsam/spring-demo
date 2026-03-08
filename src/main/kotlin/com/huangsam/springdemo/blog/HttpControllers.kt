@@ -36,7 +36,10 @@ class ArticleController(
                         HttpStatus.NOT_FOUND,
                         "This category does not exist",
                     )
-            return repository.findAllByCategoryOrderByAddedAtDesc(categoryEntity)
+            return repository.findAllByCategoryAndStatusOrderByAddedAtDesc(
+                categoryEntity,
+                ArticleStatus.PUBLISHED,
+            )
         }
         if (tag != null) {
             val tagEntity =
@@ -45,7 +48,10 @@ class ArticleController(
                         HttpStatus.NOT_FOUND,
                         "This tag does not exist",
                     )
-            return repository.findAllByTagsContainingOrderByAddedAtDesc(tagEntity)
+            return repository.findAllByTagsContainingAndStatusOrderByAddedAtDesc(
+                tagEntity,
+                ArticleStatus.PUBLISHED,
+            )
         }
         if (author != null) {
             val authorEntity =
@@ -54,20 +60,36 @@ class ArticleController(
                         HttpStatus.NOT_FOUND,
                         "This user does not exist",
                     )
-            return repository.findTop5ByAuthorOrderByAddedAtDesc(authorEntity)
+            return repository.findTop5ByAuthorAndStatusOrderByAddedAtDesc(
+                authorEntity,
+                ArticleStatus.PUBLISHED,
+            )
         }
 
         val pageable = org.springframework.data.domain.PageRequest.of(page, 20)
-        return repository.findAllByOrderByAddedAtDesc(pageable).content
+        return repository
+            .findAllByStatusOrderByAddedAtDesc(ArticleStatus.PUBLISHED, pageable)
+            .content
     }
 
     @Throws(ResponseStatusException::class)
     @GetMapping("/{slug}")
-    fun findOne(@PathVariable slug: String): Article =
-        repository.findBySlug(slug)
-            // Spring-web will automatically convert the thrown exception into
-            // a 404 response; this is a common pattern in the controllers.
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article does not exist")
+    fun findOne(@PathVariable slug: String): Article {
+        val article =
+            repository.findBySlug(slug)
+                ?: throw ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "This article does not exist",
+                )
+
+        val auth = SecurityContextHolder.getContext().authentication
+        val currentUser = auth?.let { userRepository.findByLogin(it.name) }
+
+        if (article.status == ArticleStatus.DRAFT && article.author.login != currentUser?.login) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article is not yet published")
+        }
+        return article
+    }
 
     @PostMapping("/")
     fun createArticle(@RequestBody articleRequest: ArticleRequest): Article {
@@ -105,6 +127,8 @@ class ArticleController(
                 author = author,
                 category = category,
                 tags = tags,
+                status = articleRequest.status ?: ArticleStatus.DRAFT,
+                scheduledAt = articleRequest.scheduledAt,
             )
         return repository.save(article)
     }
@@ -216,6 +240,8 @@ data class ArticleRequest(
     val content: String,
     val category: String? = null,
     val tags: List<String> = emptyList(),
+    val status: ArticleStatus? = null,
+    val scheduledAt: java.time.LocalDateTime? = null,
 )
 
 @RestController

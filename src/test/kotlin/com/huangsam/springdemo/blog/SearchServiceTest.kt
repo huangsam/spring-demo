@@ -12,15 +12,21 @@ class SearchServiceTest {
     fun `When indexing and searching then return ranked results`() {
         val user = User("login", "First", "Last", password = "password")
         val a1 =
-            Article("Kotlin Basics", "Learn Kotlin", "Kotlin is a modern language", user).apply {
-                id = 1L
-            }
+            Article(
+                    "Kotlin Basics",
+                    "Learn Kotlin",
+                    "Kotlin is a modern language",
+                    user,
+                    status = ArticleStatus.PUBLISHED,
+                )
+                .apply { id = 1L }
         val a2 =
             Article(
                     "Spring Boot",
                     "Learn Spring",
                     "Spring Boot makes it easy to create Stand-alone applications",
                     user,
+                    status = ArticleStatus.PUBLISHED,
                 )
                 .apply { id = 2L }
         val a3 =
@@ -29,6 +35,7 @@ class SearchServiceTest {
                     "Powerful duo",
                     "Kotlin and Spring together are great",
                     user,
+                    status = ArticleStatus.PUBLISHED,
                 )
                 .apply { id = 3L }
 
@@ -61,22 +68,56 @@ class SearchServiceTest {
         val cat1 = Category("Kotlin")
         val cat2 = Category("Spring")
 
-        val a1 = Article("Kotlin Basics", "Learn Kotlin", "Content 1", user, cat1).apply { id = 1L }
-        val a2 = Article("Advanced Kotlin", "Deep dive", "Content 2", user, cat1).apply { id = 2L }
-        val a3 = Article("Spring Boot", "Learn Spring", "Content 3", user, cat2).apply { id = 3L }
-        val a4 = Article("Kotlin and Spring", "Duo", "Content 4", user, cat1).apply { id = 4L }
+        val a1 =
+            Article(
+                    "Kotlin Basics",
+                    "Learn Kotlin",
+                    "Content 1",
+                    user,
+                    cat1,
+                    status = ArticleStatus.PUBLISHED,
+                )
+                .apply { id = 1L }
+        val a2 =
+            Article(
+                    "Advanced Kotlin",
+                    "Deep dive",
+                    "Content 2",
+                    user,
+                    cat1,
+                    status = ArticleStatus.PUBLISHED,
+                )
+                .apply { id = 2L }
+        val a3 =
+            Article(
+                    "Spring Boot",
+                    "Learn Spring",
+                    "Content 3",
+                    user,
+                    cat2,
+                    status = ArticleStatus.PUBLISHED,
+                )
+                .apply { id = 3L }
+        val a4 =
+            Article(
+                    "Kotlin and Spring",
+                    "Duo",
+                    "Content 4",
+                    user,
+                    cat1,
+                    status = ArticleStatus.PUBLISHED,
+                )
+                .apply { id = 4L }
 
         searchService.index(listOf(a1, a2, a3, a4))
 
-        // Related to a1 (Kotlin Basics, Category: Kotlin)
-        // a2 and a4 share the category "Kotlin" and the word "Kotlin" in title.
-        // a3 shares nothing.
-        val related = searchService.findRelated(a1, limit = 2)
-
-        assertEquals(2, related.size)
-        assertTrue(related.contains(2L))
-        assertTrue(related.contains(4L))
-        assertTrue(!related.contains(1L)) // Exclude self
+        val results = searchService.findRelated(a1, 5)
+        // a2 and a4 share Category(Kotlin) and keywords; a3 is Spring
+        assertEquals(2, results.size)
+        // a1 should be excluded
+        assertTrue(results.all { it != 1L })
+        assertTrue(results.contains(2L))
+        assertTrue(results.contains(4L))
     }
 
     @Test
@@ -89,7 +130,10 @@ class SearchServiceTest {
     @Test
     fun `When searching for non-existent word then return empty list`() {
         val user = User("login", "First", "Last", password = "password")
-        val a1 = Article("Title", "Headline", "Content", user).apply { id = 1L }
+        val a1 =
+            Article("Title", "Headline", "Content", user, status = ArticleStatus.PUBLISHED).apply {
+                id = 1L
+            }
         searchService.index(listOf(a1))
 
         val results = searchService.search("xyz123")

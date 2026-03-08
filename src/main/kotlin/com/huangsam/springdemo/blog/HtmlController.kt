@@ -52,7 +52,8 @@ class HtmlController(
         } else {
             val pageSize = 5
             val pageable = PageRequest.of(page, pageSize)
-            val articlePage = repository.findAllByOrderByAddedAtDesc(pageable)
+            val articlePage =
+                repository.findAllByStatusOrderByAddedAtDesc(ArticleStatus.PUBLISHED, pageable)
 
             model["articles"] = articlePage.content.map { it.render() }
             model["currentPage"] = page
@@ -121,6 +122,13 @@ class HtmlController(
                     "This article does not exist",
                 )
 
+        // Only allow published articles to be viewed publicly,
+        // unless the viewer is the author.
+        val currentUser = getAuthenticatedUser()
+        if (article.status == ArticleStatus.DRAFT && article.author.login != currentUser?.login) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "This article is not yet published")
+        }
+
         // Increment views and save
         article.views++
         repository.save(article)
@@ -150,7 +158,9 @@ class HtmlController(
         model["title"] = "Category: ${category.name}"
         model["category"] = category
         model["articles"] =
-            repository.findAllByCategoryOrderByAddedAtDesc(category).map { it.render() }
+            repository
+                .findAllByCategoryAndStatusOrderByAddedAtDesc(category, ArticleStatus.PUBLISHED)
+                .map { it.render() }
         model["user"] = getAuthenticatedUser()
         return MustacheView.CATEGORY
     }
@@ -163,7 +173,9 @@ class HtmlController(
         model["title"] = "Tag: ${tag.name}"
         model["tag"] = tag
         model["articles"] =
-            repository.findAllByTagsContainingOrderByAddedAtDesc(tag).map { it.render() }
+            repository
+                .findAllByTagsContainingAndStatusOrderByAddedAtDesc(tag, ArticleStatus.PUBLISHED)
+                .map { it.render() }
         model["user"] = getAuthenticatedUser()
         return MustacheView.TAG
     }
@@ -175,8 +187,18 @@ class HtmlController(
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist")
         model["title"] = "${profileUser.firstname} ${profileUser.lastname}"
         model["profileUser"] = profileUser
-        model["articles"] =
-            repository.findTop5ByAuthorOrderByAddedAtDesc(profileUser).map { it.render() }
+
+        val articles =
+            if (profileUser.login == getAuthenticatedUser()?.login) {
+                repository.findTop5ByAuthorOrderByAddedAtDesc(profileUser)
+            } else {
+                repository.findTop5ByAuthorAndStatusOrderByAddedAtDesc(
+                    profileUser,
+                    ArticleStatus.PUBLISHED,
+                )
+            }
+
+        model["articles"] = articles.map { it.render() }
         model["user"] = getAuthenticatedUser()
         return MustacheView.PROFILE
     }

@@ -31,7 +31,10 @@ class FeedController(private val repository: ArticleRepository) {
                 link = baseUrl
             }
 
-        val articles = repository.findAllByOrderByAddedAtDesc(PageRequest.of(0, 50)).content
+        val articles =
+            repository
+                .findAllByStatusOrderByAddedAtDesc(ArticleStatus.PUBLISHED, PageRequest.of(0, 50))
+                .content
         val entries =
             articles.map { article ->
                 SyndEntryImpl().apply {
