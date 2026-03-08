@@ -62,6 +62,20 @@ class BlogConfiguration {
         passwordEncoder: PasswordEncoder,
         searchService: SearchService,
     ) = ApplicationRunner {
+        if (userRepository.findByLogin("admin") == null) {
+            logger.info("Create admin user")
+            userRepository.save(
+                User(
+                    login = "admin",
+                    firstname = "Admin",
+                    lastname = "User",
+                    description = "System Administrator",
+                    password = passwordEncoder.encode("admin")!!,
+                    role = "ADMIN",
+                )
+            )
+        }
+
         logger.info("Create user John Doe")
         val johnDoe =
             userRepository.save(

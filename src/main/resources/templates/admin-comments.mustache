@@ -1,0 +1,51 @@
+{{> header}}
+
+<main class="admin-main-container">
+    <div class="admin-dashboard">
+        <div class="admin-sidebar">
+            <h3>Admin Menu</h3>
+            <ul>
+                <li><a href="/admin">Overview</a></li>
+                <li><a href="/admin/articles">Articles</a></li>
+                <li><a href="/admin/users">Users</a></li>
+                <li><a href="/admin/comments" class="active">Comments</a></li>
+            </ul>
+        </div>
+        <div class="admin-main">
+            <h1>Manage Comments</h1>
+            <div class="admin-filter">
+                <form action="/admin/comments" method="get">
+                    <input type="text" name="content" placeholder="Filter by content..." value="{{filterContent}}">
+                    <button type="submit" class="btn-filter">Filter</button>
+                    <a href="/admin/comments" class="btn-clear">Clear</a>
+                </form>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Author</th>
+                        <th>Content</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#comments}}
+                    <tr>
+                        <td>{{author.login}}</td>
+                        <td>{{content}}</td>
+                        <td>{{addedAt}}</td>
+                        <td>
+                            <form action="/admin/comments/delete/{{id}}" method="post" onsubmit="return confirm('Are you sure?')">
+                                <button type="submit" class="btn-delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/comments}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+{{> footer}}

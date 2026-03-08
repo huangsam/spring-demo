@@ -17,6 +17,9 @@
     <nav class="nav-links">
       {{#user}}
         <span class="welcome-msg">Welcome, <strong>{{firstname}}</strong>!</span>
+        {{#isAdmin}}
+          <a href="/admin" class="nav-link">Admin</a>
+        {{/isAdmin}}
         <a href="/new-article" class="nav-link btn-nav">New Article</a>
         <a href="/logout" class="nav-link">Logout</a>
       {{/user}}

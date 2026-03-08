@@ -1,0 +1,65 @@
+{{> header}}
+
+    <main class="admin-main-container">
+        <div class="admin-dashboard">
+            <div class="admin-sidebar">
+                <h3>Admin Menu</h3>
+                <ul>
+                    <li><a href="/admin" class="active">Overview</a></li>
+                    <li><a href="/admin/articles">Articles</a></li>
+                    <li><a href="/admin/users">Users</a></li>
+                    <li><a href="/admin/comments">Comments</a></li>
+                </ul>
+            </div>
+            <div class="admin-main">
+                <h1>{{title}}</h1>
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <span class="stat-label">Articles</span>
+                        <span class="stat-value">{{articlesCount}}</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Users</span>
+                        <span class="stat-value">{{usersCount}}</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Comments</span>
+                        <span class="stat-value">{{commentsCount}}</span>
+                    </div>
+                </div>
+
+                <div class="admin-analytics">
+                    <div class="analytics-card">
+                        <h3>Articles by Category</h3>
+                        <div class="category-list">
+                            {{#articlesByCategory}}
+                            <div class="category-item">
+                                <span class="category-name">{{name}}</span>
+                                <span class="category-bar-wrapper">
+                                    <span class="category-bar" style="width: {{count}}0%"></span>
+                                </span>
+                                <span class="category-count">{{count}}</span>
+                            </div>
+                            {{/articlesByCategory}}
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list">
+                            {{#recentComments}}
+                            <div class="activity-item">
+                                <span class="activity-icon">💬</span>
+                                <div class="activity-details">
+                                    <p><strong>{{author.login}}</strong> commented on <em>{{article.title}}</em></p>
+                                    <span class="activity-time">{{addedAt}}</span>
+                                </div>
+                            </div>
+                            {{/recentComments}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{{> footer}}

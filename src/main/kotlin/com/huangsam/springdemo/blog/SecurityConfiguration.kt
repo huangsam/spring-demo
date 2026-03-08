@@ -41,6 +41,8 @@ class SecurityConfiguration {
                         "/actuator/**",
                     )
                     .permitAll()
+                    .requestMatchers("/admin/**")
+                    .hasRole("ADMIN")
                     .requestMatchers("/new-article")
                     .authenticated()
                     .anyRequest()

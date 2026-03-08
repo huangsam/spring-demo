@@ -76,7 +76,9 @@ class HtmlController(
         val allTags = tagRepository.findAllByOrderByNameAsc().toList()
         model["allTags"] = allTags
         model["hasTags"] = allTags.isNotEmpty()
-        model["user"] = getAuthenticatedUser()
+        val authenticatedUser = getAuthenticatedUser()
+        model["user"] = authenticatedUser
+        model["isAdmin"] = authenticatedUser?.role == "ADMIN"
         return MustacheView.BLOG
     }
 
@@ -94,8 +96,10 @@ class HtmlController(
 
     @GetMapping("/new-article")
     fun newArticle(model: Model): String {
+        val authenticatedUser = getAuthenticatedUser()
         model["title"] = "New Article"
-        model["user"] = getAuthenticatedUser()
+        model["user"] = authenticatedUser
+        model["isAdmin"] = authenticatedUser?.role == "ADMIN"
         return "new-article"
     }
 
@@ -143,7 +147,9 @@ class HtmlController(
         model["relatedArticles"] = relatedIds.mapNotNull { relatedArticles[it] }.map { it.render() }
         model["hasRelatedArticles"] = relatedIds.isNotEmpty()
 
-        model["user"] = getAuthenticatedUser()
+        val authenticatedUser = getAuthenticatedUser()
+        model["user"] = authenticatedUser
+        model["isAdmin"] = authenticatedUser?.role == "ADMIN"
         return MustacheView.ARTICLE
     }
 
@@ -161,7 +167,9 @@ class HtmlController(
             repository
                 .findAllByCategoryAndStatusOrderByAddedAtDesc(category, ArticleStatus.PUBLISHED)
                 .map { it.render() }
-        model["user"] = getAuthenticatedUser()
+        val authenticatedUser = getAuthenticatedUser()
+        model["user"] = authenticatedUser
+        model["isAdmin"] = authenticatedUser?.role == "ADMIN"
         return MustacheView.CATEGORY
     }
 
@@ -176,7 +184,9 @@ class HtmlController(
             repository
                 .findAllByTagsContainingAndStatusOrderByAddedAtDesc(tag, ArticleStatus.PUBLISHED)
                 .map { it.render() }
-        model["user"] = getAuthenticatedUser()
+        val authenticatedUser = getAuthenticatedUser()
+        model["user"] = authenticatedUser
+        model["isAdmin"] = authenticatedUser?.role == "ADMIN"
         return MustacheView.TAG
     }
 
@@ -199,7 +209,9 @@ class HtmlController(
             }
 
         model["articles"] = articles.map { it.render() }
-        model["user"] = getAuthenticatedUser()
+        val authenticatedUser = getAuthenticatedUser()
+        model["user"] = authenticatedUser
+        model["isAdmin"] = authenticatedUser?.role == "ADMIN"
         return MustacheView.PROFILE
     }
 

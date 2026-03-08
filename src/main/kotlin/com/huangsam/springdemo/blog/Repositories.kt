@@ -58,11 +58,18 @@ interface ArticleRepository : CrudRepository<Article, Long> {
     ): List<Article>
 
     @EntityGraph(attributePaths = ["author", "category", "tags"])
+    fun findAllByTitleContainingIgnoreCase(title: String): Iterable<Article>
+
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
     override fun findAll(): List<Article>
 }
 
 interface UserRepository : CrudRepository<User, Long> {
     fun findByLogin(login: String): User?
+
+    fun findAllByLoginContainingIgnoreCase(login: String): Iterable<User>
+
+    fun findAllByRole(role: String): Iterable<User>
 
     fun findAllByFirstnameOrderByLastnameAsc(firstname: String): Iterable<User>
 }
@@ -72,6 +79,9 @@ interface CommentRepository : CrudRepository<Comment, Long> {
     // separate query per comment.
     @EntityGraph(attributePaths = ["author"])
     fun findAllByArticleOrderByAddedAtDesc(article: Article): Iterable<Comment>
+
+    @EntityGraph(attributePaths = ["author", "article"])
+    fun findAllByContentContainingIgnoreCase(content: String): Iterable<Comment>
 }
 
 interface CategoryRepository : CrudRepository<Category, Long> {

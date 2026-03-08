@@ -1,0 +1,53 @@
+{{> header}}
+
+<main class="admin-main-container">
+    <div class="admin-dashboard">
+        <div class="admin-sidebar">
+            <h3>Admin Menu</h3>
+            <ul>
+                <li><a href="/admin">Overview</a></li>
+                <li><a href="/admin/articles">Articles</a></li>
+                <li><a href="/admin/users" class="active">Users</a></li>
+                <li><a href="/admin/comments">Comments</a></li>
+            </ul>
+        </div>
+        <div class="admin-main">
+            <h1>Manage Users</h1>
+            <div class="admin-filter">
+                <form action="/admin/users" method="get">
+                    <input type="text" name="login" placeholder="Filter by login..." value="{{filterLogin}}">
+                    <button type="submit" class="btn-filter">Filter</button>
+                    <a href="/admin/users" class="btn-clear">Clear</a>
+                </form>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Login</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#users}}
+                    <tr>
+                        <td>{{login}}</td>
+                        <td>{{firstname}}</td>
+                        <td>{{lastname}}</td>
+                        <td>{{role}}</td>
+                        <td>
+                            <form action="/admin/users/delete/{{id}}" method="post" onsubmit="return confirm('Are you sure?')">
+                                <button type="submit" class="btn-delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/users}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+{{> footer}}

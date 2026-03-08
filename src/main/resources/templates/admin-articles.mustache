@@ -1,0 +1,51 @@
+{{> header}}
+
+<main class="admin-main-container">
+    <div class="admin-dashboard">
+        <div class="admin-sidebar">
+            <h3>Admin Menu</h3>
+            <ul>
+                <li><a href="/admin">Overview</a></li>
+                <li><a href="/admin/articles" class="active">Articles</a></li>
+                <li><a href="/admin/users">Users</a></li>
+                <li><a href="/admin/comments">Comments</a></li>
+            </ul>
+        </div>
+        <div class="admin-main">
+            <h1>Manage Articles</h1>
+            <div class="admin-filter">
+                <form action="/admin/articles" method="get">
+                    <input type="text" name="title" placeholder="Filter by title..." value="{{filterTitle}}">
+                    <button type="submit" class="btn-filter">Filter</button>
+                    <a href="/admin/articles" class="btn-clear">Clear</a>
+                </form>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#articles}}
+                    <tr>
+                        <td>{{title}}</td>
+                        <td>{{author.login}}</td>
+                        <td>{{addedAt}}</td>
+                        <td>
+                            <form action="/admin/articles/delete/{{id}}" method="post" onsubmit="return confirm('Are you sure?')">
+                                <button type="submit" class="btn-delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/articles}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+{{> footer}}
