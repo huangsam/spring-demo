@@ -438,6 +438,8 @@ section.article {
     0 2px 4px -2px rgb(0 0 0 / 0.1);
   margin-top: var(--space-8);
   margin-bottom: var(--space-8);
+  position: relative;
+  overflow: hidden;
 }
 
 .registration h1,
@@ -648,6 +650,11 @@ section.article {
 }
 
 /* EasyMDE Theme Overrides */
+.EasyMDEContainer {
+  position: relative;
+  overflow: hidden;
+}
+
 .editor-toolbar {
   border-top-left-radius: var(--radius-md);
   border-top-right-radius: var(--radius-md);
@@ -662,8 +669,7 @@ section.article {
 }
 
 .CodeMirror {
-  min-height: 400px;
-  max-height: 60vh;
+  height: 450px;
   border-bottom-left-radius: var(--radius-md);
   border-bottom-right-radius: var(--radius-md);
   border: 1px solid var(--grey-70);
@@ -673,8 +679,8 @@ section.article {
 }
 
 .CodeMirror-scroll {
-  min-height: 380px;
-  max-height: 58vh;
+  min-height: 430px;
+  overflow-y: auto !important;
 }
 
 .CodeMirror-focused {
