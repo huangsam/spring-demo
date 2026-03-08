@@ -112,13 +112,22 @@ header.global-header {
 }
 
 .nav-link {
-  font-weight: 500;
-  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .nav-link:hover {
   color: var(--primary);
   text-decoration: none;
+}
+
+.nav-link svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
 }
 
 .btn-nav {
