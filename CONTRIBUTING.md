@@ -18,9 +18,8 @@ whatever interests you or invent your own.
 
 ## Security & Administration
 
-1. Admin dashboard for CRUD of posts/users/comments.
-2. Roles/permissions beyond simple `USER`/`ADMIN`.
-3. OAuth/social login (Google, GitHub, etc.).
+1. Roles/permissions beyond simple `USER`/`ADMIN`.
+2. OAuth/social login (Google, GitHub, etc.).
 
 ## User Experience & Reach
 
