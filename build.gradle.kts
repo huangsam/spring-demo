@@ -56,3 +56,9 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
     annotation("jakarta.persistence.MappedSuperclass")
 }
+
+tasks.register<Exec>("generateSeedData") {
+    group = "application"
+    description = "Generates random seed data for the application into seed-data.json"
+    commandLine("./scripts/generate-seed-data.main.kts")
+}

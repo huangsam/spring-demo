@@ -1,6 +1,11 @@
 package com.huangsam.springdemo.blog
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import java.nio.charset.StandardCharsets
+import java.time.LocalDateTime
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationRunner
@@ -9,31 +14,50 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.security.crypto.password.PasswordEncoder
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SeedUser(
+    val login: String,
+    val firstname: String,
+    val lastname: String,
+    val description: String?,
+    val password: String,
+    val role: String,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SeedCategory(val name: String, val slug: String)
+
+@JsonIgnoreProperties(ignoreUnknown = true) data class SeedTag(val name: String, val slug: String)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SeedComment(val author: SeedUser, val content: String, val addedAt: LocalDateTime)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SeedArticle(
+    val title: String,
+    val headline: String,
+    val content: String,
+    val author: SeedUser,
+    val category: SeedCategory?,
+    val tags: List<SeedTag> = emptyList(),
+    val comments: List<SeedComment> = emptyList(),
+    val slug: String,
+    val addedAt: LocalDateTime,
+    val views: Int,
+    val likes: Int,
+)
+
 @Configuration
-// This configuration class illustrates a few wiring patterns used in typical
-// Spring Boot applications. In production you would normally keep these
-// classes focused on creating and configuring infrastructure beans rather
-// than inserting sample data; the `databaseInitializer` here is purely a demo
-// convenience.
 class BlogConfiguration {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    // Register a bean of type ApplicationRunner. Spring Boot will execute
-    // all ApplicationRunner and CommandLineRunner beans after the context has
-    // been refreshed. The lambda provided below becomes the implementation of
-    // the single abstract method `run(ApplicationArguments)` (SAM conversion).
-    //
-    // NOTE: this pattern is handy for bootstrapping demo or development data but
-    // it is not something you would use in a real production system where
-    // content should be created via migrations, admin UI, or external import.
-    // In a larger app this class would typically only declare service,
-    // client and configuration beans, not direct database access logic.
     @Bean
     fun databaseInitializer(
         userRepository: UserRepository,
         articleRepository: ArticleRepository,
         categoryRepository: CategoryRepository,
         tagRepository: TagRepository,
+        commentRepository: CommentRepository,
         passwordEncoder: PasswordEncoder,
     ) = ApplicationRunner {
         logger.info("Create user John Doe")
@@ -49,69 +73,94 @@ class BlogConfiguration {
                 )
             )
 
-        logger.info("Seed categories")
-        val frameworks = categoryRepository.save(Category("Frameworks"))
-        val languages = categoryRepository.save(Category("Languages"))
-        val data = categoryRepository.save(Category("Data"))
-        val testing = categoryRepository.save(Category("Testing"))
+        logger.info("Loading seed data from JSON")
+        val json = readResource("seed-data.json")
+        val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
+        val seedArticles: List<SeedArticle> = mapper.readValue(json)
 
-        logger.info("Seed tags")
-        val springTag = tagRepository.save(Tag("Spring"))
-        val kotlinTag = tagRepository.save(Tag("Kotlin"))
-        val jpaTag = tagRepository.save(Tag("JPA"))
-        val securityTag = tagRepository.save(Tag("Security"))
-        val markdownTag = tagRepository.save(Tag("Markdown"))
-        val hibernateTag = tagRepository.save(Tag("Hibernate"))
+        val persistedUsers = mutableMapOf<String, User>("johnDoe" to johnDoe)
+        val persistedCategories = mutableMapOf<String, Category>()
+        val persistedTags = mutableMapOf<String, Tag>()
 
-        logger.info("Create articles that John Doe is an author of")
-        articleRepository.save(
-            Article(
-                title = "Markdown Test",
-                headline = "Testing Markdown Rendering",
-                content = readResource("markdown/markdown-test.md"),
-                author = johnDoe,
-                category = testing,
-                tags = mutableSetOf(markdownTag),
-            )
-        )
-        articleRepository.save(
-            Article(
-                title = "Lorem",
-                headline = "Lorem",
-                content = "dolor sit amet",
-                author = johnDoe,
-            )
-        )
-        articleRepository.save(
-            Article(
-                title = "Spring Security",
-                headline = "Securing your Spring Boot Apps",
-                content = readResource("markdown/spring-security.md"),
-                author = johnDoe,
-                category = frameworks,
-                tags = mutableSetOf(springTag, securityTag),
-            )
-        )
-        articleRepository.save(
-            Article(
-                title = "Kotlin Features",
-                headline = "Modern Java Alternative",
-                content = readResource("markdown/kotlin-features.md"),
-                author = johnDoe,
-                category = languages,
-                tags = mutableSetOf(kotlinTag),
-            )
-        )
-        articleRepository.save(
-            Article(
-                title = "JPA and Hibernate",
-                headline = "Persistence Made Easy",
-                content = readResource("markdown/jpa-hibernate.md"),
-                author = johnDoe,
-                category = data,
-                tags = mutableSetOf(jpaTag, hibernateTag),
-            )
-        )
+        for (seedArticle in seedArticles) {
+            val author =
+                persistedUsers.getOrPut(seedArticle.author.login) {
+                    userRepository.save(
+                        User(
+                            login = seedArticle.author.login,
+                            firstname = seedArticle.author.firstname,
+                            lastname = seedArticle.author.lastname,
+                            description = seedArticle.author.description,
+                            password = passwordEncoder.encode(seedArticle.author.password)!!,
+                            role = seedArticle.author.role,
+                        )
+                    )
+                }
+
+            var category: Category? = null
+            if (seedArticle.category != null) {
+                category =
+                    persistedCategories.getOrPut(seedArticle.category.slug) {
+                        categoryRepository.save(
+                            Category(
+                                name = seedArticle.category.name,
+                                slug = seedArticle.category.slug,
+                            )
+                        )
+                    }
+            }
+
+            val articleTags = mutableSetOf<Tag>()
+            for (seedTag in seedArticle.tags) {
+                val tag =
+                    persistedTags.getOrPut(seedTag.slug) {
+                        tagRepository.save(Tag(name = seedTag.name, slug = seedTag.slug))
+                    }
+                articleTags.add(tag)
+            }
+
+            val article =
+                articleRepository.save(
+                    Article(
+                        title = seedArticle.title,
+                        headline = seedArticle.headline,
+                        content = seedArticle.content,
+                        author = author,
+                        category = category,
+                        tags = articleTags,
+                        slug = seedArticle.slug,
+                        addedAt = seedArticle.addedAt,
+                        views = seedArticle.views,
+                        likes = seedArticle.likes,
+                    )
+                )
+
+            for (seedComment in seedArticle.comments) {
+                val commentAuthor =
+                    persistedUsers.getOrPut(seedComment.author.login) {
+                        userRepository.save(
+                            User(
+                                login = seedComment.author.login,
+                                firstname = seedComment.author.firstname,
+                                lastname = seedComment.author.lastname,
+                                description = seedComment.author.description,
+                                password = passwordEncoder.encode(seedComment.author.password)!!,
+                                role = seedComment.author.role,
+                            )
+                        )
+                    }
+                commentRepository.save(
+                    Comment(
+                        article = article,
+                        author = commentAuthor,
+                        content = seedComment.content,
+                        addedAt = seedComment.addedAt,
+                    )
+                )
+            }
+        }
+
+        logger.info("Finished loading seed data")
     }
 
     private fun readResource(path: String): String {

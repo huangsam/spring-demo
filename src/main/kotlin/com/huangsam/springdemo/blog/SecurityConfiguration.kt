@@ -21,6 +21,7 @@ class SecurityConfiguration {
                 auth
                     .requestMatchers(
                         "/",
+                        "/error",
                         "/article/**",
                         "/category/**",
                         "/tag/**",
