@@ -19,6 +19,8 @@ import org.springframework.web.server.ResponseStatusException
 class ArticleController(
     private val repository: ArticleRepository,
     private val userRepository: UserRepository,
+    private val categoryRepository: CategoryRepository,
+    private val tagRepository: TagRepository,
 ) {
     @GetMapping("/") fun findAll(): Iterable<Article> = repository.findAllByOrderByAddedAtDesc()
 
@@ -43,12 +45,29 @@ class ArticleController(
                     "You must be logged in to create an article",
                 )
 
+        // Resolve category by name (find-or-create)
+        val category =
+            articleRequest.category
+                ?.takeIf { it.isNotBlank() }
+                ?.let { name ->
+                    categoryRepository.findByName(name) ?: categoryRepository.save(Category(name))
+                }
+
+        // Resolve tags by name (find-or-create each)
+        val tags =
+            articleRequest.tags
+                .filter { it.isNotBlank() }
+                .map { name -> tagRepository.findByName(name) ?: tagRepository.save(Tag(name)) }
+                .toMutableSet()
+
         val article =
             Article(
                 title = articleRequest.title,
                 headline = articleRequest.headline,
                 content = articleRequest.content,
                 author = author,
+                category = category,
+                tags = tags,
             )
         return repository.save(article)
     }
@@ -137,4 +156,10 @@ data class RegistrationRequest(
     val password: String,
 )
 
-data class ArticleRequest(val title: String, val headline: String, val content: String)
+data class ArticleRequest(
+    val title: String,
+    val headline: String,
+    val content: String,
+    val category: String? = null,
+    val tags: List<String> = emptyList(),
+)

@@ -7,6 +7,7 @@ import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -25,6 +26,8 @@ constructor(
     @MockitoBean private val articleRepository: ArticleRepository,
     @MockitoBean private val userRepository: UserRepository,
     @MockitoBean private val commentRepository: CommentRepository,
+    @MockitoBean private val categoryRepository: CategoryRepository,
+    @MockitoBean private val tagRepository: TagRepository,
     @MockitoBean
     private val passwordEncoder: org.springframework.security.crypto.password.PasswordEncoder,
 ) {
@@ -33,7 +36,17 @@ constructor(
     @Test
     fun `List articles`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
-        val lorem5Article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
+        val category = Category("Frameworks")
+        val tag = Tag("Spring")
+        val lorem5Article =
+            Article(
+                "Lorem",
+                "Lorem",
+                "dolor sit amet",
+                johnDoe,
+                category = category,
+                tags = mutableSetOf(tag),
+            )
         val ipsumArticle = Article("Ipsum", "Ipsum", "dolor sit amet", johnDoe)
         `when`(articleRepository.findAllByOrderByAddedAtDesc())
             .thenReturn(listOf(lorem5Article, ipsumArticle))
@@ -43,6 +56,8 @@ constructor(
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("\$.[0].author.login").value(johnDoe.login))
             .andExpect(jsonPath("\$.[0].slug").value(lorem5Article.slug))
+            .andExpect(jsonPath("\$.[0].category.name").value("Frameworks"))
+            .andExpect(jsonPath("\$.[0].tags[0].name").value("Spring"))
             .andExpect(jsonPath("\$.[1].author.login").value(johnDoe.login))
             .andExpect(jsonPath("\$.[1].slug").value(ipsumArticle.slug))
     }
@@ -68,6 +83,50 @@ constructor(
         mockMvc
             .perform(get("${Routes.API_ARTICLE}/nonexistent").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound)
+    }
+
+    @Test
+    @WithMockUser(username = "johnDoe", roles = ["USER"])
+    fun `Create article returns created article`() {
+        val request =
+            ArticleRequest(
+                "New Title",
+                "New Headline",
+                "New Content",
+                "Frameworks",
+                listOf("Spring", "Kotlin"),
+            )
+        val author = User("johnDoe", "John", "Doe", password = "password")
+        val category = Category("Frameworks")
+        val tag1 = Tag("Spring")
+        val tag2 = Tag("Kotlin")
+        val savedArticle =
+            Article(
+                "New Title",
+                "New Headline",
+                "New Content",
+                author,
+                category = category,
+                tags = mutableSetOf(tag1, tag2),
+            )
+
+        `when`(userRepository.findByLogin("johnDoe")).thenReturn(author)
+        `when`(categoryRepository.findByName("Frameworks")).thenReturn(category)
+        `when`(tagRepository.findByName("Spring")).thenReturn(tag1)
+        `when`(tagRepository.findByName("Kotlin")).thenReturn(tag2)
+        `when`(articleRepository.save(org.mockito.ArgumentMatchers.any(Article::class.java)))
+            .thenReturn(savedArticle)
+
+        mockMvc
+            .perform(
+                post("${Routes.API_ARTICLE}/")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request))
+            )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("\$.title").value("New Title"))
+            .andExpect(jsonPath("\$.category.name").value("Frameworks"))
+            .andExpect(jsonPath("\$.tags[0].name").value("Spring"))
     }
 
     @Test

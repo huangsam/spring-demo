@@ -17,6 +17,8 @@ constructor(
     private val userRepository: UserRepository,
     private val articleRepository: ArticleRepository,
     private val commentRepository: CommentRepository,
+    private val categoryRepository: CategoryRepository,
+    private val tagRepository: TagRepository,
 ) {
     private val johnDoe: User
         get() = User("johnDoe", "John", "Doe", password = "password")
@@ -126,5 +128,175 @@ constructor(
         assertEquals(comment1.content, found[1].content)
         assertTrue(found.all { it.article.id == article.id })
         assertTrue(found.all { it.author.login == user.login })
+    }
+
+    @Test
+    fun `When findBySlug then return Category`() {
+        val category = Category("Frameworks")
+        entityManager.persist(category)
+        entityManager.flush()
+
+        val found = categoryRepository.findBySlug(category.slug)!!
+        assertEquals(category.name, found.name)
+        assertEquals(category.slug, found.slug)
+    }
+
+    @Test
+    fun `When findAllByOrderByNameAsc then return Categories sorted`() {
+        val c1 = Category("Data")
+        val c2 = Category("Frameworks")
+        entityManager.persist(c1)
+        entityManager.persist(c2)
+        entityManager.flush()
+
+        val found = categoryRepository.findAllByOrderByNameAsc().toList()
+        assertEquals(2, found.size)
+        assertEquals("Data", found[0].name)
+        assertEquals("Frameworks", found[1].name)
+    }
+
+    @Test
+    fun `When findBySlug then return Tag`() {
+        val tag = Tag("Kotlin")
+        entityManager.persist(tag)
+        entityManager.flush()
+
+        val found = tagRepository.findBySlug(tag.slug)!!
+        assertEquals(tag.name, found.name)
+        assertEquals(tag.slug, found.slug)
+    }
+
+    @Test
+    fun `When findAllByOrderByNameAsc then return Tags sorted`() {
+        val t1 = Tag("Spring")
+        val t2 = Tag("JPA")
+        entityManager.persist(t1)
+        entityManager.persist(t2)
+        entityManager.flush()
+
+        val found = tagRepository.findAllByOrderByNameAsc().toList()
+        assertEquals(2, found.size)
+        assertEquals("JPA", found[0].name)
+        assertEquals("Spring", found[1].name)
+    }
+
+    @Test
+    fun `When findByNameIn then return matching Tags`() {
+        val t1 = Tag("Spring")
+        val t2 = Tag("Kotlin")
+        val t3 = Tag("JPA")
+        entityManager.persist(t1)
+        entityManager.persist(t2)
+        entityManager.persist(t3)
+        entityManager.flush()
+
+        val found = tagRepository.findByNameIn(listOf("Spring", "JPA")).toList()
+        assertEquals(2, found.size)
+        assertTrue(found.any { it.name == "Spring" })
+        assertTrue(found.any { it.name == "JPA" })
+    }
+
+    @Test
+    fun `When findAllByCategoryOrderByAddedAtDesc then return Articles in category`() {
+        val user = johnDoe
+        entityManager.persist(user)
+        val category = Category("Frameworks")
+        entityManager.persist(category)
+        val now = LocalDateTime.now()
+        val a1 =
+            Article(
+                "Article A",
+                "Headline A",
+                "content a",
+                user,
+                category = category,
+                addedAt = now.minusSeconds(1),
+            )
+        val a2 =
+            Article(
+                "Article B",
+                "Headline B",
+                "content b",
+                user,
+                category = category,
+                addedAt = now,
+            )
+        entityManager.persist(a1)
+        entityManager.persist(a2)
+        entityManager.flush()
+        entityManager.clear()
+
+        val found = articleRepository.findAllByCategoryOrderByAddedAtDesc(category).toList()
+        assertEquals(2, found.size)
+        // Verify desc ordering: most recent first
+        assertEquals("Article B", found[0].title)
+        assertEquals("Article A", found[1].title)
+    }
+
+    @Test
+    fun `When findAllByTagsContainingOrderByAddedAtDesc then return Articles with tag`() {
+        val user = johnDoe
+        entityManager.persist(user)
+        val tag = Tag("Spring")
+        entityManager.persist(tag)
+        val now = LocalDateTime.now()
+        val a1 =
+            Article(
+                "Article A",
+                "Headline A",
+                "content a",
+                user,
+                tags = mutableSetOf(tag),
+                addedAt = now.minusSeconds(1),
+            )
+        val a2 =
+            Article(
+                "Article B",
+                "Headline B",
+                "content b",
+                user,
+                tags = mutableSetOf(tag),
+                addedAt = now,
+            )
+        entityManager.persist(a1)
+        entityManager.persist(a2)
+        entityManager.flush()
+        entityManager.clear()
+
+        val found = articleRepository.findAllByTagsContainingOrderByAddedAtDesc(tag).toList()
+        assertEquals(2, found.size)
+        // Verify desc ordering: most recent first
+        assertEquals("Article B", found[0].title)
+        assertEquals("Article A", found[1].title)
+    }
+
+    @Test
+    fun `When Article has category and tags then findBySlug fetches them`() {
+        val user = johnDoe
+        entityManager.persist(user)
+        val category = Category("Languages")
+        entityManager.persist(category)
+        val tag1 = Tag("Kotlin")
+        val tag2 = Tag("JVM")
+        entityManager.persist(tag1)
+        entityManager.persist(tag2)
+        val article =
+            Article(
+                "Kotlin Features",
+                "Modern Java Alternative",
+                "content",
+                user,
+                category = category,
+                tags = mutableSetOf(tag1, tag2),
+            )
+        entityManager.persist(article)
+        entityManager.flush()
+        entityManager.clear()
+
+        val found = articleRepository.findBySlug(article.slug)!!
+        assertEquals(category.name, found.category!!.name)
+        assertEquals(2, found.tags.size)
+        assertTrue(found.tags.any { it.name == "Kotlin" })
+        assertTrue(found.tags.any { it.name == "JVM" })
     }
 }

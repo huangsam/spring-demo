@@ -87,4 +87,62 @@ class HtmlControllerTest @Autowired constructor(private val restClient: RestTest
             assertTrue(it.contains("<a href=\"https://www.google.com\">Link to Google</a>"))
         }
     }
+
+    @Test
+    fun `Assert user profile page title, content and status code`() {
+        val responseBody =
+            restClient
+                .get()
+                .uri("${Routes.USER}/johnDoe")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody(String::class.java)
+                .returnResult()
+                .responseBody
+        responseBody!!.let {
+            assertTrue(it.contains("John"))
+            assertTrue(it.contains("Doe"))
+            assertTrue(it.contains("Articles by John"))
+            assertTrue(it.contains("Lorem"))
+        }
+    }
+
+    @Test
+    fun `Assert category page title, content and status code`() {
+        val slug = "frameworks" // Seeded in BlogConfiguration
+        val responseBody =
+            restClient
+                .get()
+                .uri("${Routes.CATEGORY}/$slug")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody(String::class.java)
+                .returnResult()
+                .responseBody
+        responseBody!!.let {
+            assertTrue(it.contains("Category: Frameworks"))
+            assertTrue(it.contains("Spring Security")) // Seeded article in Frameworks
+        }
+    }
+
+    @Test
+    fun `Assert tag page title, content and status code`() {
+        val slug = "kotlin" // Seeded in BlogConfiguration
+        val responseBody =
+            restClient
+                .get()
+                .uri("${Routes.TAG}/$slug")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody(String::class.java)
+                .returnResult()
+                .responseBody
+        responseBody!!.let {
+            assertTrue(it.contains("Tag: Kotlin"))
+            assertTrue(it.contains("Kotlin Features")) // Seeded article with Kotlin
+        }
+    }
 }

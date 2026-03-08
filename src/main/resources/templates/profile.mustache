@@ -1,0 +1,40 @@
+{{> header}}
+
+<main>
+  <section class="profile-header">
+    <h1>{{profileUser.firstname}} {{profileUser.lastname}}</h1>
+    {{#profileUser.description}}
+      <p class="profile-description">{{profileUser.description}}</p>
+    {{/profileUser.description}}
+    {{^profileUser.description}}
+      <p class="profile-description text-muted">No bio yet.</p>
+    {{/profileUser.description}}
+  </section>
+
+  <h2>Articles by {{profileUser.firstname}}</h2>
+
+  {{#articles}}
+    <section class="article">
+      <div class="article-header">
+        <h2 class="article-title"><a href="/article/{{slug}}">{{title}}</a></h2>
+        <div class="article-meta">On <strong>{{addedAt}}</strong></div>
+        <div class="article-taxonomies">
+          {{#category}}
+            <a href="/category/{{slug}}" class="badge badge-category">{{name}}</a>
+          {{/category}}
+          {{#tags}}
+            <a href="/tag/{{slug}}" class="badge badge-tag">{{name}}</a>
+          {{/tags}}
+        </div>
+      </div>
+      <div class="article-description">
+        {{{content}}}
+      </div>
+    </section>
+  {{/articles}}
+  {{^articles}}
+    <p>This user hasn't published any articles yet.</p>
+  {{/articles}}
+</main>
+
+{{> footer}}

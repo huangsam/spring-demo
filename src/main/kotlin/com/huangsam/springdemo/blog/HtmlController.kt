@@ -14,6 +14,9 @@ import org.springframework.web.server.ResponseStatusException
 private object MustacheView {
     const val BLOG = "blog"
     const val ARTICLE = "article"
+    const val CATEGORY = "category"
+    const val TAG = "tag"
+    const val PROFILE = "profile"
 }
 
 @Controller
@@ -21,6 +24,8 @@ class HtmlController(
     private val repository: ArticleRepository,
     private val userRepository: UserRepository,
     private val commentRepository: CommentRepository,
+    private val categoryRepository: CategoryRepository,
+    private val tagRepository: TagRepository,
     private val markdownConverter: MarkdownConverter,
 ) {
     @GetMapping(Routes.ROOT)
@@ -28,6 +33,13 @@ class HtmlController(
         model["title"] = "Blog"
         // author is fetched via EntityGraph in repository, preventing N+1
         model["articles"] = repository.findAllByOrderByAddedAtDesc().map { it.render() }
+        val categories = categoryRepository.findAllByOrderByNameAsc().toList()
+        model["categories"] = categories
+        model["hasCategories"] = categories.isNotEmpty()
+
+        val allTags = tagRepository.findAllByOrderByNameAsc().toList()
+        model["allTags"] = allTags
+        model["hasTags"] = allTags.isNotEmpty()
         model["user"] = getAuthenticatedUser()
         return MustacheView.BLOG
     }
@@ -81,6 +93,48 @@ class HtmlController(
         return MustacheView.ARTICLE
     }
 
+    @GetMapping("${Routes.CATEGORY}/{slug}")
+    fun category(@PathVariable slug: String, model: Model): String {
+        val category =
+            categoryRepository.findBySlug(slug)
+                ?: throw ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "This category does not exist",
+                )
+        model["title"] = "Category: ${category.name}"
+        model["category"] = category
+        model["articles"] =
+            repository.findAllByCategoryOrderByAddedAtDesc(category).map { it.render() }
+        model["user"] = getAuthenticatedUser()
+        return MustacheView.CATEGORY
+    }
+
+    @GetMapping("${Routes.TAG}/{slug}")
+    fun tag(@PathVariable slug: String, model: Model): String {
+        val tag =
+            tagRepository.findBySlug(slug)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This tag does not exist")
+        model["title"] = "Tag: ${tag.name}"
+        model["tag"] = tag
+        model["articles"] =
+            repository.findAllByTagsContainingOrderByAddedAtDesc(tag).map { it.render() }
+        model["user"] = getAuthenticatedUser()
+        return MustacheView.TAG
+    }
+
+    @GetMapping("${Routes.USER}/{login}")
+    fun profile(@PathVariable login: String, model: Model): String {
+        val profileUser =
+            userRepository.findByLogin(login)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist")
+        model["title"] = "${profileUser.firstname} ${profileUser.lastname}"
+        model["profileUser"] = profileUser
+        model["articles"] =
+            repository.findAllByAuthorOrderByAddedAtDesc(profileUser).map { it.render() }
+        model["user"] = getAuthenticatedUser()
+        return MustacheView.PROFILE
+    }
+
     fun Article.render() =
         RenderedArticle(
             slug,
@@ -89,6 +143,8 @@ class HtmlController(
             markdownConverter.convertToHtml(content),
             author,
             addedAt.format(),
+            category,
+            tags,
         )
 
     fun Comment.render() = RenderedComment(author, content, addedAt.format())
@@ -100,6 +156,8 @@ class HtmlController(
         val content: String,
         val author: User,
         val addedAt: String,
+        val category: Category?,
+        val tags: Set<Tag>,
     )
 
     data class RenderedComment(val author: User, val content: String, val addedAt: String)

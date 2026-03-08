@@ -13,6 +13,14 @@
         <input type="text" id="headline" name="headline" required placeholder="A short catchy headline">
       </p>
       <p>
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" placeholder="e.g. Frameworks">
+      </p>
+      <p>
+        <label for="tags">Tags (comma-separated)</label>
+        <input type="text" id="tags" name="tags" placeholder="e.g. Spring, Kotlin, JPA">
+      </p>
+      <p>
         <label for="content">Content (Markdown)</label>
         <textarea id="content" name="content" required rows="10" placeholder="Write your article in Markdown..."></textarea>
       </p>
@@ -25,10 +33,14 @@
 <script>
   document.getElementById('articleForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    const tagsValue = document.getElementById('tags').value;
+    const tags = tagsValue ? tagsValue.split(',').map(t => t.trim()).filter(t => t) : [];
     const data = {
       title: document.getElementById('title').value,
       headline: document.getElementById('headline').value,
-      content: document.getElementById('content').value
+      content: document.getElementById('content').value,
+      category: document.getElementById('category').value || null,
+      tags: tags
     };
 
     fetch('/api/article/', {

@@ -4,6 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import java.time.LocalDateTime
 
@@ -16,6 +17,8 @@ class Article(
     var headline: String,
     @Column(length = 10000) var content: String,
     @ManyToOne var author: User,
+    @ManyToOne var category: Category? = null,
+    @ManyToMany var tags: MutableSet<Tag> = mutableSetOf(),
     // Slug is derived from title by default; callers can override
     var slug: String = title.toSlug(),
     var addedAt: LocalDateTime = LocalDateTime.now(),
@@ -44,5 +47,21 @@ class Comment(
     @ManyToOne var author: User,
     @Column(length = 2000) var content: String,
     var addedAt: LocalDateTime = LocalDateTime.now(),
+    @Id @GeneratedValue var id: Long? = null,
+)
+
+@Entity
+// A category groups articles into a single classification.
+class Category(
+    var name: String,
+    var slug: String = name.toSlug(),
+    @Id @GeneratedValue var id: Long? = null,
+)
+
+@Entity
+// A tag is a lightweight label; articles can have many tags.
+class Tag(
+    var name: String,
+    var slug: String = name.toSlug(),
     @Id @GeneratedValue var id: Long? = null,
 )

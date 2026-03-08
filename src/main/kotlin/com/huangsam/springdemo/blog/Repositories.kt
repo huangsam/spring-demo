@@ -4,14 +4,27 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.repository.CrudRepository
 
 interface ArticleRepository : CrudRepository<Article, Long> {
-    // Single-entity fetch join so the author is available without a second query.
-    // Applying an EntityGraph on the base method keeps things simple; callers
-    // can just use `findBySlug` and still get the author eagerly fetched.
-    @EntityGraph(attributePaths = ["author"]) fun findBySlug(slug: String): Article?
+    // Single-entity fetch join so the author, category, and tags are available
+    // without additional queries.
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
+    fun findBySlug(slug: String): Article?
 
-    // When listing articles we always render the author name in the UI/JSON,
-    // so fetch it in the same select to avoid N+1.
-    @EntityGraph(attributePaths = ["author"]) fun findAllByOrderByAddedAtDesc(): Iterable<Article>
+    // When listing articles we always render the author name, category, and tags
+    // in the UI/JSON, so fetch them in the same select to avoid N+1.
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
+    fun findAllByOrderByAddedAtDesc(): Iterable<Article>
+
+    // Filter articles by category, eagerly fetching related entities.
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
+    fun findAllByCategoryOrderByAddedAtDesc(category: Category): Iterable<Article>
+
+    // Filter articles that contain a specific tag.
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
+    fun findAllByTagsContainingOrderByAddedAtDesc(tag: Tag): Iterable<Article>
+
+    // Profile page: fetch all articles written by a specific user.
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
+    fun findAllByAuthorOrderByAddedAtDesc(author: User): Iterable<Article>
 }
 
 interface UserRepository : CrudRepository<User, Long> {
@@ -25,4 +38,22 @@ interface CommentRepository : CrudRepository<Comment, Long> {
     // separate query per comment.
     @EntityGraph(attributePaths = ["author"])
     fun findAllByArticleOrderByAddedAtDesc(article: Article): Iterable<Comment>
+}
+
+interface CategoryRepository : CrudRepository<Category, Long> {
+    fun findBySlug(slug: String): Category?
+
+    fun findByName(name: String): Category?
+
+    fun findAllByOrderByNameAsc(): Iterable<Category>
+}
+
+interface TagRepository : CrudRepository<Tag, Long> {
+    fun findBySlug(slug: String): Tag?
+
+    fun findByName(name: String): Tag?
+
+    fun findByNameIn(names: Collection<String>): Iterable<Tag>
+
+    fun findAllByOrderByNameAsc(): Iterable<Tag>
 }

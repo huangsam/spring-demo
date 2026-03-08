@@ -4,12 +4,20 @@
   <section class="article">
     <div class="article-header">
       <h1 class="article-title">{{article.title}}</h1>
-      <p class="article-meta">By <strong>{{article.author.firstname}}</strong>, on <strong>{{article.addedAt}}</strong></p>
+      <p class="article-meta">By <strong><a href="/user/{{article.author.login}}">{{article.author.firstname}}</a></strong>, on <strong>{{article.addedAt}}</strong></p>
+      <div class="article-taxonomies">
+        {{#article.category}}
+          <a href="/category/{{slug}}" class="badge badge-category">{{name}}</a>
+        {{/article.category}}
+        {{#article.tags}}
+          <a href="/tag/{{slug}}" class="badge badge-tag">{{name}}</a>
+        {{/article.tags}}
+      </div>
     </div>
 
     <div class="article-description">
-      <span class="headline">{{article.headline}}</span>
-      <span>{{{article.content}}}</span>
+      <p class="headline">{{article.headline}}</p>
+      <div class="content">{{{article.content}}}</div>
     </div>
 
     <section class="comments-section">

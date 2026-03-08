@@ -22,6 +22,9 @@ class SecurityConfiguration {
                     .requestMatchers(
                         "/",
                         "/article/**",
+                        "/category/**",
+                        "/tag/**",
+                        "/user/**",
                         "/api/article/**",
                         "/api/user/**",
                         "/hello",

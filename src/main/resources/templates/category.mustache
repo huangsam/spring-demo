@@ -2,30 +2,13 @@
 
 <main>
   <h1>{{title}}</h1>
-
-  {{#hasCategories}}
-    <nav class="taxonomy-nav">
-      <span class="taxonomy-label">Categories:</span>
-      {{#categories}}
-        <a href="/category/{{slug}}" class="badge badge-category">{{name}}</a>
-      {{/categories}}
-    </nav>
-  {{/hasCategories}}
-
-  {{#hasTags}}
-    <nav class="taxonomy-nav">
-      <span class="taxonomy-label">Tags:</span>
-      {{#allTags}}
-        <a href="/tag/{{slug}}" class="badge badge-tag">{{name}}</a>
-      {{/allTags}}
-    </nav>
-  {{/hasTags}}
+  <p class="taxonomy-description">Articles in the <span class="badge badge-category">{{category.name}}</span> category</p>
 
   {{#articles}}
     <section class="article">
       <div class="article-header">
         <h2 class="article-title"><a href="/article/{{slug}}">{{title}}</a></h2>
-        <div class="article-meta">By <strong><a href="/user/{{author.login}}">{{author.firstname}}</a></strong>, on <strong>{{addedAt}}</strong></div>
+        <div class="article-meta">By <strong>{{author.firstname}}</strong>, on <strong>{{addedAt}}</strong></div>
         <div class="article-taxonomies">
           {{#category}}
             <a href="/category/{{slug}}" class="badge badge-category">{{name}}</a>
@@ -39,6 +22,9 @@
         {{{content}}}
       </div>
     </section>
+  {{/articles}}
+  {{^articles}}
+    <p>No articles in this category yet.</p>
   {{/articles}}
 </main>
 

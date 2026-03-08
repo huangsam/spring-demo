@@ -32,6 +32,8 @@ class BlogConfiguration {
     fun databaseInitializer(
         userRepository: UserRepository,
         articleRepository: ArticleRepository,
+        categoryRepository: CategoryRepository,
+        tagRepository: TagRepository,
         passwordEncoder: PasswordEncoder,
     ) = ApplicationRunner {
         logger.info("Create user John Doe")
@@ -47,6 +49,20 @@ class BlogConfiguration {
                 )
             )
 
+        logger.info("Seed categories")
+        val frameworks = categoryRepository.save(Category("Frameworks"))
+        val languages = categoryRepository.save(Category("Languages"))
+        val data = categoryRepository.save(Category("Data"))
+        val testing = categoryRepository.save(Category("Testing"))
+
+        logger.info("Seed tags")
+        val springTag = tagRepository.save(Tag("Spring"))
+        val kotlinTag = tagRepository.save(Tag("Kotlin"))
+        val jpaTag = tagRepository.save(Tag("JPA"))
+        val securityTag = tagRepository.save(Tag("Security"))
+        val markdownTag = tagRepository.save(Tag("Markdown"))
+        val hibernateTag = tagRepository.save(Tag("Hibernate"))
+
         logger.info("Create articles that John Doe is an author of")
         articleRepository.save(
             Article(
@@ -54,6 +70,8 @@ class BlogConfiguration {
                 headline = "Testing Markdown Rendering",
                 content = readResource("markdown/markdown-test.md"),
                 author = johnDoe,
+                category = testing,
+                tags = mutableSetOf(markdownTag),
             )
         )
         articleRepository.save(
@@ -70,6 +88,8 @@ class BlogConfiguration {
                 headline = "Securing your Spring Boot Apps",
                 content = readResource("markdown/spring-security.md"),
                 author = johnDoe,
+                category = frameworks,
+                tags = mutableSetOf(springTag, securityTag),
             )
         )
         articleRepository.save(
@@ -78,6 +98,8 @@ class BlogConfiguration {
                 headline = "Modern Java Alternative",
                 content = readResource("markdown/kotlin-features.md"),
                 author = johnDoe,
+                category = languages,
+                tags = mutableSetOf(kotlinTag),
             )
         )
         articleRepository.save(
@@ -86,6 +108,8 @@ class BlogConfiguration {
                 headline = "Persistence Made Easy",
                 content = readResource("markdown/jpa-hibernate.md"),
                 author = johnDoe,
+                category = data,
+                tags = mutableSetOf(jpaTag, hibernateTag),
             )
         )
     }
