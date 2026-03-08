@@ -10,11 +10,19 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 
+// Rate limiting interceptor using the token bucket algorithm (via Bucket4j library).
+// Implements per-client IP rate limiting to prevent abuse and DOS attacks.
+// The bucket has a capacity of 100 tokens that refill greedily at 100 tokens/minute,
+// meaning each client can make up to 100 requests per minute before being rate-limited.
 @Component
 class RateLimitInterceptor : HandlerInterceptor {
 
+    // Each client IP gets its own bucket; ConcurrentHashMap is thread-safe for multi-threaded
+    // servlet access
     private val buckets: ConcurrentHashMap<String, Bucket> = ConcurrentHashMap()
 
+    // Intercepts each HTTP request before it reaches the controller.
+    // Returns true to allow the request to proceed, false to reject it (with a 429 response).
     override fun preHandle(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -32,12 +40,17 @@ class RateLimitInterceptor : HandlerInterceptor {
         }
     }
 
+    // Creates a new token bucket for a client with a 100-token capacity that refills
+    // greedily at 100 tokens per minute. The greedy refill means we add all tokens
+    // at the start of each minute window rather than slowly over time.
     private fun createNewBucket(): Bucket {
         val limit =
             Bandwidth.builder().capacity(100).refillGreedy(100, Duration.ofMinutes(1)).build()
         return Bucket.builder().addLimit(limit).build()
     }
 
+    // Extracts the client IP address, checking X-Forwarded-For header first (for requests
+    // behind a proxy or load balancer) before falling back to remoteAddr.
     private fun getClientIp(request: HttpServletRequest): String {
         val xfHeader = request.getHeader("X-Forwarded-For")
         return if (xfHeader == null) {

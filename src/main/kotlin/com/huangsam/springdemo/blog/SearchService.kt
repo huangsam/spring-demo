@@ -4,6 +4,9 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.log10
 import org.springframework.stereotype.Service
 
+// Full-text search service using TF-IDF (Term Frequency-Inverse Document Frequency) algorithm.
+// TF-IDF weights terms: terms appearing in many documents have low weight (less discriminative),
+// while rare terms have high weight (more relevant to distinguish documents).
 @Service
 class SearchService {
     private val index = ConcurrentHashMap<String, MutableMap<Long, Int>>()

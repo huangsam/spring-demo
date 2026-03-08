@@ -93,9 +93,8 @@ class ArticleController(
 
     @PostMapping("/")
     fun createArticle(@RequestBody articleRequest: ArticleRequest): Article {
-        // Grab the currently authenticated user from the security context; if
-        // there is no authentication or the login cannot be resolved we send a
-        // 403. (This mirrors what the HTML controller does with `getAuthenticatedUser`.)
+        // Extract the currently authenticated user from Spring Security's context.
+        // SecurityContextHolder is a thread-local holder of the security principal.
         val auth = SecurityContextHolder.getContext().authentication
         val author =
             auth?.let { userRepository.findByLogin(it.name) }

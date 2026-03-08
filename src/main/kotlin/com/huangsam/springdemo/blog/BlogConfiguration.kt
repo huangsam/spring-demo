@@ -51,6 +51,7 @@ data class SeedArticle(
 class BlogConfiguration {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
+    // ApplicationRunner boots up the database with seed data on application startup.
     @Bean
     @org.springframework.transaction.annotation.Transactional
     fun databaseInitializer(

@@ -19,10 +19,14 @@ import java.util.regex.Pattern
 val faker = Faker()
 
 fun String.toSlug() =
+    // Normalize unicode; convert accented chars (é, ñ) to base form (e, n) for ASCII compatibility
     Normalizer.normalize(this, Normalizer.Form.NFD)
+        // Remove all non-word characters except spaces and hyphens (e.g., punctuation, special chars)
         .replace(Regex("[^\\w\\s-]"), "")
+        // Replace multiple consecutive hyphens with a single space (e.g., "---" becomes " ")
         .replace(Regex("-+"), " ")
         .trim()
+        // Replace multiple consecutive spaces with a single hyphen (e.g., "  " becomes "-")
         .replace(Regex("\\s+"), "-")
         .lowercase(Locale.ENGLISH)
 
@@ -92,7 +96,8 @@ fun main() {
             Comment(
                 author = users.random(),
                 content = faker.lorem().paragraph((1..3).random()),
-                addedAt = addedAt.plusHours(faker.number().numberBetween(1L, 240L)) // Comments added between 1 and 240 hours after the article
+                // Stagger comments 1-240 hours after article publication for realistic discussion timeline
+                addedAt = addedAt.plusHours(faker.number().numberBetween(1L, 240L))
             )
         }.sortedBy { it.addedAt }
 
