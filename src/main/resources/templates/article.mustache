@@ -23,6 +23,23 @@
       <div class="content">{{{article.content}}}</div>
     </div>
 
+    {{#hasRelatedArticles}}
+    <section class="related-articles">
+      <h2 class="section-title">Related Articles</h2>
+      <div class="articles-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); margin-top: var(--space-4);">
+        {{#relatedArticles}}
+          <article class="article-card" style="display: flex; flex-direction: column; background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); transition: transform 0.2s, box-shadow 0.2s;">
+            <h3 style="margin: 0 0 var(--space-2); font-size: 1.1rem;"><a href="/article/{{slug}}" style="text-decoration: none; color: var(--text-heading);">{{title}}</a></h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--text-body); flex-grow: 1;">{{headline}}</p>
+            <div class="article-card-meta" style="margin-top: var(--space-3); font-size: 0.8rem; color: var(--text-muted);">
+              {{author.firstname}} &middot; {{addedAt}}
+            </div>
+          </article>
+        {{/relatedArticles}}
+      </div>
+    </section>
+    {{/hasRelatedArticles}}
+
     <section class="comments-section">
       <h2 class="comments-title">Comments</h2>
       {{#comments}}

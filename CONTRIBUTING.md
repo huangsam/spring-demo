@@ -5,10 +5,6 @@ experiment, add features or use it as a starting point for something larger.
 The following ideas are loosely grouped into areas you might explore; pick
 whatever interests you or invent your own.
 
-## Content & Navigation
-
-1. "Related articles" query based on shared tags or keywords.
-
 ## Author & User Features
 
 1. Drafts, scheduled publishing, or article status (DRAFT, PUBLISHED).
@@ -32,7 +28,6 @@ whatever interests you or invent your own.
 
 1. Internationalization (i18n) for UI and possibly content.
 2. Responsive design and accessibility improvements.
-3. SEO enhancements: metadata, sitemap, clean URLs.
 
 ## API & Integrations
 

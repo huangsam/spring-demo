@@ -129,6 +129,12 @@ class HtmlController(
         model["article"] = article.render()
         model["comments"] =
             commentRepository.findAllByArticleOrderByAddedAtDesc(article).map { it.render() }
+
+        val relatedIds = searchService.findRelated(article)
+        val relatedArticles = repository.findAllById(relatedIds).associateBy { it.id!! }
+        model["relatedArticles"] = relatedIds.mapNotNull { relatedArticles[it] }.map { it.render() }
+        model["hasRelatedArticles"] = relatedIds.isNotEmpty()
+
         model["user"] = getAuthenticatedUser()
         return MustacheView.ARTICLE
     }

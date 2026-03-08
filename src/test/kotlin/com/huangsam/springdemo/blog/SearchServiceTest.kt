@@ -56,6 +56,30 @@ class SearchServiceTest {
     }
 
     @Test
+    fun `When finding related articles then exclude self and rank by similarity`() {
+        val user = User("login", "First", "Last", password = "password")
+        val cat1 = Category("Kotlin")
+        val cat2 = Category("Spring")
+
+        val a1 = Article("Kotlin Basics", "Learn Kotlin", "Content 1", user, cat1).apply { id = 1L }
+        val a2 = Article("Advanced Kotlin", "Deep dive", "Content 2", user, cat1).apply { id = 2L }
+        val a3 = Article("Spring Boot", "Learn Spring", "Content 3", user, cat2).apply { id = 3L }
+        val a4 = Article("Kotlin and Spring", "Duo", "Content 4", user, cat1).apply { id = 4L }
+
+        searchService.index(listOf(a1, a2, a3, a4))
+
+        // Related to a1 (Kotlin Basics, Category: Kotlin)
+        // a2 and a4 share the category "Kotlin" and the word "Kotlin" in title.
+        // a3 shares nothing.
+        val related = searchService.findRelated(a1, limit = 2)
+
+        assertEquals(2, related.size)
+        assertTrue(related.contains(2L))
+        assertTrue(related.contains(4L))
+        assertTrue(!related.contains(1L)) // Exclude self
+    }
+
+    @Test
     fun `When searching with blank query then return empty list`() {
         searchService.index(emptyList())
         val results = searchService.search("")

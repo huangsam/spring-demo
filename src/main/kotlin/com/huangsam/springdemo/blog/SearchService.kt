@@ -65,6 +65,30 @@ class SearchService {
         return scores.entries.sortedByDescending { it.value }.map { it.key }
     }
 
+    fun findRelated(article: Article, limit: Int = 3): List<Long> {
+        if (totalDocs == 0) return emptyList()
+
+        val categoryPart = article.category?.name ?: ""
+        val tagsPart = article.tags.joinToString(" ") { it.name }
+        val seedContent = "${article.title} $categoryPart $tagsPart"
+        val queryTokens = tokenize(seedContent)
+
+        val scores = mutableMapOf<Long, Double>()
+        for (token in queryTokens) {
+            val termIdf = idf[token] ?: continue
+            val docCounts = index[token] ?: continue
+
+            for ((docId, count) in docCounts) {
+                if (docId == article.id) continue // Exclude self
+                val tf = count.toDouble() / docLengths.getOrDefault(docId, 1).toDouble()
+                val score = tf * termIdf
+                scores[docId] = scores.getOrDefault(docId, 0.0) + score
+            }
+        }
+
+        return scores.entries.sortedByDescending { it.value }.take(limit).map { it.key }
+    }
+
     private fun tokenize(text: String): List<String> {
         return text.lowercase().replace(Regex("[^a-z0-9\\s]"), " ").split(Regex("\\s+")).filter {
             it.isNotBlank()
