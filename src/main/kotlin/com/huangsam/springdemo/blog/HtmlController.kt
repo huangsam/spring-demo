@@ -168,7 +168,7 @@ class HtmlController(
             author,
             addedAt.format(),
             category,
-            tags,
+            tags.sortedBy { it.name },
             views,
             likes,
         )
@@ -183,7 +183,7 @@ class HtmlController(
         val author: User,
         val addedAt: String,
         val category: Category?,
-        val tags: Set<Tag>,
+        val tags: List<Tag>,
         val views: Int,
         val likes: Int,
     )

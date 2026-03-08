@@ -1,5 +1,6 @@
 package com.huangsam.springdemo.blog
 
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.repository.CrudRepository
 
@@ -47,7 +48,7 @@ interface CategoryRepository : CrudRepository<Category, Long> {
 
     fun findByName(name: String): Category?
 
-    fun findAllByOrderByNameAsc(): Iterable<Category>
+    @Cacheable("categories") fun findAllByOrderByNameAsc(): Iterable<Category>
 }
 
 interface TagRepository : CrudRepository<Tag, Long> {
@@ -57,5 +58,5 @@ interface TagRepository : CrudRepository<Tag, Long> {
 
     fun findByNameIn(names: Collection<String>): Iterable<Tag>
 
-    fun findAllByOrderByNameAsc(): Iterable<Tag>
+    @Cacheable("tags") fun findAllByOrderByNameAsc(): Iterable<Tag>
 }
