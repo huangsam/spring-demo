@@ -1,27 +1,49 @@
 # Spring Demo
 
-After working on [huangsam/kotlin-trial], I wanted to try out [Spring in Kotlin].
-This project returns valid HTML, JSON API and text output. It also comes complete
-with goodies like JPA persistence, endpoint testing and logging.
+After working on [huangsam/kotlin-trial](https://github.com/huangsam/kotlin-trial),
+I wanted to try out [Spring in Kotlin](https://docs.spring.io/spring-framework/reference/languages/kotlin.html).
+This project evolved from a simple Spring Boot application into a feature-rich blog platform demonstrating data persistence, security, web development, and testing.
 
-If you want to run the application: `./gradlew bootRun`
+## Running the Application
 
-If you want to test the application: `./gradlew test`
+- `./gradlew bootRun` – Start the application
+- `./gradlew test` – Run the test suite
 
-Additional resources:
+## Spring Capabilities Demonstrated
 
-- [Quickstart Guide](https://spring.io/quickstart)
-- [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-- [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-- [Building webapp with Spring Boot and Kotlin](https://spring.io/guides/tutorials/spring-boot-kotlin)
-- [Spring Boot Gradle Plugin](https://docs.spring.io/spring-boot/docs/3.2.4/gradle-plugin/reference/htmlsingle/)
-- [Spring Boot Docs](https://docs.spring.io/spring-boot/docs/3.2.4/reference/htmlsingle/index.html)
-- [SO: Spring Boot bootRun with continuous build](https://stackoverflow.com/a/52389314/2748860)
-- [SO: Spring Boot color logging](https://stackoverflow.com/a/28797729/2748860)
-- [BD: Spring Boot With H2 Database](https://www.baeldung.com/spring-boot-h2-database)
-- [BD: Testing the Web Layer](https://spring.io/guides/gs/testing-web)
-- [janl/mustache.js](https://github.com/janl/mustache.js)
-- [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
+**Data & Persistence**
+- Spring Data JPA with entity relationships and complex queries
+- Query optimization using EntityGraph to prevent N+1 problems
+- H2 in-memory database with seeded data
 
-[huangsam/kotlin-trial]: https://github.com/huangsam/kotlin-trial
-[Spring in Kotlin]: https://docs.spring.io/spring-framework/reference/languages/kotlin.html
+**Security**
+- Spring Security for authentication and authorization
+- BCrypt password encryption for user credentials
+- Role-based access control for comments and articles
+
+**Web Layer**
+- REST and HTML controllers with content negotiation
+- Mustache templating for server-side rendering
+- Pagination and filtering support
+- Rate limiting for API protection
+
+**Features**
+- Multi-user article authoring with markdown support
+- Article taxonomies and related articles
+- Admin dashboard
+- RSS feeds
+- Search and monitoring
+
+**Testing & Observability**
+- Integration testing with RestTestClient
+- Test fixtures and comprehensive test coverage
+- Logging throughout the application
+
+## Resources
+
+- [Spring Boot Reference Documentation](https://docs.spring.io/spring-boot/docs/current/reference/)
+- [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
+- [Spring Security](https://spring.io/projects/spring-security)
+- [Spring Boot Gradle Plugin](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/)
+- [Mustache.js](https://github.com/janl/mustache.js)
+- [Gradle Build Scans](https://scans.gradle.com#gradle)
