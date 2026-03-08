@@ -193,6 +193,51 @@ header.global-header {
   gap: var(--space-2);
 }
 
+/* Search Feature */
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.form-input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.search-status {
+  padding: var(--space-4);
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-6);
+  border-left: 4px solid var(--primary);
+}
+
+.search-status h2 {
+  margin: 0 0 var(--space-2) 0;
+  font-size: 1.25rem;
+}
+
+.btn-link {
+  font-size: 0.875rem;
+  padding: 0;
+  color: var(--primary);
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
 /* Global Footer */
 .global-footer {
   background-color: #1f2937;

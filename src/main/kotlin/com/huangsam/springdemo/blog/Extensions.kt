@@ -1,11 +1,15 @@
 package com.huangsam.springdemo.blog
 
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
+import java.util.Date
 import java.util.Locale
 
 fun LocalDateTime.format(): String = this.format(englishDateFormatter)
+
+fun LocalDateTime.toDate(): Date = Date.from(this.atZone(ZoneId.systemDefault()).toInstant())
 
 fun String.toSlug() =
     lowercase(Locale.getDefault())

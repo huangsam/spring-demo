@@ -28,6 +28,9 @@ interface ArticleRepository : CrudRepository<Article, Long> {
     // Profile page: fetch recent articles written by a specific user.
     @EntityGraph(attributePaths = ["author", "category", "tags"])
     fun findTop5ByAuthorOrderByAddedAtDesc(author: User): Iterable<Article>
+
+    @EntityGraph(attributePaths = ["author", "category", "tags"])
+    override fun findAll(): List<Article>
 }
 
 interface UserRepository : CrudRepository<User, Long> {

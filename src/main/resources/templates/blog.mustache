@@ -7,6 +7,12 @@
   
   <div class="home-layout">
     <div class="home-main">
+      {{#isSearch}}
+        <div class="search-status">
+          <h2>{{#hasResults}}Results for "{{searchQuery}}" ({{totalResults}} found){{/hasResults}}{{^hasResults}}No results found for "{{searchQuery}}"{{/hasResults}}</h2>
+          <a href="/" class="btn btn-link">&larr; Back to all articles</a>
+        </div>
+      {{/isSearch}}
       {{#articles}}
         <section class="article">
           <div class="article-header">
@@ -27,6 +33,7 @@
         </section>
       {{/articles}}
 
+      {{^isSearch}}
       <nav class="pagination">
         {{#isFirst}}
           <button class="btn btn-outline disabled" disabled>&laquo; First</button>
@@ -48,9 +55,18 @@
           <a href="/?page={{lastPage}}" class="btn btn-outline">Last &raquo;</a>
         {{/isLast}}
       </nav>
+      {{/isSearch}}
     </div>
 
     <aside class="home-sidebar">
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">Search</h3>
+        <form action="/" method="get" class="search-form">
+          <input type="text" name="search" placeholder="Search articles..." value="{{searchQuery}}" class="form-input">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+      </div>
+
       {{#hasCategories}}
         <div class="sidebar-section">
           <h3 class="sidebar-title">Categories</h3>

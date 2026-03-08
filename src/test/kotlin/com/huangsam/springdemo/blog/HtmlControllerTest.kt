@@ -165,4 +165,22 @@ constructor(
                 .responseBody
         responseBody!!.let { assertTrue(it.contains("Tag: ${tag.name}")) }
     }
+
+    @Test
+    fun `Assert search functionality works`() {
+        val responseBody =
+            restClient
+                .get()
+                .uri("${Routes.ROOT}?search=Kotlin")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody(String::class.java)
+                .returnResult()
+                .responseBody
+        responseBody!!.let {
+            assertTrue(it.contains("Search Results"))
+            assertTrue(it.contains("Results for \"Kotlin\""))
+        }
+    }
 }

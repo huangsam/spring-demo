@@ -29,28 +29,44 @@ class HtmlController(
     private val categoryRepository: CategoryRepository,
     private val tagRepository: TagRepository,
     private val markdownConverter: MarkdownConverter,
+    private val searchService: SearchService,
 ) {
     @GetMapping(Routes.ROOT)
-    fun blog(@RequestParam(defaultValue = "0") page: Int, model: Model): String {
-        model["title"] = "Blog"
+    fun blog(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(required = false) search: String?,
+        model: Model,
+    ): String {
+        model["title"] = if (search.isNullOrBlank()) "Blog" else "Search Results"
+        model["searchQuery"] = search ?: ""
 
-        val pageSize = 5
-        val pageable = PageRequest.of(page, pageSize)
-        val articlePage = repository.findAllByOrderByAddedAtDesc(pageable)
+        if (!search.isNullOrBlank()) {
+            val rankedIds = searchService.search(search)
+            val articles = repository.findAllById(rankedIds).associateBy { it.id!! }
+            val rankedArticles = rankedIds.mapNotNull { articles[it] }
 
-        // author is fetched via EntityGraph in repository, preventing N+1
-        model["articles"] = articlePage.content.map { it.render() }
+            model["articles"] = rankedArticles.map { it.render() }
+            model["isSearch"] = true
+            model["hasResults"] = rankedArticles.isNotEmpty()
+            model["totalResults"] = rankedArticles.size
+        } else {
+            val pageSize = 5
+            val pageable = PageRequest.of(page, pageSize)
+            val articlePage = repository.findAllByOrderByAddedAtDesc(pageable)
 
-        model["currentPage"] = page
-        model["currentPageDisplay"] = page + 1
-        model["totalPages"] = articlePage.totalPages
-        model["isFirst"] = articlePage.isFirst()
-        model["isLast"] = articlePage.isLast()
-        model["hasNext"] = articlePage.hasNext()
-        model["hasPrevious"] = articlePage.hasPrevious()
-        model["nextPage"] = page + 1
-        model["previousPage"] = page - 1
-        model["lastPage"] = if (articlePage.totalPages > 0) articlePage.totalPages - 1 else 0
+            model["articles"] = articlePage.content.map { it.render() }
+            model["currentPage"] = page
+            model["currentPageDisplay"] = page + 1
+            model["totalPages"] = articlePage.totalPages
+            model["isFirst"] = articlePage.isFirst()
+            model["isLast"] = articlePage.isLast()
+            model["hasNext"] = articlePage.hasNext()
+            model["hasPrevious"] = articlePage.hasPrevious()
+            model["nextPage"] = page + 1
+            model["previousPage"] = page - 1
+            model["lastPage"] = if (articlePage.totalPages > 0) articlePage.totalPages - 1 else 0
+            model["isSearch"] = false
+        }
 
         val categories = categoryRepository.findAllByOrderByNameAsc().toList()
         model["categories"] = categories

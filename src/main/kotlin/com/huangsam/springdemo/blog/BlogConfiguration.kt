@@ -52,6 +52,7 @@ class BlogConfiguration {
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Bean
+    @org.springframework.transaction.annotation.Transactional
     fun databaseInitializer(
         userRepository: UserRepository,
         articleRepository: ArticleRepository,
@@ -59,6 +60,7 @@ class BlogConfiguration {
         tagRepository: TagRepository,
         commentRepository: CommentRepository,
         passwordEncoder: PasswordEncoder,
+        searchService: SearchService,
     ) = ApplicationRunner {
         logger.info("Create user John Doe")
         val johnDoe =
@@ -159,6 +161,9 @@ class BlogConfiguration {
                 )
             }
         }
+
+        logger.info("Indexing articles for search")
+        searchService.index(articleRepository.findAll())
 
         logger.info("Finished loading seed data")
     }

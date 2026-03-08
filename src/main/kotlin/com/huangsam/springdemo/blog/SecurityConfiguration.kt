@@ -32,10 +32,13 @@ class SecurityConfiguration {
                         "/style.css",
                         "/register",
                         "/api/user/register",
+                        "/rss",
+                        "/atom",
                         "/v3/api-docs",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
+                        "/actuator/**",
                     )
                     .permitAll()
                     .requestMatchers("/new-article")
