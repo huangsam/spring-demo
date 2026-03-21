@@ -1,17 +1,19 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    // Spring Plugins
     id("org.springframework.boot") version "4.0.4"
     id("io.spring.dependency-management") version "1.1.7"
-    id("com.ncorti.ktfmt.gradle") version "0.26.0"
 
+    // Kotlin Plugins
     val kotlinVersion = "2.3.20"
-
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
     kotlin("plugin.allopen") version kotlinVersion
 
+    // Build Tool Plugins
+    id("com.ncorti.ktfmt.gradle") version "0.26.0"
     jacoco
 }
 
@@ -59,19 +61,19 @@ dependencies {
 
 kotlin { jvmToolchain(25) }
 
-ktfmt { kotlinLangStyle() }
-
 tasks.withType<KotlinCompile> { compilerOptions { freeCompilerArgs.add("-Xjsr305=strict") } }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport)
-}
+ktfmt { kotlinLangStyle() }
 
 allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.Embeddable")
     annotation("jakarta.persistence.MappedSuperclass")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
 }
 
 tasks.register<Exec>("generateSeedData") {
