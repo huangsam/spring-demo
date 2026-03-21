@@ -7,11 +7,11 @@ import java.time.temporal.ChronoField
 import java.util.Date
 import java.util.Locale
 
-fun LocalDateTime.format(): String = this.format(englishDateFormatter)
+public fun LocalDateTime.format(): String = this.format(englishDateFormatter)
 
-fun LocalDateTime.toDate(): Date = Date.from(this.atZone(ZoneId.systemDefault()).toInstant())
+public fun LocalDateTime.toDate(): Date = Date.from(this.atZone(ZoneId.systemDefault()).toInstant())
 
-fun String.toSlug() =
+public fun String.toSlug(): String =
     lowercase(Locale.getDefault())
         .replace("\n", " ")
         .replace("[^a-z\\d\\s]".toRegex(), " ")

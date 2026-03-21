@@ -15,7 +15,7 @@ import org.springframework.web.servlet.HandlerInterceptor
 // The bucket has a capacity of 100 tokens that refill greedily at 100 tokens/minute,
 // meaning each client can make up to 100 requests per minute before being rate-limited.
 @Component
-class RateLimitInterceptor : HandlerInterceptor {
+public class RateLimitInterceptor : HandlerInterceptor {
 
     // Each client IP gets its own bucket; ConcurrentHashMap is thread-safe for multi-threaded
     // servlet access
@@ -23,7 +23,7 @@ class RateLimitInterceptor : HandlerInterceptor {
 
     // Intercepts each HTTP request before it reaches the controller.
     // Returns true to allow the request to proceed, false to reject it (with a 429 response).
-    override fun preHandle(
+    public override fun preHandle(
         request: HttpServletRequest,
         response: HttpServletResponse,
         handler: Any,

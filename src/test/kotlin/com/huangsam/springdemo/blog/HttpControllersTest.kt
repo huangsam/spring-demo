@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
             TagController::class,
         ]
 )
-class HttpControllersTest
+internal class HttpControllersTest
 @Autowired
 constructor(
     private val mockMvc: MockMvc,
@@ -41,7 +41,7 @@ constructor(
     private val objectMapper = ObjectMapper()
 
     @Test
-    fun `List articles`() {
+    internal fun `List articles`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val category = Category("Frameworks")
         val tag = Tag("Spring")
@@ -79,7 +79,7 @@ constructor(
     }
 
     @Test
-    fun `Get article by slug`() {
+    internal fun `Get article by slug`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val article =
             Article("Lorem", "Lorem", "dolor sit amet", johnDoe, status = ArticleStatus.PUBLISHED)
@@ -95,7 +95,7 @@ constructor(
     }
 
     @Test
-    fun `Get article by slug returns 404 when not found`() {
+    internal fun `Get article by slug returns 404 when not found`() {
         `when`(articleRepository.findBySlug("nonexistent")).thenReturn(null)
         mockMvc
             .perform(get("${Routes.API_ARTICLE}/nonexistent").accept(MediaType.APPLICATION_JSON))
@@ -104,7 +104,7 @@ constructor(
 
     @Test
     @WithMockUser(username = "johnDoe", roles = ["USER"])
-    fun `Create article returns created article`() {
+    internal fun `Create article returns created article`() {
         val request =
             ArticleRequest(
                 "New Title",
@@ -148,7 +148,7 @@ constructor(
     }
 
     @Test
-    fun `List users`() {
+    internal fun `List users`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val janeDoe = User("janeDoe", "Jane", "Doe", password = "password")
         `when`(userRepository.findAll()).thenReturn(listOf(johnDoe, janeDoe))
@@ -161,7 +161,7 @@ constructor(
     }
 
     @Test
-    fun `Get user by login`() {
+    internal fun `Get user by login`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         `when`(userRepository.findByLogin(johnDoe.login)).thenReturn(johnDoe)
         mockMvc
@@ -172,7 +172,7 @@ constructor(
     }
 
     @Test
-    fun `Get user by login returns 404 when not found`() {
+    internal fun `Get user by login returns 404 when not found`() {
         `when`(userRepository.findByLogin("unknown")).thenReturn(null)
         mockMvc
             .perform(get("${Routes.API_USER}/unknown").accept(MediaType.APPLICATION_JSON))
@@ -180,7 +180,7 @@ constructor(
     }
 
     @Test
-    fun `Register user returns created user`() {
+    internal fun `Register user returns created user`() {
         val request = RegistrationRequest("newUser", "New", "User", "secret")
         val savedUser =
             User(request.login, request.firstname, request.lastname, password = "encoded")
@@ -199,7 +199,7 @@ constructor(
     }
 
     @Test
-    fun `Register user returns 400 when login already exists`() {
+    internal fun `Register user returns 400 when login already exists`() {
         val request = RegistrationRequest("existingUser", "Existing", "User", "secret")
         val existingUser =
             User(request.login, request.firstname, request.lastname, password = "encoded")
@@ -214,7 +214,7 @@ constructor(
     }
 
     @Test
-    fun `Get comments by article slug`() {
+    internal fun `Get comments by article slug`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
         val comment = Comment(article, johnDoe, "Nice post!")
@@ -231,7 +231,7 @@ constructor(
     }
 
     @Test
-    fun `Get comments returns 404 when article not found`() {
+    internal fun `Get comments returns 404 when article not found`() {
         `when`(articleRepository.findBySlug("nonexistent")).thenReturn(null)
         mockMvc
             .perform(get("${Routes.API_COMMENT}/nonexistent").accept(MediaType.APPLICATION_JSON))
@@ -239,7 +239,7 @@ constructor(
     }
 
     @Test
-    fun `Like article increments likes`() {
+    internal fun `Like article increments likes`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val article =
             Article("Lorem", "Lorem", "dolor sit amet", johnDoe, status = ArticleStatus.PUBLISHED)
@@ -259,7 +259,7 @@ constructor(
     }
 
     @Test
-    fun `List categories`() {
+    internal fun `List categories`() {
         val category1 = Category("Frameworks")
         val category2 = Category("Languages")
         `when`(categoryRepository.findAllByOrderByNameAsc())
@@ -273,7 +273,7 @@ constructor(
     }
 
     @Test
-    fun `List tags`() {
+    internal fun `List tags`() {
         val tag1 = Tag("Kotlin")
         val tag2 = Tag("Spring")
         `when`(tagRepository.findAllByOrderByNameAsc()).thenReturn(listOf(tag1, tag2))
@@ -286,7 +286,7 @@ constructor(
     }
 
     @Test
-    fun `List articles with category filter`() {
+    internal fun `List articles with category filter`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val category = Category("Frameworks")
         val article =
@@ -318,7 +318,7 @@ constructor(
     }
 
     @Test
-    fun `List articles with tag filter`() {
+    internal fun `List articles with tag filter`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val tag = Tag("Spring")
         val article =
@@ -349,7 +349,7 @@ constructor(
     }
 
     @Test
-    fun `List articles with author filter`() {
+    internal fun `List articles with author filter`() {
         val johnDoe = User("johnDoe", "John", "Doe", password = "password")
         val article =
             Article("Lorem", "Lorem", "dolor sit amet", johnDoe, status = ArticleStatus.PUBLISHED)

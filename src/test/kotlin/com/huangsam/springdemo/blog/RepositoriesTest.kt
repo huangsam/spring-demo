@@ -10,7 +10,7 @@ import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager
 import org.springframework.data.repository.findByIdOrNull
 
 @DataJpaTest
-class RepositoriesTest
+internal class RepositoriesTest
 @Autowired
 constructor(
     private val entityManager: TestEntityManager,
@@ -24,7 +24,7 @@ constructor(
         get() = User("johnDoe", "John", "Doe", password = "password")
 
     @Test
-    fun `When findByIdOrNull then return Article`() {
+    internal fun `When findByIdOrNull then return Article`() {
         val user = johnDoe
         entityManager.persist(user)
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
@@ -35,7 +35,7 @@ constructor(
     }
 
     @Test
-    fun `When findByLogin then return User`() {
+    internal fun `When findByLogin then return User`() {
         val user = johnDoe
         entityManager.persist(user)
         entityManager.flush()
@@ -46,7 +46,7 @@ constructor(
     }
 
     @Test
-    fun `When findBySlug then fetches Article and author`() {
+    internal fun `When findBySlug then fetches Article and author`() {
         val user = johnDoe
         entityManager.persist(user)
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
@@ -60,7 +60,7 @@ constructor(
     }
 
     @Test
-    fun `When findAllByFirstnameOrderByLastnameAsc then return Users`() {
+    internal fun `When findAllByFirstnameOrderByLastnameAsc then return Users`() {
         val user1 = johnDoe
         val user2 = User("johnPike", "John", "Pike", password = "password")
         entityManager.persist(user1)
@@ -73,7 +73,7 @@ constructor(
     }
 
     @Test
-    fun `When findAllByArticleOrderByAddedAtDesc then return Comments`() {
+    internal fun `When findAllByArticleOrderByAddedAtDesc then return Comments`() {
         val user = johnDoe
         entityManager.persist(user)
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
@@ -93,7 +93,7 @@ constructor(
     }
 
     @Test
-    fun `When findAllByOrderByAddedAtDesc then return Articles with authors`() {
+    internal fun `When findAllByOrderByAddedAtDesc then return Articles with authors`() {
         val user = johnDoe
         entityManager.persist(user)
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
@@ -109,7 +109,7 @@ constructor(
     }
 
     @Test
-    fun `When findAllByArticleOrderByAddedAtDesc then return Comments with authors`() {
+    internal fun `When findAllByArticleOrderByAddedAtDesc then return Comments with authors`() {
         val user = johnDoe
         entityManager.persist(user)
         val article = Article("Lorem", "Lorem", "dolor sit amet", user)
@@ -132,7 +132,7 @@ constructor(
     }
 
     @Test
-    fun `When findBySlug then return Category`() {
+    internal fun `When findBySlug then return Category`() {
         val category = Category("Frameworks")
         entityManager.persist(category)
         entityManager.flush()
@@ -143,7 +143,7 @@ constructor(
     }
 
     @Test
-    fun `When findAllByOrderByNameAsc then return Categories sorted`() {
+    internal fun `When findAllByOrderByNameAsc then return Categories sorted`() {
         val c1 = Category("Data")
         val c2 = Category("Frameworks")
         entityManager.persist(c1)
@@ -157,7 +157,7 @@ constructor(
     }
 
     @Test
-    fun `When findBySlug then return Tag`() {
+    internal fun `When findBySlug then return Tag`() {
         val tag = Tag("Kotlin")
         entityManager.persist(tag)
         entityManager.flush()
@@ -168,7 +168,7 @@ constructor(
     }
 
     @Test
-    fun `When findAllByOrderByNameAsc then return Tags sorted`() {
+    internal fun `When findAllByOrderByNameAsc then return Tags sorted`() {
         val t1 = Tag("Spring")
         val t2 = Tag("JPA")
         entityManager.persist(t1)
@@ -182,7 +182,7 @@ constructor(
     }
 
     @Test
-    fun `When findByNameIn then return matching Tags`() {
+    internal fun `When findByNameIn then return matching Tags`() {
         val t1 = Tag("Spring")
         val t2 = Tag("Kotlin")
         val t3 = Tag("JPA")
@@ -198,7 +198,7 @@ constructor(
     }
 
     @Test
-    fun `When findAllByCategoryOrderByAddedAtDesc then return Articles in category`() {
+    internal fun `When findAllByCategoryOrderByAddedAtDesc then return Articles in category`() {
         val user = johnDoe
         entityManager.persist(user)
         val category = Category("Frameworks")
@@ -240,7 +240,7 @@ constructor(
     }
 
     @Test
-    fun `When findAllByTagsContainingOrderByAddedAtDesc then return Articles with tag`() {
+    internal fun `When findAllByTagsContainingOrderByAddedAtDesc then return Articles with tag`() {
         val user = johnDoe
         entityManager.persist(user)
         val tag = Tag("Spring")
@@ -282,7 +282,7 @@ constructor(
     }
 
     @Test
-    fun `When Article has category and tags then findBySlug fetches them`() {
+    internal fun `When Article has category and tags then findBySlug fetches them`() {
         val user = johnDoe
         entityManager.persist(user)
         val category = Category("Languages")

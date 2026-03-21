@@ -1,14 +1,14 @@
 package com.huangsam.springdemo
 
-object Routes {
-    const val API_ARTICLE = "/api/article"
-    const val API_USER = "/api/user"
-    const val API_COMMENT = "/api/comment"
-    const val API_CATEGORY = "/api/category"
-    const val API_TAG = "/api/tag"
-    const val ARTICLE = "/article"
-    const val CATEGORY = "/category"
-    const val TAG = "/tag"
-    const val USER = "/user"
-    const val ROOT = "/"
+public object Routes {
+    public const val API_ARTICLE: String = "/api/article"
+    public const val API_USER: String = "/api/user"
+    public const val API_COMMENT: String = "/api/comment"
+    public const val API_CATEGORY: String = "/api/category"
+    public const val API_TAG: String = "/api/tag"
+    public const val ARTICLE: String = "/article"
+    public const val CATEGORY: String = "/category"
+    public const val TAG: String = "/tag"
+    public const val USER: String = "/user"
+    public const val ROOT: String = "/"
 }

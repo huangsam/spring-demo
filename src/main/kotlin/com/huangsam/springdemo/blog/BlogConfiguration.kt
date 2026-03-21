@@ -15,46 +15,51 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class SeedUser(
-    val login: String,
-    val firstname: String,
-    val lastname: String,
-    val description: String?,
-    val password: String,
-    val role: String,
+public data class SeedUser(
+    public val login: String,
+    public val firstname: String,
+    public val lastname: String,
+    public val description: String?,
+    public val password: String,
+    public val role: String,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class SeedCategory(val name: String, val slug: String)
-
-@JsonIgnoreProperties(ignoreUnknown = true) data class SeedTag(val name: String, val slug: String)
+public data class SeedCategory(public val name: String, public val slug: String)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class SeedComment(val author: SeedUser, val content: String, val addedAt: LocalDateTime)
+public data class SeedTag(public val name: String, public val slug: String)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class SeedArticle(
-    val title: String,
-    val headline: String,
-    val content: String,
-    val author: SeedUser,
-    val category: SeedCategory?,
-    val tags: List<SeedTag> = emptyList(),
-    val comments: List<SeedComment> = emptyList(),
-    val slug: String,
-    val addedAt: LocalDateTime,
-    val views: Int,
-    val likes: Int,
+public data class SeedComment(
+    public val author: SeedUser,
+    public val content: String,
+    public val addedAt: LocalDateTime,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public data class SeedArticle(
+    public val title: String,
+    public val headline: String,
+    public val content: String,
+    public val author: SeedUser,
+    public val category: SeedCategory?,
+    public val tags: List<SeedTag> = emptyList(),
+    public val comments: List<SeedComment> = emptyList(),
+    public val slug: String,
+    public val addedAt: LocalDateTime,
+    public val views: Int,
+    public val likes: Int,
 )
 
 @Configuration
-class BlogConfiguration {
-    val logger: Logger = LoggerFactory.getLogger(this::class.java)
+public class BlogConfiguration {
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     // ApplicationRunner boots up the database with seed data on application startup.
     @Bean
     @org.springframework.transaction.annotation.Transactional
-    fun databaseInitializer(
+    public fun databaseInitializer(
         userRepository: UserRepository,
         articleRepository: ArticleRepository,
         categoryRepository: CategoryRepository,
@@ -62,7 +67,7 @@ class BlogConfiguration {
         commentRepository: CommentRepository,
         passwordEncoder: PasswordEncoder,
         searchService: SearchService,
-    ) = ApplicationRunner {
+    ): ApplicationRunner = ApplicationRunner {
         if (userRepository.findByLogin("admin") == null) {
             logger.info("Create admin user")
             userRepository.save(

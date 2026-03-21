@@ -6,13 +6,13 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
-class MarkdownConverter {
+public class MarkdownConverter {
 
     private val parser = Parser.builder().build()
     private val renderer = HtmlRenderer.builder().build()
 
     @Cacheable("markdown")
-    fun convertToHtml(markdown: String?): String {
+    public fun convertToHtml(markdown: String?): String {
         if (markdown.isNullOrEmpty()) {
             return ""
         }

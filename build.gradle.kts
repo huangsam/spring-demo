@@ -60,7 +60,13 @@ dependencies {
 
 kotlin { jvmToolchain(25) }
 
-tasks.withType<KotlinCompile> { compilerOptions { freeCompilerArgs.add("-Xjsr305=strict") } }
+tasks.withType<KotlinCompile> {
+    compilerOptions {
+        freeCompilerArgs.add("-Xjsr305=strict")
+        freeCompilerArgs.add("-Xexplicit-api=warning")
+        freeCompilerArgs.add("-Werror")
+    }
+}
 
 ktfmt { kotlinLangStyle() }
 

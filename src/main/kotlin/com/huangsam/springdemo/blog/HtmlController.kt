@@ -22,7 +22,7 @@ private object MustacheView {
 }
 
 @Controller
-class HtmlController(
+public class HtmlController(
     private val repository: ArticleRepository,
     private val userRepository: UserRepository,
     private val commentRepository: CommentRepository,
@@ -32,7 +32,7 @@ class HtmlController(
     private val searchService: SearchService,
 ) {
     @GetMapping(Routes.ROOT)
-    fun blog(
+    public fun blog(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(required = false) search: String?,
         model: Model,
@@ -83,19 +83,19 @@ class HtmlController(
     }
 
     @GetMapping("/login")
-    fun login(model: Model): String {
+    public fun login(model: Model): String {
         model["title"] = "Login"
         return "login"
     }
 
     @GetMapping("/register")
-    fun register(model: Model): String {
+    public fun register(model: Model): String {
         model["title"] = "Register"
         return "register"
     }
 
     @GetMapping("/new-article")
-    fun newArticle(model: Model): String {
+    public fun newArticle(model: Model): String {
         val authenticatedUser = getAuthenticatedUser()
         model["title"] = "New Article"
         model["user"] = authenticatedUser
@@ -118,7 +118,7 @@ class HtmlController(
     }
 
     @GetMapping("${Routes.ARTICLE}/{slug}")
-    fun article(@PathVariable slug: String, model: Model): String {
+    public fun article(@PathVariable slug: String, model: Model): String {
         val article =
             repository.findBySlug(slug)
                 ?: throw ResponseStatusException(
@@ -154,7 +154,7 @@ class HtmlController(
     }
 
     @GetMapping("${Routes.CATEGORY}/{slug}")
-    fun category(@PathVariable slug: String, model: Model): String {
+    public fun category(@PathVariable slug: String, model: Model): String {
         val category =
             categoryRepository.findBySlug(slug)
                 ?: throw ResponseStatusException(
@@ -174,7 +174,7 @@ class HtmlController(
     }
 
     @GetMapping("${Routes.TAG}/{slug}")
-    fun tag(@PathVariable slug: String, model: Model): String {
+    public fun tag(@PathVariable slug: String, model: Model): String {
         val tag =
             tagRepository.findBySlug(slug)
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This tag does not exist")
@@ -191,7 +191,7 @@ class HtmlController(
     }
 
     @GetMapping("${Routes.USER}/{login}")
-    fun profile(@PathVariable login: String, model: Model): String {
+    public fun profile(@PathVariable login: String, model: Model): String {
         val profileUser =
             userRepository.findByLogin(login)
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist")
@@ -215,7 +215,7 @@ class HtmlController(
         return MustacheView.PROFILE
     }
 
-    fun Article.render() =
+    public fun Article.render(): RenderedArticle =
         RenderedArticle(
             slug,
             title,
@@ -229,20 +229,25 @@ class HtmlController(
             likes,
         )
 
-    fun Comment.render() = RenderedComment(author, content, addedAt.format())
+    public fun Comment.render(): RenderedComment =
+        RenderedComment(author, content, addedAt.format())
 
-    data class RenderedArticle(
-        val slug: String,
-        val title: String,
-        val headline: String,
-        val content: String,
-        val author: User,
-        val addedAt: String,
-        val category: Category?,
-        val tags: List<Tag>,
-        val views: Int,
-        val likes: Int,
+    public data class RenderedArticle(
+        public val slug: String,
+        public val title: String,
+        public val headline: String,
+        public val content: String,
+        public val author: User,
+        public val addedAt: String,
+        public val category: Category?,
+        public val tags: List<Tag>,
+        public val views: Int,
+        public val likes: Int,
     )
 
-    data class RenderedComment(val author: User, val content: String, val addedAt: String)
+    public data class RenderedComment(
+        public val author: User,
+        public val content: String,
+        public val addedAt: String,
+    )
 }

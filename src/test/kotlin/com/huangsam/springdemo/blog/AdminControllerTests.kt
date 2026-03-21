@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.view
 
 @WebMvcTest(AdminController::class)
 @Import(SecurityConfiguration::class)
-class AdminControllerTests
+internal class AdminControllerTests
 @Autowired
 constructor(
     private val mockMvc: MockMvc,
@@ -29,14 +29,14 @@ constructor(
 ) {
 
     @Test
-    fun `Access dashboard as USER is forbidden`() {
+    internal fun `Access dashboard as USER is forbidden`() {
         mockMvc
             .perform(get("/admin").with(user("johnDoe").roles("USER")))
             .andExpect(status().isForbidden)
     }
 
     @Test
-    fun `Access dashboard as ADMIN is permitted`() {
+    internal fun `Access dashboard as ADMIN is permitted`() {
         val user = User("admin", "Admin", "User", role = "ADMIN", password = "password")
         `when`(userRepository.findByLogin("admin")).thenReturn(user)
         `when`(categoryRepository.findAll()).thenReturn(emptyList())
@@ -51,7 +51,7 @@ constructor(
     }
 
     @Test
-    fun `Delete article and redirect`() {
+    internal fun `Delete article and redirect`() {
         mockMvc
             .perform(
                 post("/admin/articles/delete/1").with(user("admin").roles("ADMIN")).with(csrf())
@@ -61,7 +61,7 @@ constructor(
     }
 
     @Test
-    fun `Delete user and redirect`() {
+    internal fun `Delete user and redirect`() {
         mockMvc
             .perform(post("/admin/users/delete/1").with(user("admin").roles("ADMIN")).with(csrf()))
             .andExpect(status().is3xxRedirection)
@@ -69,7 +69,7 @@ constructor(
     }
 
     @Test
-    fun `Delete comment and redirect`() {
+    internal fun `Delete comment and redirect`() {
         mockMvc
             .perform(
                 post("/admin/comments/delete/1").with(user("admin").roles("ADMIN")).with(csrf())
@@ -79,7 +79,7 @@ constructor(
     }
 
     @Test
-    fun `Filter articles by title`() {
+    internal fun `Filter articles by title`() {
         val author = User("login", "first", "last", password = "password", id = 1L)
         val article = Article("title", "headline", "content", author, Category("cat"), id = 1L)
         `when`(articleRepository.findAllByTitleContainingIgnoreCase("test"))
@@ -95,7 +95,7 @@ constructor(
     }
 
     @Test
-    fun `Filter users by login`() {
+    internal fun `Filter users by login`() {
         val user = User("login", "first", "last", password = "password", id = 1L)
         `when`(userRepository.findAllByLoginContainingIgnoreCase("test")).thenReturn(listOf(user))
 
@@ -107,7 +107,7 @@ constructor(
     }
 
     @Test
-    fun `Filter comments by content`() {
+    internal fun `Filter comments by content`() {
         val author = User("login", "first", "last", password = "password", id = 1L)
         val article = Article("title", "headline", "c", author, Category("c"), id = 1L)
         val comment = Comment(article, author, "content", id = 1L)

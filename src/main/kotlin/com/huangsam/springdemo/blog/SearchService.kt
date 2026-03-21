@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service
 // TF-IDF weights terms: terms appearing in many documents have low weight (less discriminative),
 // while rare terms have high weight (more relevant to distinguish documents).
 @Service
-class SearchService {
+public class SearchService {
     private val index = ConcurrentHashMap<String, MutableMap<Long, Int>>()
     private val docLengths = ConcurrentHashMap<Long, Int>()
     private val idf = ConcurrentHashMap<String, Double>()
     private var totalDocs = 0
 
-    fun index(articles: Iterable<Article>) {
+    public fun index(articles: Iterable<Article>) {
         index.clear()
         docLengths.clear()
         idf.clear()
@@ -48,7 +48,7 @@ class SearchService {
         }
     }
 
-    fun search(query: String): List<Long> {
+    public fun search(query: String): List<Long> {
         if (query.isBlank() || totalDocs == 0) return emptyList()
 
         val queryTokens = tokenize(query)
@@ -68,7 +68,7 @@ class SearchService {
         return scores.entries.sortedByDescending { it.value }.map { it.key }
     }
 
-    fun findRelated(article: Article, limit: Int = 3): List<Long> {
+    public fun findRelated(article: Article, limit: Int = 3): List<Long> {
         if (totalDocs == 0) return emptyList()
 
         val categoryPart = article.category?.name ?: ""

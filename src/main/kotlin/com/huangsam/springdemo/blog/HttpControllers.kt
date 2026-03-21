@@ -16,14 +16,14 @@ import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping(Routes.API_ARTICLE)
-class ArticleController(
+public class ArticleController(
     private val repository: ArticleRepository,
     private val userRepository: UserRepository,
     private val categoryRepository: CategoryRepository,
     private val tagRepository: TagRepository,
 ) {
     @GetMapping("/")
-    fun findAll(
+    public fun findAll(
         @org.springframework.web.bind.annotation.RequestParam(defaultValue = "0") page: Int,
         @org.springframework.web.bind.annotation.RequestParam(required = false) category: String?,
         @org.springframework.web.bind.annotation.RequestParam(required = false) tag: String?,
@@ -74,7 +74,7 @@ class ArticleController(
 
     @Throws(ResponseStatusException::class)
     @GetMapping("/{slug}")
-    fun findOne(@PathVariable slug: String): Article {
+    public fun findOne(@PathVariable slug: String): Article {
         val article =
             repository.findBySlug(slug)
                 ?: throw ResponseStatusException(
@@ -92,7 +92,7 @@ class ArticleController(
     }
 
     @PostMapping("/")
-    fun createArticle(@RequestBody articleRequest: ArticleRequest): Article {
+    public fun createArticle(@RequestBody articleRequest: ArticleRequest): Article {
         // Extract the currently authenticated user from Spring Security's context.
         // SecurityContextHolder is a thread-local holder of the security principal.
         val auth = SecurityContextHolder.getContext().authentication
@@ -133,7 +133,7 @@ class ArticleController(
     }
 
     @PostMapping("/{slug}/like")
-    fun likeArticle(
+    public fun likeArticle(
         @PathVariable slug: String
     ): org.springframework.http.ResponseEntity<Map<String, Int>> {
         val article =
@@ -152,20 +152,20 @@ class ArticleController(
 
 @RestController
 @RequestMapping(Routes.API_USER)
-class UserController(
+public class UserController(
     private val repository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
-    @GetMapping("/") fun findAll(): Iterable<User> = repository.findAll()
+    @GetMapping("/") public fun findAll(): Iterable<User> = repository.findAll()
 
     @Throws(ResponseStatusException::class)
     @GetMapping("/{login}")
-    fun findOne(@PathVariable login: String): User =
+    public fun findOne(@PathVariable login: String): User =
         repository.findByLogin(login)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist")
 
     @PostMapping("/register")
-    fun register(
+    public fun register(
         @RequestBody registrationRequest: RegistrationRequest
     ): org.springframework.http.ResponseEntity<User> {
         if (repository.findByLogin(registrationRequest.login) != null) {
@@ -187,13 +187,13 @@ class UserController(
 
 @RestController
 @RequestMapping(Routes.API_COMMENT)
-class CommentController(
+public class CommentController(
     private val repository: CommentRepository,
     private val articleRepository: ArticleRepository,
     private val userRepository: UserRepository,
 ) {
     @GetMapping("/{slug}")
-    fun findByArticle(@PathVariable slug: String): Iterable<Comment> {
+    public fun findByArticle(@PathVariable slug: String): Iterable<Comment> {
         val article =
             articleRepository.findBySlug(slug)
                 ?: throw ResponseStatusException(
@@ -204,7 +204,7 @@ class CommentController(
     }
 
     @PostMapping("/")
-    fun addComment(@RequestBody commentRequest: CommentRequest): Comment {
+    public fun addComment(@RequestBody commentRequest: CommentRequest): Comment {
         val article =
             articleRepository.findBySlug(commentRequest.articleSlug)
                 ?: throw ResponseStatusException(
@@ -224,33 +224,33 @@ class CommentController(
     }
 }
 
-data class CommentRequest(val articleSlug: String, val content: String)
+public data class CommentRequest(public val articleSlug: String, public val content: String)
 
-data class RegistrationRequest(
-    val login: String,
-    val firstname: String,
-    val lastname: String,
-    val password: String,
+public data class RegistrationRequest(
+    public val login: String,
+    public val firstname: String,
+    public val lastname: String,
+    public val password: String,
 )
 
-data class ArticleRequest(
-    val title: String,
-    val headline: String,
-    val content: String,
-    val category: String? = null,
-    val tags: List<String> = emptyList(),
-    val status: ArticleStatus? = null,
-    val scheduledAt: java.time.LocalDateTime? = null,
+public data class ArticleRequest(
+    public val title: String,
+    public val headline: String,
+    public val content: String,
+    public val category: String? = null,
+    public val tags: List<String> = emptyList(),
+    public val status: ArticleStatus? = null,
+    public val scheduledAt: java.time.LocalDateTime? = null,
 )
 
 @RestController
 @RequestMapping(Routes.API_CATEGORY)
-class CategoryController(private val repository: CategoryRepository) {
-    @GetMapping("/") fun findAll(): Iterable<Category> = repository.findAllByOrderByNameAsc()
+public class CategoryController(private val repository: CategoryRepository) {
+    @GetMapping("/") public fun findAll(): Iterable<Category> = repository.findAllByOrderByNameAsc()
 }
 
 @RestController
 @RequestMapping(Routes.API_TAG)
-class TagController(private val repository: TagRepository) {
-    @GetMapping("/") fun findAll(): Iterable<Tag> = repository.findAllByOrderByNameAsc()
+public class TagController(private val repository: TagRepository) {
+    @GetMapping("/") public fun findAll(): Iterable<Tag> = repository.findAllByOrderByNameAsc()
 }

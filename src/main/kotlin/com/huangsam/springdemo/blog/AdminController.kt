@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam
 
 @Controller
 @RequestMapping("/admin")
-class AdminController(
+public class AdminController(
     private val articleRepository: ArticleRepository,
     private val userRepository: UserRepository,
     private val commentRepository: CommentRepository,
@@ -29,7 +29,7 @@ class AdminController(
     }
 
     @GetMapping
-    fun dashboard(model: Model): String {
+    public fun dashboard(model: Model): String {
         val user = getAuthenticatedUser()
         model["title"] = "Admin Dashboard"
         model["articlesCount"] = articleRepository.count()
@@ -65,7 +65,7 @@ class AdminController(
     }
 
     @GetMapping("/articles")
-    fun articles(model: Model, @RequestParam(required = false) title: String?): String {
+    public fun articles(model: Model, @RequestParam(required = false) title: String?): String {
         val user = getAuthenticatedUser()
         model["title"] = "Manage Articles"
         val articles =
@@ -82,7 +82,7 @@ class AdminController(
     }
 
     @GetMapping("/users")
-    fun users(model: Model, @RequestParam(required = false) login: String?): String {
+    public fun users(model: Model, @RequestParam(required = false) login: String?): String {
         val user = getAuthenticatedUser()
         model["title"] = "Manage Users"
         val users =
@@ -99,7 +99,7 @@ class AdminController(
     }
 
     @GetMapping("/comments")
-    fun comments(model: Model, @RequestParam(required = false) content: String?): String {
+    public fun comments(model: Model, @RequestParam(required = false) content: String?): String {
         val user = getAuthenticatedUser()
         model["title"] = "Manage Comments"
         val comments =
@@ -116,19 +116,19 @@ class AdminController(
     }
 
     @PostMapping("/articles/delete/{id}")
-    fun deleteArticle(@PathVariable id: Long): String {
+    public fun deleteArticle(@PathVariable id: Long): String {
         articleRepository.deleteById(id)
         return "redirect:/admin/articles"
     }
 
     @PostMapping("/users/delete/{id}")
-    fun deleteUser(@PathVariable id: Long): String {
+    public fun deleteUser(@PathVariable id: Long): String {
         userRepository.deleteById(id)
         return "redirect:/admin/users"
     }
 
     @PostMapping("/comments/delete/{id}")
-    fun deleteComment(@PathVariable id: Long): String {
+    public fun deleteComment(@PathVariable id: Long): String {
         commentRepository.deleteById(id)
         return "redirect:/admin/comments"
     }
@@ -136,13 +136,13 @@ class AdminController(
     private fun Article.render() =
         RenderedArticle(id!!, slug, title, headline, content, author, addedAt.format())
 
-    data class RenderedArticle(
-        val id: Long,
-        val slug: String,
-        val title: String,
-        val headline: String,
-        val content: String,
-        val author: User,
-        val addedAt: String,
+    public data class RenderedArticle(
+        public val id: Long,
+        public val slug: String,
+        public val title: String,
+        public val headline: String,
+        public val content: String,
+        public val author: User,
+        public val addedAt: String,
     )
 }

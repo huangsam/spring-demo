@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 // Automatically publishes articles that have been scheduled for a future time.
 // This demonstrates Spring's scheduling capability for background tasks.
 @Service
-class PublishingService(
+public class PublishingService(
     private val articleRepository: ArticleRepository,
     private val searchService: SearchService,
 ) {
@@ -20,7 +20,7 @@ class PublishingService(
     // @Transactional ensures database changes are committed as a single unit.
     @Scheduled(fixedRate = 60000) // Run every minute
     @Transactional
-    fun publishScheduledArticles() {
+    public fun publishScheduledArticles() {
         val now = LocalDateTime.now()
         // Find all draft articles whose scheduled publication time has arrived
         val scheduledArticles =

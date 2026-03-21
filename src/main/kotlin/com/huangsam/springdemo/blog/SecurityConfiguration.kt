@@ -15,13 +15,13 @@ import org.springframework.security.web.SecurityFilterChain
 // Spring Security intercepts all requests and applies these rules before they reach controllers.
 @Configuration
 @EnableWebSecurity
-class SecurityConfiguration {
+public class SecurityConfiguration {
 
     // The SecurityFilterChain bean defines the overall security configuration.
     // It builds a filter chain that processes every HTTP request through Spring Security's security
     // filters.
     @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    public fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         // authorizeHttpRequests() sets up rules for which endpoints require authentication.
         // Rules are checked in order; the first matching rule wins.
         http
@@ -75,7 +75,7 @@ class SecurityConfiguration {
     // UserDetailsService is Spring Security's interface for loading user information from storage.
     // During login, Spring Security calls this to fetch the user's password and roles.
     @Bean
-    fun userDetailsService(userRepository: UserRepository): UserDetailsService {
+    public fun userDetailsService(userRepository: UserRepository): UserDetailsService {
         return UserDetailsService { login ->
             val user =
                 userRepository.findByLogin(login)
@@ -92,7 +92,7 @@ class SecurityConfiguration {
     // PasswordEncoder implements a hashing algorithm (BCrypt) to store passwords securely.
     // BCrypt is slow by design to make brute-force attacks computationally expensive.
     @Bean
-    fun passwordEncoder(): PasswordEncoder {
+    public fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
 }

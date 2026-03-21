@@ -5,9 +5,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-class WebConfig(private val rateLimitInterceptor: RateLimitInterceptor) : WebMvcConfigurer {
+public class WebConfig(private val rateLimitInterceptor: RateLimitInterceptor) : WebMvcConfigurer {
 
-    override fun addInterceptors(registry: InterceptorRegistry) {
+    public override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(rateLimitInterceptor).addPathPatterns("/api/**", "/hello/**")
     }
 }

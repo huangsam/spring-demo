@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class SearchServiceTest {
+internal class SearchServiceTest {
 
     private val searchService = SearchService()
 
     @Test
-    fun `When indexing and searching then return ranked results`() {
+    internal fun `When indexing and searching then return ranked results`() {
         val user = User("login", "First", "Last", password = "password")
         val a1 =
             Article(
@@ -63,7 +63,7 @@ class SearchServiceTest {
     }
 
     @Test
-    fun `When finding related articles then exclude self and rank by similarity`() {
+    internal fun `When finding related articles then exclude self and rank by similarity`() {
         val user = User("login", "First", "Last", password = "password")
         val cat1 = Category("Kotlin")
         val cat2 = Category("Spring")
@@ -121,14 +121,14 @@ class SearchServiceTest {
     }
 
     @Test
-    fun `When searching with blank query then return empty list`() {
+    internal fun `When searching with blank query then return empty list`() {
         searchService.index(emptyList())
         val results = searchService.search("")
         assertTrue(results.isEmpty())
     }
 
     @Test
-    fun `When searching for non-existent word then return empty list`() {
+    internal fun `When searching for non-existent word then return empty list`() {
         val user = User("login", "First", "Last", password = "password")
         val a1 =
             Article("Title", "Headline", "Content", user, status = ArticleStatus.PUBLISHED).apply {

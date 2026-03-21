@@ -10,12 +10,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(controllers = [TestController::class])
 @Import(WebConfig::class, RateLimitInterceptor::class)
-class RateLimitInterceptorTest {
+internal class RateLimitInterceptorTest {
 
     @Autowired private lateinit var mockMvc: MockMvc
 
     @Test
-    fun `Rate limiting allows first 100 requests but blocks the 101st`() {
+    internal fun `Rate limiting allows first 100 requests but blocks the 101st`() {
         val clientId = "192.168.1.1"
 
         // Make 100 allowed requests
@@ -40,9 +40,9 @@ class RateLimitInterceptorTest {
 
 // Dummy controller for testing
 @org.springframework.web.bind.annotation.RestController
-class TestController {
+internal class TestController {
     @org.springframework.web.bind.annotation.GetMapping("/api/test-rate-limit")
-    fun testEndpoint(): String {
+    internal fun testEndpoint(): String {
         return "OK"
     }
 }

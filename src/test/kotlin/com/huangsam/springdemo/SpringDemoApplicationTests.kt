@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class SpringDemoApplicationTests(@param:Autowired private val htmlController: HtmlController) {
+internal class SpringDemoApplicationTests(
+    @param:Autowired private val htmlController: HtmlController
+) {
     @Test
-    fun contextLoads() {
+    internal fun contextLoads() {
         assertNotNull(htmlController)
     }
 }

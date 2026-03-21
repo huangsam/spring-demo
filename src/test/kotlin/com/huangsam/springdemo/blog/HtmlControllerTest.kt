@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.client.RestTestClient
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient
-class HtmlControllerTest
+internal class HtmlControllerTest
 @Autowired
 constructor(
     private val restClient: RestTestClient,
@@ -25,17 +25,17 @@ constructor(
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @BeforeAll
-    fun setUp() {
+    internal fun setUp() {
         logger.info("Set up HTML test")
     }
 
     @AfterAll
-    fun tearDown() {
+    internal fun tearDown() {
         logger.info("Tear down HTML test")
     }
 
     @Test
-    fun `Assert blog page title, content and status code`() {
+    internal fun `Assert blog page title, content and status code`() {
         logger.info("Assert blog page works")
         val responseBody =
             restClient
@@ -55,7 +55,7 @@ constructor(
     }
 
     @Test
-    fun `Assert blog pagination navigation works`() {
+    internal fun `Assert blog pagination navigation works`() {
         val responseBody =
             restClient
                 .get()
@@ -75,7 +75,7 @@ constructor(
     }
 
     @Test
-    fun `Assert article page title, content and status code`() {
+    internal fun `Assert article page title, content and status code`() {
         logger.info("Assert article page works")
         val article = articleRepository.findAll().first()
         val responseBody =
@@ -95,7 +95,7 @@ constructor(
     }
 
     @Test
-    fun `Assert markdown rendering works`() {
+    internal fun `Assert markdown rendering works`() {
         // Our generated content has markdown (e.g., ## Introduction)
         val article = articleRepository.findAll().first()
         val responseBody =
@@ -116,7 +116,7 @@ constructor(
     }
 
     @Test
-    fun `Assert user profile page title, content and status code`() {
+    internal fun `Assert user profile page title, content and status code`() {
         val responseBody =
             restClient
                 .get()
@@ -135,7 +135,7 @@ constructor(
     }
 
     @Test
-    fun `Assert category page title, content and status code`() {
+    internal fun `Assert category page title, content and status code`() {
         val category = categoryRepository.findAll().first()
         val responseBody =
             restClient
@@ -151,7 +151,7 @@ constructor(
     }
 
     @Test
-    fun `Assert tag page title, content and status code`() {
+    internal fun `Assert tag page title, content and status code`() {
         val tag = tagRepository.findAll().first()
         val responseBody =
             restClient
@@ -167,7 +167,7 @@ constructor(
     }
 
     @Test
-    fun `Assert search functionality works`() {
+    internal fun `Assert search functionality works`() {
         val responseBody =
             restClient
                 .get()

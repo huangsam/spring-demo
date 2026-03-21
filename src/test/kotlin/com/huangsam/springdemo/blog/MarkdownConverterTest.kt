@@ -6,23 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class MarkdownConverterTest
+internal class MarkdownConverterTest
 @Autowired
 constructor(private val markdownConverter: MarkdownConverter) {
     @Test
-    fun `convertToHtml renders bold text`() {
+    internal fun `convertToHtml renders bold text`() {
         val html = markdownConverter.convertToHtml("**bold**")
         assertTrue(html.contains("<strong>bold</strong>"))
     }
 
     @Test
-    fun `convertToHtml renders italic text`() {
+    internal fun `convertToHtml renders italic text`() {
         val html = markdownConverter.convertToHtml("*italic*")
         assertTrue(html.contains("<em>italic</em>"))
     }
 
     @Test
-    fun `convertToHtml renders unordered list`() {
+    internal fun `convertToHtml renders unordered list`() {
         val html = markdownConverter.convertToHtml("- item1\n- item2")
         assertTrue(html.contains("<ul>"))
         assertTrue(html.contains("<li>item1</li>"))
@@ -30,19 +30,19 @@ constructor(private val markdownConverter: MarkdownConverter) {
     }
 
     @Test
-    fun `convertToHtml renders link`() {
+    internal fun `convertToHtml renders link`() {
         val html = markdownConverter.convertToHtml("[click](https://example.com)")
         assertTrue(html.contains("<a href=\"https://example.com\">click</a>"))
     }
 
     @Test
-    fun `convertToHtml renders heading`() {
+    internal fun `convertToHtml renders heading`() {
         val html = markdownConverter.convertToHtml("# Heading")
         assertTrue(html.contains("<h1>Heading</h1>"))
     }
 
     @Test
-    fun `convertToHtml handles empty string`() {
+    internal fun `convertToHtml handles empty string`() {
         val html = markdownConverter.convertToHtml("")
         assertTrue(html.isEmpty())
     }

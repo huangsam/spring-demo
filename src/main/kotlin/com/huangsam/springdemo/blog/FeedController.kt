@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
 @RestController
-class FeedController(private val repository: ArticleRepository) {
+public class FeedController(private val repository: ArticleRepository) {
 
     @GetMapping("/rss", produces = ["application/rss+xml"])
-    fun rss(): String {
+    public fun rss(): String {
         return generateFeed("rss_2.0")
     }
 
     @GetMapping("/atom", produces = ["application/atom+xml"])
-    fun atom(): String {
+    public fun atom(): String {
         return generateFeed("atom_1.0")
     }
 

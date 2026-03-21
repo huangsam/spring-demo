@@ -9,10 +9,10 @@ import org.springframework.test.web.servlet.client.RestTestClient
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient
-class FeedControllerTest @Autowired constructor(private val restClient: RestTestClient) {
+internal class FeedControllerTest @Autowired constructor(private val restClient: RestTestClient) {
 
     @Test
-    fun `Assert RSS feed works`() {
+    internal fun `Assert RSS feed works`() {
         val responseBody =
             restClient
                 .get()
@@ -38,7 +38,7 @@ class FeedControllerTest @Autowired constructor(private val restClient: RestTest
     }
 
     @Test
-    fun `Assert Atom feed works`() {
+    internal fun `Assert Atom feed works`() {
         val responseBody =
             restClient
                 .get()
