@@ -1,4 +1,4 @@
-package com.huangsam.springdemo
+package com.huangsam.springdemo.config
 
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Configuration
