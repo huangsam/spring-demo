@@ -35,21 +35,20 @@ class FeedController(private val repository: ArticleRepository) {
             repository
                 .findAllByStatusOrderByAddedAtDesc(ArticleStatus.PUBLISHED, PageRequest.of(0, 50))
                 .content
-        val entries =
-            articles.map { article ->
-                SyndEntryImpl().apply {
-                    title = article.title
-                    link = "$baseUrl/article/${article.slug}"
-                    publishedDate = article.addedAt.toDate()
-                    author = "${article.author.firstname} ${article.author.lastname}"
-                    val entryDescription =
-                        SyndContentImpl().apply {
-                            type = "text/plain"
-                            value = article.headline
-                        }
-                    this.description = entryDescription
-                }
+        val entries = articles.map { article ->
+            SyndEntryImpl().apply {
+                title = article.title
+                link = "$baseUrl/article/${article.slug}"
+                publishedDate = article.addedAt.toDate()
+                author = "${article.author.firstname} ${article.author.lastname}"
+                val entryDescription =
+                    SyndContentImpl().apply {
+                        type = "text/plain"
+                        value = article.headline
+                    }
+                this.description = entryDescription
             }
+        }
 
         feed.entries = entries
         return SyndFeedOutput().outputString(feed)
