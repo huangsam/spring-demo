@@ -1,9 +1,9 @@
 package com.huangsam.springdemo.blog
 
 import com.huangsam.springdemo.Routes
-import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,12 +24,12 @@ constructor(
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    @BeforeAll
+    @BeforeEach
     internal fun setUp() {
         logger.info("Set up HTML test")
     }
 
-    @AfterAll
+    @AfterEach
     internal fun tearDown() {
         logger.info("Tear down HTML test")
     }
