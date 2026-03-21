@@ -10,7 +10,6 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
-    kotlin("plugin.allopen") version kotlinVersion
 
     // Build Tool Plugins
     id("com.ncorti.ktfmt.gradle") version "0.26.0"
@@ -64,12 +63,6 @@ kotlin { jvmToolchain(25) }
 tasks.withType<KotlinCompile> { compilerOptions { freeCompilerArgs.add("-Xjsr305=strict") } }
 
 ktfmt { kotlinLangStyle() }
-
-allOpen {
-    annotation("jakarta.persistence.Entity")
-    annotation("jakarta.persistence.Embeddable")
-    annotation("jakarta.persistence.MappedSuperclass")
-}
 
 tasks.withType<Test> {
     useJUnitPlatform()
