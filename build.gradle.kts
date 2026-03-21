@@ -33,7 +33,7 @@ dependencies {
     implementation("com.bucket4j:bucket4j-core:8.10.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.commonmark:commonmark:0.24.0")
+    implementation("org.commonmark:commonmark:0.27.0")
 
     implementation("com.rometools:rome:2.1.0")
     runtimeOnly("com.h2database:h2")
