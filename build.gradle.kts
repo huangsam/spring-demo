@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "4.0.3"
+    id("org.springframework.boot") version "4.0.4"
     id("io.spring.dependency-management") version "1.1.7"
     id("com.ncorti.ktfmt.gradle") version "0.26.0"
 
@@ -33,7 +33,7 @@ dependencies {
     implementation("com.bucket4j:bucket4j-core:8.10.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.commonmark:commonmark:0.27.0")
+    implementation("org.commonmark:commonmark:0.27.1")
 
     implementation("com.rometools:rome:2.1.0")
     runtimeOnly("com.h2database:h2")
