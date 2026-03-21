@@ -100,7 +100,7 @@ public class BlogConfiguration {
         val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
         val seedArticles: List<SeedArticle> = mapper.readValue(json)
 
-        val persistedUsers = mutableMapOf<String, User>("johnDoe" to johnDoe)
+        val persistedUsers = mutableMapOf("johnDoe" to johnDoe)
         val persistedCategories = mutableMapOf<String, Category>()
         val persistedTags = mutableMapOf<String, Tag>()
 

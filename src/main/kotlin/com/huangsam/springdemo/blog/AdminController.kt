@@ -69,7 +69,7 @@ public class AdminController(
         val user = getAuthenticatedUser()
         model["title"] = "Manage Articles"
         val articles =
-            if (title != null && title.isNotBlank()) {
+            if (!title.isNullOrBlank()) {
                 articleRepository.findAllByTitleContainingIgnoreCase(title)
             } else {
                 articleRepository.findAll()
@@ -86,7 +86,7 @@ public class AdminController(
         val user = getAuthenticatedUser()
         model["title"] = "Manage Users"
         val users =
-            if (login != null && login.isNotBlank()) {
+            if (!login.isNullOrBlank()) {
                 userRepository.findAllByLoginContainingIgnoreCase(login)
             } else {
                 userRepository.findAll()
@@ -103,7 +103,7 @@ public class AdminController(
         val user = getAuthenticatedUser()
         model["title"] = "Manage Comments"
         val comments =
-            if (content != null && content.isNotBlank()) {
+            if (!content.isNullOrBlank()) {
                 commentRepository.findAllByContentContainingIgnoreCase(content)
             } else {
                 commentRepository.findAll()

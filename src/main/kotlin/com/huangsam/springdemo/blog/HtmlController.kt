@@ -59,8 +59,8 @@ public class HtmlController(
             model["currentPage"] = page
             model["currentPageDisplay"] = page + 1
             model["totalPages"] = articlePage.totalPages
-            model["isFirst"] = articlePage.isFirst()
-            model["isLast"] = articlePage.isLast()
+            model["isFirst"] = articlePage.isFirst
+            model["isLast"] = articlePage.isLast
             model["hasNext"] = articlePage.hasNext()
             model["hasPrevious"] = articlePage.hasPrevious()
             model["nextPage"] = page + 1
