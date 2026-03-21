@@ -22,27 +22,39 @@ version = "0.0.1-SNAPSHOT"
 repositories { mavenCentral() }
 
 dependencies {
+    // Spring Boot Starters
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-mustache")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("org.springframework.boot:spring-boot-starter-mustache")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+    // Observability
     implementation("io.micrometer:micrometer-registry-prometheus")
+
+    // API Documentation
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
+
+    // Rate Limiting & External Libraries
     implementation("com.bucket4j:bucket4j-core:8.10.1")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("com.rometools:rome:2.1.0")
     implementation("org.commonmark:commonmark:0.27.1")
 
-    implementation("com.rometools:rome:2.1.0")
+    // Kotlin Support
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+    // Runtime
     runtimeOnly("com.h2database:h2")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 
 kotlin { jvmToolchain(25) }
