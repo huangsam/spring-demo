@@ -1,6 +1,8 @@
 package com.huangsam.springdemo.blog
 
 import com.huangsam.springdemo.Routes
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
 import kotlin.jvm.Throws
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
@@ -91,7 +93,7 @@ public class ArticleController(
     }
 
     @PostMapping("/")
-    public fun createArticle(@RequestBody articleRequest: ArticleRequest): Article {
+    public fun createArticle(@Valid @RequestBody articleRequest: ArticleRequest): Article {
         // Extract the currently authenticated user from Spring Security's context.
         // SecurityContextHolder is a thread-local holder of the security principal.
         val auth = SecurityContextHolder.getContext().authentication
@@ -165,7 +167,7 @@ public class UserController(
 
     @PostMapping("/register")
     public fun register(
-        @RequestBody registrationRequest: RegistrationRequest
+        @Valid @RequestBody registrationRequest: RegistrationRequest
     ): org.springframework.http.ResponseEntity<User> {
         if (repository.findByLogin(registrationRequest.login) != null) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Login already exists")
@@ -203,7 +205,7 @@ public class CommentController(
     }
 
     @PostMapping("/")
-    public fun addComment(@RequestBody commentRequest: CommentRequest): Comment {
+    public fun addComment(@Valid @RequestBody commentRequest: CommentRequest): Comment {
         val article =
             articleRepository.findBySlug(commentRequest.articleSlug)
                 ?: throw ResponseStatusException(
@@ -223,19 +225,22 @@ public class CommentController(
     }
 }
 
-public data class CommentRequest(public val articleSlug: String, public val content: String)
+public data class CommentRequest(
+    @param:NotBlank(message = "Article slug is required") public val articleSlug: String,
+    @param:NotBlank(message = "Comment content cannot be empty") public val content: String,
+)
 
 public data class RegistrationRequest(
-    public val login: String,
-    public val firstname: String,
-    public val lastname: String,
-    public val password: String,
+    @param:NotBlank(message = "Login is required") public val login: String,
+    @param:NotBlank(message = "First name is required") public val firstname: String,
+    @param:NotBlank(message = "Last name is required") public val lastname: String,
+    @param:NotBlank(message = "Password is required") public val password: String,
 )
 
 public data class ArticleRequest(
-    public val title: String,
-    public val headline: String,
-    public val content: String,
+    @param:NotBlank(message = "Title is required") public val title: String,
+    @param:NotBlank(message = "Headline is required") public val headline: String,
+    @param:NotBlank(message = "Content is required") public val content: String,
     public val category: String? = null,
     public val tags: List<String> = emptyList(),
     public val status: ArticleStatus? = null,

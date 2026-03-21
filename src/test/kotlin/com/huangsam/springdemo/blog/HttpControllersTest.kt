@@ -371,4 +371,58 @@ constructor(
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.[0].slug").value(article.slug))
     }
+
+    @Test
+    internal fun `Create article without authentication returns 403`() {
+        val request = ArticleRequest("New Title", "New Headline", "New Content")
+        // No @WithMockUser: unauthenticated request
+        mockMvc
+            .perform(
+                post("${Routes.API_ARTICLE}/")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request))
+            )
+            .andExpect(status().isForbidden)
+    }
+
+    @Test
+    internal fun `Add comment without authentication returns 403`() {
+        val request = CommentRequest(articleSlug = "test-article", content = "Test comment")
+        val johnDoe = User("johnDoe", "John", "Doe", password = "password")
+        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
+
+        // Mock article exists, but no @WithMockUser: still should fail auth
+        `when`(articleRepository.findBySlug(request.articleSlug)).thenReturn(article)
+
+        mockMvc
+            .perform(
+                post("${Routes.API_COMMENT}/")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request))
+            )
+            .andExpect(status().isForbidden)
+    }
+
+    @Test
+    @WithMockUser(username = "johnDoe", roles = ["USER"])
+    internal fun `Add comment with authentication succeeds when article exists`() {
+        val request = CommentRequest(articleSlug = "test-article", content = "Nice post!")
+        val johnDoe = User("johnDoe", "John", "Doe", password = "password")
+        val article = Article("Lorem", "Lorem", "dolor sit amet", johnDoe)
+        val savedComment = Comment(article, johnDoe, request.content)
+
+        `when`(articleRepository.findBySlug(request.articleSlug)).thenReturn(article)
+        `when`(userRepository.findByLogin("johnDoe")).thenReturn(johnDoe)
+        `when`(commentRepository.save(org.mockito.ArgumentMatchers.any(Comment::class.java)))
+            .thenReturn(savedComment)
+
+        mockMvc
+            .perform(
+                post("${Routes.API_COMMENT}/")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request))
+            )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.content").value("Nice post!"))
+    }
 }
