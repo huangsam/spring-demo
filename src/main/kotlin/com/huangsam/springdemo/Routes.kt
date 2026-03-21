@@ -9,7 +9,6 @@ object Routes {
     const val ARTICLE = "/article"
     const val CATEGORY = "/category"
     const val TAG = "/tag"
-    const val HELLO = "/hello"
     const val USER = "/user"
     const val ROOT = "/"
 }

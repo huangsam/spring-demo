@@ -37,7 +37,6 @@ class SecurityConfiguration {
                         "/user/**",
                         "/api/article/**",
                         "/api/user/**",
-                        "/hello",
                         "/style.css",
                         "/register",
                         "/api/user/register",
