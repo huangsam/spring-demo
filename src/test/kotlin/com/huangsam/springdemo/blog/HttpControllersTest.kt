@@ -70,12 +70,12 @@ constructor(
             .perform(get("${Routes.API_ARTICLE}/").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].author.login").value(johnDoe.login))
-            .andExpect(jsonPath("\$.[0].slug").value(lorem5Article.slug))
-            .andExpect(jsonPath("\$.[0].category.name").value("Frameworks"))
-            .andExpect(jsonPath("\$.[0].tags[0].name").value("Spring"))
-            .andExpect(jsonPath("\$.[1].author.login").value(johnDoe.login))
-            .andExpect(jsonPath("\$.[1].slug").value(ipsumArticle.slug))
+            .andExpect(jsonPath("$.[0].author.login").value(johnDoe.login))
+            .andExpect(jsonPath("$.[0].slug").value(lorem5Article.slug))
+            .andExpect(jsonPath("$.[0].category.name").value("Frameworks"))
+            .andExpect(jsonPath("$.[0].tags[0].name").value("Spring"))
+            .andExpect(jsonPath("$.[1].author.login").value(johnDoe.login))
+            .andExpect(jsonPath("$.[1].slug").value(ipsumArticle.slug))
     }
 
     @Test
@@ -90,8 +90,8 @@ constructor(
             )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.slug").value(article.slug))
-            .andExpect(jsonPath("\$.author.login").value(johnDoe.login))
+            .andExpect(jsonPath("$.slug").value(article.slug))
+            .andExpect(jsonPath("$.author.login").value(johnDoe.login))
     }
 
     @Test
@@ -142,9 +142,9 @@ constructor(
                     .content(objectMapper.writeValueAsString(request))
             )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("\$.title").value("New Title"))
-            .andExpect(jsonPath("\$.category.name").value("Frameworks"))
-            .andExpect(jsonPath("\$.tags[0].name").value("Spring"))
+            .andExpect(jsonPath("$.title").value("New Title"))
+            .andExpect(jsonPath("$.category.name").value("Frameworks"))
+            .andExpect(jsonPath("$.tags[0].name").value("Spring"))
     }
 
     @Test
@@ -156,8 +156,8 @@ constructor(
             .perform(get("${Routes.API_USER}/").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].login").value(johnDoe.login))
-            .andExpect(jsonPath("\$.[1].login").value(janeDoe.login))
+            .andExpect(jsonPath("$.[0].login").value(johnDoe.login))
+            .andExpect(jsonPath("$.[1].login").value(janeDoe.login))
     }
 
     @Test
@@ -168,7 +168,7 @@ constructor(
             .perform(get("${Routes.API_USER}/${johnDoe.login}").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.login").value(johnDoe.login))
+            .andExpect(jsonPath("$.login").value(johnDoe.login))
     }
 
     @Test
@@ -195,7 +195,7 @@ constructor(
                     .content(objectMapper.writeValueAsString(request))
             )
             .andExpect(status().isCreated)
-            .andExpect(jsonPath("\$.login").value(request.login))
+            .andExpect(jsonPath("$.login").value(request.login))
     }
 
     @Test
@@ -227,7 +227,7 @@ constructor(
             )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].content").value(comment.content))
+            .andExpect(jsonPath("$.[0].content").value(comment.content))
     }
 
     @Test
@@ -255,7 +255,7 @@ constructor(
             )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.likes").value(6))
+            .andExpect(jsonPath("$.likes").value(6))
     }
 
     @Test
@@ -268,8 +268,8 @@ constructor(
             .perform(get("${Routes.API_CATEGORY}/").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].name").value(category1.name))
-            .andExpect(jsonPath("\$.[1].name").value(category2.name))
+            .andExpect(jsonPath("$.[0].name").value(category1.name))
+            .andExpect(jsonPath("$.[1].name").value(category2.name))
     }
 
     @Test
@@ -281,8 +281,8 @@ constructor(
             .perform(get("${Routes.API_TAG}/").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].name").value(tag1.name))
-            .andExpect(jsonPath("\$.[1].name").value(tag2.name))
+            .andExpect(jsonPath("$.[0].name").value(tag1.name))
+            .andExpect(jsonPath("$.[1].name").value(tag2.name))
     }
 
     @Test
@@ -314,7 +314,7 @@ constructor(
                     .accept(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("\$.[0].slug").value(article.slug))
+            .andExpect(jsonPath("$.[0].slug").value(article.slug))
     }
 
     @Test
@@ -345,7 +345,7 @@ constructor(
                 get("${Routes.API_ARTICLE}/?tag=${tag.slug}").accept(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("\$.[0].slug").value(article.slug))
+            .andExpect(jsonPath("$.[0].slug").value(article.slug))
     }
 
     @Test
@@ -369,6 +369,6 @@ constructor(
                     .accept(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("\$.[0].slug").value(article.slug))
+            .andExpect(jsonPath("$.[0].slug").value(article.slug))
     }
 }

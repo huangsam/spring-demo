@@ -19,7 +19,7 @@ internal class RateLimitInterceptorTest {
         val clientId = "192.168.1.1"
 
         // Make 100 allowed requests
-        for (i in 1..100) {
+        (1..100).forEach { _ ->
             mockMvc
                 .perform(get("/api/test-rate-limit").header("X-Forwarded-For", clientId))
                 .andExpect(status().isOk)

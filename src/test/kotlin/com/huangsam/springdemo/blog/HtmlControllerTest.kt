@@ -147,7 +147,7 @@ constructor(
                 .expectBody(String::class.java)
                 .returnResult()
                 .responseBody
-        responseBody!!.let { assertTrue(it.contains("Category: ${category.name}")) }
+        assertTrue(responseBody!!.contains("Category: ${category.name}"))
     }
 
     @Test
@@ -163,7 +163,7 @@ constructor(
                 .expectBody(String::class.java)
                 .returnResult()
                 .responseBody
-        responseBody!!.let { assertTrue(it.contains("Tag: ${tag.name}")) }
+        assertTrue(responseBody!!.contains("Tag: ${tag.name}"))
     }
 
     @Test
