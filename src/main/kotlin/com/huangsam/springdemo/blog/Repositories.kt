@@ -8,8 +8,10 @@ import org.springframework.data.repository.CrudRepository
 public interface ArticleRepository : CrudRepository<Article, Long> {
     // Fetch single article by URL slug and status (e.g., published articles for public viewing).
     // Used by: article detail page, RSS feed, public API endpoints.
-    // EntityGraph eagerly loads author, category, tags in single query (prevents 3 separate selects).
-    // Status filter ensures readers can only see published articles (drafts hidden except to author).
+    // EntityGraph eagerly loads author, category, tags in single query (prevents 3 separate
+    // selects).
+    // Status filter ensures readers can only see published articles (drafts hidden except to
+    // author).
     @EntityGraph(attributePaths = ["author", "category", "tags"])
     public fun findBySlugAndStatus(slug: String, status: ArticleStatus): Article?
 
@@ -100,7 +102,8 @@ public interface ArticleRepository : CrudRepository<Article, Long> {
 
 public interface UserRepository : CrudRepository<User, Long> {
     // Fetch user by login/username for authentication.
-    // Used by: Spring Security UserDetailsService during login, API endpoints validating user exists.
+    // Used by: Spring Security UserDetailsService during login, API endpoints validating user
+    // exists.
     // Login is typically unique, so returns at most one user.
     public fun findByLogin(login: String): User?
 
