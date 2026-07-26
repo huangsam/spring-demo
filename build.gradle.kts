@@ -40,7 +40,7 @@ dependencies {
     // Rate Limiting & External Libraries
     implementation("com.bucket4j:bucket4j-core:8.10.1")
     implementation("com.rometools:rome:2.1.0")
-    implementation("org.commonmark:commonmark:0.27.1")
+    implementation("org.commonmark:commonmark:0.29.0")
 
     // Kotlin Support
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
